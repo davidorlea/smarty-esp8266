@@ -5,8 +5,8 @@
 #include <Arduino.h>
 #include "AbstractActuator.hpp"
 
-#define SMARTY_LED_BLINK_INTERVALL_SLOW 800
-#define SMARTY_LED_BLINK_INTERVALL_FAST 400
+#define SMARTY_LED_BLINK_INTERVAL_SLOW 800
+#define SMARTY_LED_BLINK_INTERVAL_FAST 400
 #define SMARTY_LED_CALLBACK_TYPE std::function<void (bool ledChanged)>
 
 class SmartyLed : virtual public SmartyAbstractActuator {
