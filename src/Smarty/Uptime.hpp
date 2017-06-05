@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <Arduino.h>
 
 class SmartyUptime {
