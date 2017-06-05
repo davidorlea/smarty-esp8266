@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <functional>
 #include <vector>
 #include <Arduino.h>
@@ -18,7 +19,7 @@ public:
   void setCallback(SMARTY_BUTTON_CALLBACK_TYPE);
   bool setup();
   bool loop();
-  int state();
+  uint8_t state();
 private:
   const uint8_t _port;
   const Mode _mode;

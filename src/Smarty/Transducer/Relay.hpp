@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <functional>
 #include <vector>
 #include <Arduino.h>
@@ -22,7 +23,7 @@ public:
   bool deactivate();
   bool toggle();
   bool parseState(int);
-  int state();
+  uint8_t state();
 private:
   const uint8_t _port;
   const State _restState;

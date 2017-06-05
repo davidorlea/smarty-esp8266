@@ -36,6 +36,6 @@ bool SmartyButton::loop() {
   return true;
 }
 
-int SmartyButton::state() {
-  return digitalRead(_port);
+uint8_t SmartyButton::state() {
+  return (uint8_t) digitalRead(_port);
 }

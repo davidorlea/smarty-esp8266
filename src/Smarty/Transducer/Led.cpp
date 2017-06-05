@@ -33,7 +33,7 @@ bool SmartyLed::loop() {
         (_blinkRate == BlinkRate::FAST &&
          now - _lastBlinkTime >= SMARTY_LED_BLINK_INTERVAL_FAST)) {
       _lastBlinkTime = now;
-      digitalWrite(_port, !state());
+      digitalWrite(_port, (uint8_t) !state());
     }
   }
   return true;
@@ -106,7 +106,7 @@ bool SmartyLed::startBlinking(BlinkRate blinkRate) {
   }
   _blinkRate = blinkRate;
   _lastBlinkTime = millis();
-  digitalWrite(_port, !state());
+  digitalWrite(_port, (uint8_t) !state());
   return true;
 }
 
@@ -119,8 +119,8 @@ bool SmartyLed::stopBlinking() {
   return true;
 }
 
-int SmartyLed::state() {
-  return digitalRead(_port);
+uint8_t SmartyLed::state() {
+  return (uint8_t) digitalRead(_port);
 }
 
 bool SmartyLed::_isBlinking() {

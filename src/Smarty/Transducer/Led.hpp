@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <functional>
 #include <vector>
 #include <Arduino.h>
@@ -30,7 +31,7 @@ public:
   bool parseState(int);
   bool startBlinking(BlinkRate = BlinkRate::FAST);
   bool stopBlinking();
-  int state();
+  uint8_t state();
 private:
   const uint8_t _port;
   const State _restState;

@@ -80,6 +80,6 @@ bool SmartyRelay::parseState(int state) {
   }
 }
 
-int SmartyRelay::state() {
-  return digitalRead(_port);
+uint8_t SmartyRelay::state() {
+  return (uint8_t) digitalRead(_port);
 }
