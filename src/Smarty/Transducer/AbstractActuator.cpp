@@ -15,4 +15,9 @@ SmartyAbstractActuator::SmartyAbstractActuator(const char* name)
     _list = new std::vector<SmartyAbstractActuator*>();
   }
   _list->push_back(this);
+  _listIndex = _list->size() - 1;
+}
+
+SmartyAbstractActuator::~SmartyAbstractActuator() {
+  _list->erase(_list->begin() + _listIndex);
 }

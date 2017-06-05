@@ -37,11 +37,11 @@ SmartyMqttSubscription::SmartyMqttSubscription(const char* topic)
     _list = new std::vector<SmartyMqttSubscription*>();
   }
   _list->push_back(this);
+  _listIndex = _list->size() - 1;
 }
 
 SmartyMqttSubscription::~SmartyMqttSubscription() {
-  Serial << "ERROR: Destruction of Smarty MQTT Subscriptions not allowed!" << endl;
-  abort();
+  _list->erase(_list->begin() + _listIndex);
 }
 
 const char* SmartyMqttSubscription::getTopic() {

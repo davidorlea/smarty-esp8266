@@ -1,8 +1,6 @@
 #pragma once
 
 #include <vector>
-#include <Arduino.h>
-#include <Streaming.h>
 
 class SmartyAbstractTransducer {
 public:
@@ -13,5 +11,4 @@ public:
 protected:
   const char* _name;
   SmartyAbstractTransducer(const char*);
-  ~SmartyAbstractTransducer();
 };

@@ -19,6 +19,7 @@ public:
   void handle(const char*, const char*);
 private:
   static std::vector<SmartyMqttSubscription*>* _list;
+  std::vector<SmartyMqttSubscription*>::size_type _listIndex;
   const char* _topic;
   SMARTY_MQTT_SUBSCRIPTION_CALLBACK_TYPE _callback;
 };

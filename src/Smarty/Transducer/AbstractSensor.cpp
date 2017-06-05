@@ -15,4 +15,9 @@ SmartyAbstractSensor::SmartyAbstractSensor(const char* name)
     _list = new std::vector<SmartyAbstractSensor*>();
   }
   _list->push_back(this);
+  _listIndex = _list->size() - 1;
+}
+
+SmartyAbstractSensor::~SmartyAbstractSensor() {
+  _list->erase(_list->begin() + _listIndex);
 }

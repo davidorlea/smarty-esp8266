@@ -13,4 +13,7 @@ public:
 protected:
   static std::vector<SmartyAbstractActuator*>* _list;
   SmartyAbstractActuator(const char*);
+  virtual ~SmartyAbstractActuator();
+private:
+  std::vector<SmartyAbstractActuator*>::size_type _listIndex;
 };

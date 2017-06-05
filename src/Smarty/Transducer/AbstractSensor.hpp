@@ -9,4 +9,7 @@ public:
 protected:
   static std::vector<SmartyAbstractSensor*>* _list;
   SmartyAbstractSensor(const char*);
+  virtual ~SmartyAbstractSensor();
+private:
+  std::vector<SmartyAbstractSensor*>::size_type _listIndex;
 };
