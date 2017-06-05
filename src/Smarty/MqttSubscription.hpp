@@ -1,8 +1,9 @@
 #pragma once
 
+#include <cstdlib> // abort()
+#include <cstring> // strcmp()
 #include <functional>
 #include <vector>
-#include <Arduino.h>
 #include <Streaming.h>
 
 #define SMARTY_MQTT_SUBSCRIPTION_CALLBACK_TYPE std::function<void (const char* topic, const char* message)>
