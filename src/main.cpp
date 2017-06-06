@@ -1,8 +1,5 @@
 #include <Arduino.h>
 #include "Smarty/Smarty.hpp"
-#include "Smarty/Transducer/Button.hpp"
-#include "Smarty/Transducer/Led.hpp"
-#include "Smarty/Transducer/Relay.hpp"
 
 // Configuration for custom board
 // BUTTON1_PIN 12
