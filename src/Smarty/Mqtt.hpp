@@ -5,10 +5,8 @@
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 #include <Streaming.h>
-#include <mem.h>
 #include "Firmware.hpp"
 #include "MqttSubscription.hpp"
-
 #include "Uptime.hpp"
 #include "Wifi.hpp"
 
