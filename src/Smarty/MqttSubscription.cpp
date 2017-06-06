@@ -10,6 +10,7 @@ std::vector<SmartyMqttSubscription*>* SmartyMqttSubscription::getList() {
 }
 
 bool SmartyMqttSubscription::isValidTopic(const char *topic) {
+  // Code from http://git.eclipse.org/c/mosquitto/org.eclipse.mosquitto.git/tree/lib/util_mosq.c
   char c = '\0';
 	while (topic && topic[0]) {
 		if (topic[0] == '+') {
@@ -53,8 +54,50 @@ void SmartyMqttSubscription::setCallback(SMARTY_MQTT_SUBSCRIPTION_CALLBACK_TYPE 
 }
 
 bool SmartyMqttSubscription::canHandle(const char *topic) {
-  // TODO: Use regular expression to compare topics
-  return strcmp(_topic, topic) == 0;
+  // Code from http://git.eclipse.org/c/mosquitto/org.eclipse.mosquitto.git/tree/lib/util_mosq.c
+  const char* sub = _topic;
+
+  if (!sub || !topic) {
+   return false;
+  }
+
+  int subLength = strlen(sub);
+  int topicLength = strlen(topic);
+  int subPosition = 0;
+  int topicPosition = 0;
+
+  while (subPosition < subLength && topicPosition < topicLength) {
+    if (sub[subPosition] == topic[topicPosition]) {
+      if (topicPosition == topicLength-1) {
+        if (subPosition == subLength-3 && sub[subPosition+1] == '/' && sub[subPosition+2] == '#') {
+          return true;
+        }
+      }
+      subPosition++;
+      topicPosition++;
+      if (topicPosition == topicLength && subPosition == subLength) {
+        return true;
+      }
+      if (topicPosition == topicLength && subPosition == subLength-1 && sub[subPosition] == '+') {
+        return true;
+      }
+    } else {
+      if (sub[subPosition] == '+') {
+        subPosition++;
+        while (topicPosition < topicLength && topic[topicPosition] != '/') {
+          topicPosition++;
+        }
+        if (topicPosition == topicLength && subPosition == subLength) {
+          return true;
+        }
+      } else if (sub[subPosition] == '#') {
+        return subPosition == subLength - 1;
+      } else {
+        return false;
+      }
+    }
+  }
+  return !(topicPosition < topicLength || subPosition < subLength);
 }
 
 void SmartyMqttSubscription::handle(const char *topic, const char* message) {

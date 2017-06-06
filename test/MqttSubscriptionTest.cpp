@@ -54,10 +54,68 @@ TEST(SmartyMqttSubscriptionTest, testThatCanHandleReturnsTrueForSubscriptionTopi
   EXPECT_TRUE(result);
 }
 
-TEST(SmartyMqttSubscriptionTest, testThatCanHandleReturnsFalseForUnknownTopic) {
+TEST(SmartyMqttSubscriptionTest, testThatCanHandleReturnsFalseForMismatchingTopic) {
   SmartyMqttSubscription subscription("a/valid/topic");
 
-  bool result = subscription.canHandle("a/different/topic");
+  bool result = subscription.canHandle("a/mismatching/topic");
+
+  EXPECT_FALSE(result);
+}
+
+TEST(SmartyMqttSubscriptionTest, testThatCanHandleReturnsTrueForMatchingSingleLevelTopic) {
+  SmartyMqttSubscription subscription("a/+/valid/topic");
+
+  bool result1 = subscription.canHandle("a/first/valid/topic");
+  bool result2 = subscription.canHandle("a/second/valid/topic");
+
+  EXPECT_TRUE(result1);
+  EXPECT_TRUE(result2);
+}
+
+TEST(SmartyMqttSubscriptionTest, testThatCanHandleReturnsFalseForMismatchingSingleLevelTopic) {
+  SmartyMqttSubscription subscription("a/+/valid/topic");
+
+  bool result1 = subscription.canHandle("a/first/mismatching/topic");
+  bool result2 = subscription.canHandle("a/second/mismatching/topic");
+
+  EXPECT_FALSE(result1);
+  EXPECT_FALSE(result2);
+}
+
+TEST(SmartyMqttSubscriptionTest, testThatCanHandleReturnsTrueForMatchingSuffixSingleLevelTopic) {
+  SmartyMqttSubscription subscription("a/valid/topic/+");
+
+  bool result = subscription.canHandle("a/valid/topic/first");
+
+  EXPECT_TRUE(result);
+}
+
+TEST(SmartyMqttSubscriptionTest, testThatCanHandleReturnsFalseForMismatchingSuffixSingleLevelTopic) {
+  SmartyMqttSubscription subscription("a/valid/topic/+");
+
+  bool result1 = subscription.canHandle("a/valid/topic");
+  bool result2 = subscription.canHandle("a/valid/topic/first/second");
+
+  EXPECT_FALSE(result1);
+  EXPECT_FALSE(result2);
+}
+
+TEST(SmartyMqttSubscriptionTest, testThatCanHandleReturnsTrueForMatchingMultiLevelTopic) {
+  SmartyMqttSubscription subscription("a/valid/topic/#");
+
+  bool result1 = subscription.canHandle("a/valid/topic");
+  bool result2 = subscription.canHandle("a/valid/topic/first");
+  bool result3 = subscription.canHandle("a/valid/topic/and/second");
+
+  EXPECT_TRUE(result1);
+  EXPECT_TRUE(result2);
+  EXPECT_TRUE(result3);
+}
+
+TEST(SmartyMqttSubscriptionTest, testThatCanHandleReturnsFalseForMismatchingMultiLevelTopic) {
+  SmartyMqttSubscription subscription("a/valid/topic/#");
+
+  bool result = subscription.canHandle("a/first/valid/topic");
 
   EXPECT_FALSE(result);
 }

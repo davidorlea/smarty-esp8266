@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cstdlib> // abort()
-#include <cstring> // strcmp()
 #include <functional>
 #include <vector>
 #include <Streaming.h>
