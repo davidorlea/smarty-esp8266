@@ -7,8 +7,7 @@ SmartyLed::SmartyLed(const char* name, const uint8_t port, const State state)
 , _virtualState(state)
 , _lastBlinkTime(0)
 , _activateCallback(nullptr)
-, _deactivateCallback(nullptr)
-, _toggleCallback(nullptr) {
+, _deactivateCallback(nullptr) {
 }
 
 void SmartyLed::setActivateCallback(SMARTY_LED_CALLBACK_TYPE callback) {
@@ -71,17 +70,13 @@ bool SmartyLed::toggle() {
   switch (state()) {
     case (uint8_t) State::ON:
       deactivate();
-      break;
+      return true;
     case (uint8_t) State::OFF:
       activate();
-      break;
+      return true;
     default:
       return false;
   }
-  if (_toggleCallback != nullptr) {
-    _toggleCallback(true);
-  }
-  return true;
 }
 
 bool SmartyLed::parseState(int state) {

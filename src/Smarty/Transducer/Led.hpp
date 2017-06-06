@@ -40,6 +40,5 @@ private:
   unsigned long _lastBlinkTime;
   SMARTY_LED_CALLBACK_TYPE _activateCallback;
   SMARTY_LED_CALLBACK_TYPE _deactivateCallback;
-  SMARTY_LED_CALLBACK_TYPE _toggleCallback;
   bool _isBlinking();
 };

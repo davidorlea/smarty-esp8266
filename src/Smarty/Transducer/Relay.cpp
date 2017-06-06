@@ -5,8 +5,7 @@ SmartyRelay::SmartyRelay(const char* name, const uint8_t port, const State state
 , _port(port)
 , _restState(state)
 , _activateCallback(nullptr)
-, _deactivateCallback(nullptr)
-, _toggleCallback(nullptr) {
+, _deactivateCallback(nullptr) {
 }
 
 void SmartyRelay::setActivateCallback(SMARTY_RELAY_CALLBACK_TYPE callback) {
@@ -51,17 +50,13 @@ bool SmartyRelay::toggle() {
   switch (state()) {
     case (uint8_t) State::ON:
       deactivate();
-      break;
+      return true;
     case (uint8_t) State::OFF:
       activate();
-      break;
+      return true;
     default:
       return false;
   }
-  if (_toggleCallback != nullptr) {
-    _toggleCallback(true);
-  }
-  return true;
 }
 
 bool SmartyRelay::parseState(int state) {

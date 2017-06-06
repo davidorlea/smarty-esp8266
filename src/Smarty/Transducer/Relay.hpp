@@ -29,5 +29,4 @@ private:
   const State _restState;
   SMARTY_RELAY_CALLBACK_TYPE _activateCallback;
   SMARTY_RELAY_CALLBACK_TYPE _deactivateCallback;
-  SMARTY_RELAY_CALLBACK_TYPE _toggleCallback;
 };
