@@ -28,7 +28,7 @@ void setup() {
   Serial.setDebugOutput(false);
   waitForSerialMonitoring();
 
-  Serial << "Starting main setup ..." << endl;
+  Serial << F("Starting main setup ...") << endl;
 
   smarty.setFirmwareName("Smarty Home Automation");
   smarty.setFirmwareVersion("0.1.0");
@@ -38,28 +38,28 @@ void setup() {
   smarty.setMqttSystemTopic("smarty/demo/esp8266-1/system");
 
   button1.setCallback([](uint8_t buttonState) {
-    Serial << button1.getName() << " pushed" << endl;
+    Serial << button1.getName() << F(" pushed") << endl;
     relay1.toggle();
   });
   led1.setActivateCallback([](bool change) {
     if (change) {
-      Serial << led1.getName() << " activated" << endl;
+      Serial << led1.getName() << F(" activated") << endl;
     }
   });
   led1.setDeactivateCallback([](bool change) {
     if (change) {
-      Serial << led1.getName() << " deactivated" << endl;
+      Serial << led1.getName() << F(" deactivated") << endl;
     }
   });
   relay1.setActivateCallback([](bool change) {
     if (change) {
-      Serial << relay1.getName() << " activated" << endl;
+      Serial << relay1.getName() << F(" activated") << endl;
     }
     led1.activate();
   });
   relay1.setDeactivateCallback([](bool change) {
     if (change) {
-      Serial << relay1.getName() << " deactivated" << endl;
+      Serial << relay1.getName() << F(" deactivated") << endl;
     }
     led1.deactivate();
   });
@@ -75,7 +75,7 @@ void setup() {
 
   smarty.setup();
 
-  Serial << "... Finished main setup" << endl;
+  Serial << F("... Finished main setup") << endl;
 }
 
 void loop() {
