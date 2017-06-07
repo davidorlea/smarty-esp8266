@@ -4,6 +4,7 @@ Smarty::Smarty()
 : _firmware()
 , _uptime()
 , _wifi()
+, _ota()
 , _http(_firmware, _uptime, _wifi)
 , _mqtt(_firmware, _uptime, _wifi) {
 }
@@ -60,6 +61,10 @@ void Smarty::setup() {
   _wifi.setup();
   Serial << "Done" << endl;
 
+  Serial << "Initializing OTA Update server: ";
+  _ota.setup();
+  Serial << "Done" << endl;
+
   Serial << "Initializing HTTP server: ";
   _http.setup();
   Serial << "Done" << endl;
@@ -80,6 +85,7 @@ void Smarty::loop() {
     actuator->loop();
   }
   if (_wifi.loop()) {
+    _ota.loop();
     _http.loop();
     _mqtt.loop();
   }

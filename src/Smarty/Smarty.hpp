@@ -5,6 +5,7 @@
 #include "Firmware.hpp"
 #include "Http.hpp"
 #include "Mqtt.hpp"
+#include "Ota.hpp"
 #include "Transducer/AbstractActuator.hpp"
 #include "Transducer/AbstractSensor.hpp"
 #include "Transducer/Button.hpp"
@@ -30,6 +31,7 @@ private:
   SmartyFirmware _firmware;
   SmartyUptime _uptime;
   SmartyWifi _wifi;
+  SmartyOta _ota;
   SmartyHttp _http;
   SmartyMqtt _mqtt;
 };
