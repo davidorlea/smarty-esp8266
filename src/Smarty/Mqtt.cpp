@@ -53,7 +53,7 @@ void SmartyMqtt::loop() {
     }
     for (SmartyMqttPublication* publication: *SmartyMqttPublication::getList()) {
       if (publication->isReady()) {
-        _pubSubClient.publish(publication->getTopic(), publication->getMessage());
+        _publish(publication->getTopic(), publication->getMessage());
         publication->ready(false);
       }
     }
