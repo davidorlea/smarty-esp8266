@@ -19,6 +19,8 @@ add_executable(HardwareTests
         ${CMAKE_CURRENT_SOURCE_DIR}/mock/Arduino.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/mock/ArduinoMock.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/mock/HardwareSerialMock.cpp
+        ${CMAKE_SOURCE_DIR}/src/Smarty/MqttPublication.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/MqttPublicationTest.cpp
         ${CMAKE_SOURCE_DIR}/src/Smarty/MqttSubscription.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/MqttSubscriptionTest.cpp
         ${CMAKE_SOURCE_DIR}/src/Smarty/Uptime.cpp

@@ -10,6 +10,7 @@ Smarty smarty;
 SmartyButton button1("button1", 0, SmartyButton::Mode::PUSH);
 SmartyLed led1("led1", 13, SmartyLed::State::OFF);
 SmartyRelay relay1("relay1", 12, SmartyRelay::State::OFF);
+SmartyMqttPublication mqttButtonPub("smarty/demo/esp8266-1/button");
 SmartyMqttSubscription mqttPowerSub("smarty/demo/esp8266-1/power");
 
 void waitForSerialMonitoring() {
@@ -21,6 +22,7 @@ void waitForSerialMonitoring() {
 }
 
 void setup() {
+
   Serial.begin(115200);
   Serial.setDebugOutput(false);
   waitForSerialMonitoring();
@@ -36,6 +38,8 @@ void setup() {
 
   button1.setCallback([](uint8_t buttonState) {
     Serial << button1.getName() << F(" pushed") << endl;
+    mqttButtonPub.setMessage("{\"button\":2}");
+    mqttButtonPub.ready();
     relay1.toggle();
   });
   led1.setActivateCallback([](bool change) {

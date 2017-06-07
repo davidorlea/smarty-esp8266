@@ -156,7 +156,7 @@ TEST(SmartyMqttSubscriptionListTest, testThatListIsInitiallyEmpty) {
 }
 
 
-TEST(SmartyMqttSubscriptionListTest, testThatNewSubscriptionIsAdded) {
+TEST(SmartyMqttSubscriptionListTest, testThatSubscriptionIsAddedOnConstruction) {
   std::vector<SmartyMqttSubscription*>* list = SmartyMqttSubscription::getList();
 
   SmartyMqttSubscription subscription("a/valid/topic");

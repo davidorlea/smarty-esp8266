@@ -6,6 +6,7 @@
 #include <PubSubClient.h>
 #include <Streaming.h>
 #include "Firmware.hpp"
+#include "MqttPublication.hpp"
 #include "MqttSubscription.hpp"
 #include "Uptime.hpp"
 #include "Wifi.hpp"

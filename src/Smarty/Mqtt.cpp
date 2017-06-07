@@ -46,10 +46,17 @@ void SmartyMqtt::loop() {
   }
   _pubSubClient.loop();
 
-  if (_pubSubClient.connected()
-      && (_lastStatusPublish == 0 || now - _lastStatusPublish >= MQTT_STATUS_INTERVAL)) {
-    _lastStatusPublish = now;
-    _publishSystem();
+  if (_pubSubClient.connected()) {
+    if (_lastStatusPublish == 0 || now - _lastStatusPublish >= MQTT_STATUS_INTERVAL) {
+      _lastStatusPublish = now;
+      _publishSystem();
+    }
+    for (SmartyMqttPublication* publication: *SmartyMqttPublication::getList()) {
+      if (publication->isReady()) {
+        _pubSubClient.publish(publication->getTopic(), publication->getMessage());
+        publication->ready(false);
+      }
+    }
   }
 }
 
