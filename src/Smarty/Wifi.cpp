@@ -24,14 +24,6 @@ String SmartyWifi::getIpAddress() {
   return WiFi.localIP().toString();
 }
 
-String SmartyWifi::getMacAddress() {
-  return WiFi.macAddress();
-}
-
-void SmartyWifi::getMacAddress(uint8_t *mac) {
-  WiFi.macAddress(mac);
-}
-
 String SmartyWifi::getHostName() {
   return WiFi.hostname();
 }

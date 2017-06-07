@@ -17,8 +17,6 @@ public:
   String getSSID();
   int32_t getRSSI();
   String getIpAddress();
-  String getMacAddress();
-  void getMacAddress(uint8_t*);
   String getHostName();
   void setup();
   bool loop();

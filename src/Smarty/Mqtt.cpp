@@ -8,11 +8,9 @@ SmartyMqtt::SmartyMqtt(SmartyFirmware& firmware, SmartyUptime& uptime, SmartyWif
 , _wifi(wifi)
 , _lastConnectionAttempt(0)
 , _lastStatusPublish(0) {
-  uint8_t mac[6];
-  _wifi.getMacAddress(mac);
   // FIXME: Find better solution to prevent memory leak
   char* composedClientId = (char*) malloc(21 + 1);
-  sprintf(composedClientId, "smarty-esp8266-%02X%02X%02X", mac[3], mac[4], mac[5]);
+  sprintf(composedClientId, "smarty-esp8266-%06x", ESP.getChipId());
   _clientId = composedClientId;
 }
 
