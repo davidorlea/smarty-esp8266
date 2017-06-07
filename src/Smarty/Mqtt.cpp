@@ -95,7 +95,7 @@ void SmartyMqtt::_callback(char* topic, byte* payload, unsigned int length) {
 }
 
 void SmartyMqtt::_publishSystem() {
-  StaticJsonBuffer<JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(3) + 128> jsonBuffer;
+  StaticJsonBuffer<JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(4) + 128> jsonBuffer;
   JsonObject& root = jsonBuffer.createObject();
   root["uptime"] = _uptime.getSeconds();
   JsonObject& firmware = root.createNestedObject("firmware");
@@ -105,6 +105,7 @@ void SmartyMqtt::_publishSystem() {
   wifi["ssid"] = _wifi.getSSID();
   wifi["rssi"] = _wifi.getRSSI();
   wifi["ip"] = _wifi.getIpAddress();
+  wifi["hostname"] = _wifi.getHostName();
 
   _publishJson(_systemTopic, root);
 }
