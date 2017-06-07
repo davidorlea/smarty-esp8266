@@ -42,13 +42,15 @@ TEST(SmartyMqttSubscriptionTest, testThatInvalidSingleLevelTopicIsRejected) {
 }
 
 TEST(SmartyMqttSubscriptionTest, testThatInvalidMultiLevelTopicIsRejected) {
-  bool result1 = SmartyMqttSubscription::isValidTopic("an/invalid/#/topic");
-  bool result2 = SmartyMqttSubscription::isValidTopic("an/invalid#/topic");
-  bool result3 = SmartyMqttSubscription::isValidTopic("an/#invalid/topic");
+  bool result1 = SmartyMqttSubscription::isValidTopic("an/invalid/topic/#/#");
+  bool result2 = SmartyMqttSubscription::isValidTopic("an/invalid/#/topic");
+  bool result3 = SmartyMqttSubscription::isValidTopic("an/invalid#/topic");
+  bool result4 = SmartyMqttSubscription::isValidTopic("an/#invalid/topic");
 
   EXPECT_FALSE(result1);
   EXPECT_FALSE(result2);
   EXPECT_FALSE(result3);
+  EXPECT_FALSE(result4);
 }
 
 TEST(SmartyMqttSubscriptionTest, testThatConstructionFailsWithInvalidTopic) {
