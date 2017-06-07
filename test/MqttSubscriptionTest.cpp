@@ -2,23 +2,35 @@
 #include "Smarty/MqttSubscription.hpp"
 
 TEST(SmartyMqttSubscriptionTest, testThatValidSimpleTopicIsAccepted) {
-  bool result = SmartyMqttSubscription::isValidTopic("a/valid/topic");
-
-  EXPECT_TRUE(result);
-}
-
-TEST(SmartyMqttSubscriptionTest, testThatValidSingleLevelTopicIsAccepted) {
-  bool result1 = SmartyMqttSubscription::isValidTopic("a/valid/+/topic");
-  bool result2 = SmartyMqttSubscription::isValidTopic("a/valid/topic/+");
+  bool result1 = SmartyMqttSubscription::isValidTopic("a/valid/topic");
+  bool result2 = SmartyMqttSubscription::isValidTopic("a");
+  bool result3 = SmartyMqttSubscription::isValidTopic("/");
+  bool result4 = SmartyMqttSubscription::isValidTopic("");
 
   EXPECT_TRUE(result1);
   EXPECT_TRUE(result2);
+  EXPECT_TRUE(result3);
+  EXPECT_TRUE(result4);
+}
+
+TEST(SmartyMqttSubscriptionTest, testThatValidSingleLevelTopicIsAccepted) {
+  bool result1 = SmartyMqttSubscription::isValidTopic("a/valid/+/topic/+");
+  bool result2 = SmartyMqttSubscription::isValidTopic("a/valid/+/topic");
+  bool result3 = SmartyMqttSubscription::isValidTopic("a/valid/topic/+");
+  bool result4 = SmartyMqttSubscription::isValidTopic("+");
+
+  EXPECT_TRUE(result1);
+  EXPECT_TRUE(result2);
+  EXPECT_TRUE(result3);
+  EXPECT_TRUE(result4);
 }
 
 TEST(SmartyMqttSubscriptionTest, testThatValidMultiLevelTopicIsAccepted) {
-  bool result = SmartyMqttSubscription::isValidTopic("a/valid/topic/#");
+  bool result1 = SmartyMqttSubscription::isValidTopic("a/valid/topic/#");
+  bool result2 = SmartyMqttSubscription::isValidTopic("#");
 
-  EXPECT_TRUE(result);
+  EXPECT_TRUE(result1);
+  EXPECT_TRUE(result2);
 }
 
 TEST(SmartyMqttSubscriptionTest, testThatInvalidSingleLevelTopicIsRejected) {
