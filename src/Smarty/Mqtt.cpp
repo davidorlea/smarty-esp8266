@@ -8,7 +8,6 @@ SmartyMqtt::SmartyMqtt(SmartyFirmware& firmware, SmartyUptime& uptime, SmartyWif
 , _wifi(wifi)
 , _lastConnectionAttempt(0)
 , _lastStatusPublish(0) {
-  // FIXME: Find better solution to prevent memory leak
   char* composedClientId = (char*) malloc(21 + 1);
   sprintf(composedClientId, "smarty-esp8266-%06x", ESP.getChipId());
   _clientId = composedClientId;
@@ -20,6 +19,7 @@ void SmartyMqtt::setServer(const char* serverUrl, const uint16_t serverPort) {
 }
 
 void SmartyMqtt::setClientId(const char* clientId) {
+  free((void*) _clientId);
   _clientId = clientId;
 }
 
