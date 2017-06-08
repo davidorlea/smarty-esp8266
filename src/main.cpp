@@ -39,7 +39,7 @@ void setup() {
 
   button1.setCallback([](uint8_t buttonState) {
     Serial << button1.getName() << F(" pushed") << endl;
-    mqttButtonPub.setMessage("{\"button\":2}");
+    mqttButtonPub.setMessage("2");
     mqttButtonPub.ready();
     relay1.toggle();
   });
