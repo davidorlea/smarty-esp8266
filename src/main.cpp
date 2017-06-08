@@ -11,7 +11,8 @@ SmartyButton button1("button1", 0, SmartyButton::Mode::PUSH);
 SmartyLed led1("led1", 13, SmartyLed::State::OFF);
 SmartyRelay relay1("relay1", 12, SmartyRelay::State::OFF);
 SmartyMqttPublication mqttButtonPub("smarty/demo/esp8266-1/button");
-SmartyMqttSubscription mqttPowerSub("smarty/demo/esp8266-1/power");
+SmartyMqttPublication mqttPowerPub("smarty/demo/esp8266-1/power");
+SmartyMqttSubscription mqttPowerSub("smarty/demo/esp8266-1/power/set");
 
 void waitForSerialMonitoring() {
   for (int i = 0; i < 5; i++) {
@@ -56,12 +57,16 @@ void setup() {
     if (change) {
       Serial << relay1.getName() << F(" activated") << endl;
     }
+    mqttPowerPub.setMessage("1");
+    mqttPowerPub.ready();
     led1.activate();
   });
   relay1.setDeactivateCallback([](bool change) {
     if (change) {
       Serial << relay1.getName() << F(" deactivated") << endl;
     }
+    mqttPowerPub.setMessage("0");
+    mqttPowerPub.ready();
     led1.deactivate();
   });
   mqttPowerSub.setCallback([](const char *topic, const char *message) {
