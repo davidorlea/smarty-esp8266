@@ -1,8 +1,4 @@
 {
-  "firmware": {
-    "name": "Smarty Home Automation",
-    "version": "0.1.0"
-  },
   "wifi": {
     "ssid": "my_ssid",
     "password": "my_password"

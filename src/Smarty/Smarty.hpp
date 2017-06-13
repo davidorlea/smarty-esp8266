@@ -19,6 +19,8 @@ class Smarty {
 public:
   Smarty();
   ~Smarty();
+  void setFirmwareName(const char*);
+  void setFirmwareVersion(const char*);
   void setup();
   void loop();
 private:

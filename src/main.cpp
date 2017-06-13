@@ -30,6 +30,8 @@ void setup() {
 
   Serial << F("Starting main setup ...") << endl;
 
+  smarty.setFirmwareName("Smarty Home Automation");
+  smarty.setFirmwareVersion("0.1.0");
 
   button1.setCallback([](uint8_t buttonState) {
     Serial << button1.getName() << F(" pushed") << endl;

@@ -12,16 +12,12 @@
 class SmartyConfig {
 public:
   void setup();
-  const char* getFirmwareName() const;
-  const char* getFirmwareVersion() const;
   const char* getWifiSSID() const;
   const char* getWifiPassword() const;
   const char* getMqttHost() const;
   uint16_t getMqttPort() const;
   const char *getMqttSystemTopic() const;
 private:
-  const char* _firmwareName;
-  const char* _firmwareVersion;
   const char* _wifiSSID;
   const char* _wifiPassword;
   const char* _mqttHost;

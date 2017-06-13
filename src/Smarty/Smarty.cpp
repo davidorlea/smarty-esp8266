@@ -15,13 +15,19 @@ Smarty::~Smarty() {
   abort();
 }
 
+void Smarty::setFirmwareName(const char* firmwareName) {
+  _firmware.name = firmwareName;
+}
+
+void Smarty::setFirmwareVersion(const char* firmwareVersion) {
+  _firmware.version = firmwareVersion;
+}
+
 void Smarty::setup() {
   Serial << "Starting Smarty setup ..." << endl;
 
   Serial << "Initializing Configuration: ";
   _config.setup();
-  _firmware.name = _config.getFirmwareName();
-  _firmware.version = _config.getFirmwareVersion();
   _wifi.setSSID(_config.getWifiSSID());
   _wifi.setPassword(_config.getWifiPassword());
   _mqtt.setServer(_config.getMqttHost(), _config.getMqttPort());

@@ -28,8 +28,6 @@ void SmartyConfig::setup() {
     return;
   }
 
-  _firmwareName = json["firmware"]["name"];
-  _firmwareVersion = json["firmware"]["version"];
   _wifiSSID = json["wifi"]["ssid"];
   _wifiPassword = json["wifi"]["password"];
   _mqttHost = json["mqtt"]["host"];
@@ -37,14 +35,6 @@ void SmartyConfig::setup() {
   _mqttSystemTopic = json["mqtt"]["systemTopic"];
 
   SPIFFS.end();
-}
-
-const char* SmartyConfig::getFirmwareName() const {
-  return _firmwareName;
-}
-
-const char* SmartyConfig::getFirmwareVersion() const {
-  return _firmwareVersion;
 }
 
 const char* SmartyConfig::getWifiSSID() const {
