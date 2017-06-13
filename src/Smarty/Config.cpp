@@ -16,13 +16,13 @@ void SmartyConfig::setup() {
     return;
   }
 
-  char buf[SMARTY_CONFIG_MAX_FILE_SIZE];
-  configFile.readBytes(buf, configSize);
+  char buffer[SMARTY_CONFIG_MAX_FILE_SIZE];
+  configFile.readBytes(buffer, configSize);
   configFile.close();
-  buf[configSize] = '\0';
+  buffer[configSize] = '\0';
 
   StaticJsonBuffer<SMARTY_CONFIG_MAX_JSON_SIZE> jsonBuffer;
-  JsonObject& json = jsonBuffer.parseObject(buf);
+  JsonObject& json = jsonBuffer.parseObject(buffer);
   if (!json.success()) {
     Serial << "ERROR: configuration file invalid" << endl;
     return;
