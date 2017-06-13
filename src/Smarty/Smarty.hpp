@@ -2,6 +2,7 @@
 
 #include <Arduino.h>
 #include <Streaming.h>
+#include "Config.hpp"
 #include "Firmware.hpp"
 #include "Http.hpp"
 #include "Mqtt.hpp"
@@ -18,16 +19,10 @@ class Smarty {
 public:
   Smarty();
   ~Smarty();
-  void setFirmwareName(const char*);
-  void setFirmwareVersion(const char*);
-  void setWifiSSID(const char*);
-  void setWifiPassword(const char*);
-  void setMqttServer(const char*, const uint16_t);
-  void setMqttClientId(const char*);
-  void setMqttSystemTopic(const char*);
   void setup();
   void loop();
 private:
+  SmartyConfig _config;
   SmartyFirmware _firmware;
   SmartyUptime _uptime;
   SmartyWifi _wifi;

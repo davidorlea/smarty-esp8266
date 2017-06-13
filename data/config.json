@@ -1,0 +1,15 @@
+{
+  "firmware": {
+    "name": "Smarty Home Automation",
+    "version": "0.1.0"
+  },
+  "wifi": {
+    "ssid": "my_ssid",
+    "password": "my_password"
+  },
+  "mqtt": {
+    "host": "test.mosquitto.org",
+    "port": 1883,
+    "systemTopic": "smarty/demo/esp8266-1/system"
+  }
+}

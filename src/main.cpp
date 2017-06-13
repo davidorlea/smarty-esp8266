@@ -30,12 +30,6 @@ void setup() {
 
   Serial << F("Starting main setup ...") << endl;
 
-  smarty.setFirmwareName("Smarty Home Automation");
-  smarty.setFirmwareVersion("0.1.0");
-  smarty.setWifiSSID("my_ssid");
-  smarty.setWifiPassword("my_password");
-  smarty.setMqttServer("test.mosquitto.org", 1883);
-  smarty.setMqttSystemTopic("smarty/demo/esp8266-1/system");
 
   button1.setCallback([](uint8_t buttonState) {
     Serial << button1.getName() << F(" pushed") << endl;
