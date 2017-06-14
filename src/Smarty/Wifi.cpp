@@ -49,7 +49,7 @@ bool SmartyWifi::_connect() {
     return false;
   } else {
     if (_isWaitingForConnection) {
-      Serial << "... sucessfully (re-)connected to Wifi" << endl;
+      Serial << "... successfully (re-)connected to Wifi" << endl;
       _isWaitingForConnection = false;
       _printNetworkData();
     }

@@ -12,7 +12,7 @@ void SmartyConfig::setup() {
   size_t configSize = configFile.size();
 
   if (configSize > SMARTY_CONFIG_MAX_FILE_SIZE) {
-    Serial << "ERROR: configuration file not found" << endl;
+    Serial << "ERROR: configuration file too big" << endl;
     return;
   }
 
