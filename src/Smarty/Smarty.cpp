@@ -43,10 +43,10 @@ void Smarty::setup() {
   }
 
   Serial << "Initializing Wifi client: ";
-  if (_config.getWifiSSID()) {
+  if (_config.getWifiSSID()[0]) {
     _wifi.setSSID(_config.getWifiSSID());
   }
-  if (_config.getWifiPassword()) {
+  if (_config.getWifiPassword()[0]) {
     _wifi.setPassword(_config.getWifiPassword());
   }
   _wifi.setup();
@@ -61,16 +61,16 @@ void Smarty::setup() {
   Serial << "Done" << endl;
 
   Serial << "Initializing MQTT client: ";
-  if (_config.getMqttHost()) {
+  if (_config.getMqttHost()[0]) {
     _mqtt.setHost(_config.getMqttHost());
   }
   if (_config.getMqttPort()) {
     _mqtt.setPort(_config.getMqttPort());
   }
-  if (_config.getMqttClientId()) {
+  if (_config.getMqttClientId()[0]) {
     _mqtt.setClientId(_config.getMqttClientId());
   }
-  if (_config.getMqttSystemTopic()) {
+  if (_config.getMqttSystemTopic()[0]) {
     _mqtt.setSystemTopic(_config.getMqttSystemTopic());
   }
   _mqtt.setup();
