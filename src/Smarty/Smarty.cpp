@@ -61,8 +61,11 @@ void Smarty::setup() {
   Serial << "Done" << endl;
 
   Serial << "Initializing MQTT client: ";
-  if (_config.getMqttHost() && _config.getMqttPort()) {
-    _mqtt.setServer(_config.getMqttHost(), _config.getMqttPort());
+  if (_config.getMqttHost()) {
+    _mqtt.setHost(_config.getMqttHost());
+  }
+  if (_config.getMqttPort()) {
+    _mqtt.setPort(_config.getMqttPort());
   }
   if (_config.getMqttClientId()) {
     _mqtt.setClientId(_config.getMqttClientId());

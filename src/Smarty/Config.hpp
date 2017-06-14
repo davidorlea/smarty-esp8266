@@ -22,7 +22,7 @@ private:
   const char* _wifiSSID = nullptr;
   const char* _wifiPassword = nullptr;
   const char* _mqttHost = nullptr;
-  uint16_t _mqttPort = 1883;
+  uint16_t _mqttPort = 0;
   const char* _mqttClientId = nullptr;
   const char* _mqttSystemTopic = nullptr;
 };

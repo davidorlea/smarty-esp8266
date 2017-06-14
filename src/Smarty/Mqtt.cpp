@@ -13,9 +13,12 @@ SmartyMqtt::SmartyMqtt(SmartyFirmware& firmware, SmartyUptime& uptime, SmartyWif
   _clientId = composedClientId;
 }
 
-void SmartyMqtt::setServer(const char* serverUrl, const uint16_t serverPort) {
-  _serverUrl = serverUrl;
-  _serverPort = serverPort;
+void SmartyMqtt::setHost(const char* host) {
+  _host = host;
+}
+
+void SmartyMqtt::setPort(const uint16_t port) {
+  _port = port;
 }
 
 void SmartyMqtt::setClientId(const char* clientId) {
@@ -28,7 +31,7 @@ void SmartyMqtt::setSystemTopic(const char* systemTopic) {
 }
 
 void SmartyMqtt::setup() {
-  _pubSubClient.setServer(_serverUrl, _serverPort);
+  _pubSubClient.setServer(_host, _port);
   _pubSubClient.setCallback([this](char* topic, byte* payload, unsigned int length) {
     return _callback(topic, payload,length);
   });
@@ -64,7 +67,7 @@ void SmartyMqtt::_connect() {
 
     if (_pubSubClient.connect(_clientId, _systemTopic, 0, false, "{\"message\":\"good bye\"}")) {
       Serial << "Done" << endl;
-      Serial << "MQTT Broker: " << _serverUrl << ":" << _serverPort << endl;
+      Serial << "MQTT Broker: " << _host << ":" << _port << endl;
       Serial << "MQTT Client ID: " << _clientId << endl;
     } else {
       Serial << "Failed (" << _pubSubClient.state() << ")" << endl;

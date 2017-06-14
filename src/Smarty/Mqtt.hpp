@@ -18,7 +18,8 @@
 class SmartyMqtt {
 public:
   SmartyMqtt(SmartyFirmware&, SmartyUptime&, SmartyWifi&);
-  void setServer(const char*, const uint16_t);
+  void setHost(const char*);
+  void setPort(const uint16_t);
   void setClientId(const char*);
   void setSystemTopic(const char*);
   void setup();
@@ -29,10 +30,10 @@ private:
   SmartyFirmware& _firmware;
   SmartyUptime& _uptime;
   SmartyWifi& _wifi;
-  const char* _serverUrl;
-  uint16_t _serverPort;
-  const char* _clientId;
-  const char* _systemTopic;
+  const char* _host = nullptr;
+  uint16_t _port = 1883;
+  const char* _clientId = nullptr;
+  const char* _systemTopic = nullptr;
   unsigned long _lastConnectionAttempt;
   unsigned long _lastStatusPublish;
   void _connect();
