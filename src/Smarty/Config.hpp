@@ -18,9 +18,9 @@ public:
   uint16_t getMqttPort() const;
   const char *getMqttSystemTopic() const;
 private:
-  const char* _wifiSSID;
-  const char* _wifiPassword;
-  const char* _mqttHost;
-  uint16_t _mqttPort;
-  const char* _mqttSystemTopic;
+  const char* _wifiSSID = nullptr;
+  const char* _wifiPassword = nullptr;
+  const char* _mqttHost = nullptr;
+  uint16_t _mqttPort = 1883;
+  const char* _mqttSystemTopic = nullptr;
 };
