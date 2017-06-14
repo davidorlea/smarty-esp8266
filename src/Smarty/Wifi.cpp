@@ -35,7 +35,7 @@ bool SmartyWifi::loop() {
 }
 
 bool SmartyWifi::_connect() {
-  if (!_ssid && !_password) {
+  if (!_ssid || !_password) {
     return false;
   }
   if (!_isConnected()) {
