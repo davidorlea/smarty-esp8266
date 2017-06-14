@@ -32,6 +32,7 @@ void SmartyConfig::setup() {
   _wifiPassword = json["wifi"]["password"];
   _mqttHost = json["mqtt"]["host"];
   _mqttPort = json["mqtt"]["port"];
+  _mqttClientId = json["mqtt"]["clientId"];
   _mqttSystemTopic = json["mqtt"]["systemTopic"];
 
   SPIFFS.end();
@@ -51,6 +52,10 @@ const char* SmartyConfig::getMqttHost() const {
 
 uint16_t SmartyConfig::getMqttPort() const {
   return _mqttPort;
+}
+
+const char *SmartyConfig::getMqttClientId() const {
+  return _mqttClientId;
 }
 
 const char *SmartyConfig::getMqttSystemTopic() const {
