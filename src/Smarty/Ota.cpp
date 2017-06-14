@@ -5,7 +5,7 @@ void SmartyOta::setup() {
     Serial << "Starting Smarty OTA Update ..." << endl;
   });
   ArduinoOTA.onEnd([]() {
-    Serial << "... Finished Starting Smarty OTA Update" << endl;
+    Serial << "... Finished Smarty OTA Update" << endl;
   });
   ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
     Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
