@@ -11,7 +11,6 @@ extern "C" {
 
 class SmartyWifi {
 public:
-  SmartyWifi();
   void setSSID(const char*);
   void setPassword(const char*);
   String getSSID();
@@ -21,9 +20,9 @@ public:
   void setup();
   bool loop();
 private:
-  const char* _ssid;
-  const char* _password;
-  bool _isWaitingForConnection;
+  const char* _ssid = nullptr;
+  const char* _password = nullptr;
+  bool _isWaitingForConnection = false;
   bool _connect();
   void _clearDefaults();
   void _printDebugData();

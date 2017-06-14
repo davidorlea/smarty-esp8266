@@ -1,9 +1,5 @@
 #include "Wifi.hpp"
 
-SmartyWifi::SmartyWifi()
-: _isWaitingForConnection(false) {
-}
-
 void SmartyWifi::setSSID(const char* ssid) {
   _ssid = ssid;
 }
@@ -39,6 +35,9 @@ bool SmartyWifi::loop() {
 }
 
 bool SmartyWifi::_connect() {
+  if (!_ssid && !_password) {
+    return false;
+  }
   if (!_isConnected()) {
     if (!_isWaitingForConnection) {
       Serial << "(Re-)Connecting to Wifi ..." << endl;
