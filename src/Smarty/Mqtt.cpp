@@ -11,6 +11,10 @@ SmartyMqtt::SmartyMqtt(SmartyFirmware& firmware, SmartyUptime& uptime, SmartyWif
   char* composedClientId = (char*) malloc(21 + 1);
   sprintf(composedClientId, "smarty-esp8266-%06x", ESP.getChipId());
   _clientId = composedClientId;
+
+  char* composedBaseTopic = (char*) malloc(21 + 1);
+  sprintf(composedBaseTopic, "smarty/esp8266-%06x", ESP.getChipId());
+  _baseTopic = composedBaseTopic;
 }
 
 void SmartyMqtt::setHost(const char* host) {
@@ -26,8 +30,9 @@ void SmartyMqtt::setClientId(const char* clientId) {
   _clientId = clientId;
 }
 
-void SmartyMqtt::setSystemTopic(const char* systemTopic) {
-  _systemTopic = systemTopic;
+void SmartyMqtt::setBaseTopic(const char* topic) {
+  free((void*) _baseTopic);
+  _baseTopic = topic;
 }
 
 void SmartyMqtt::setup() {
@@ -65,7 +70,7 @@ void SmartyMqtt::_connect() {
   if (!_pubSubClient.connected()) {
     Serial << "(Re-)Connecting to MQTT broker: ";
 
-    if (_pubSubClient.connect(_clientId, _systemTopic, 0, false, "{\"message\":\"good bye\"}")) {
+    if (_pubSubClient.connect(_clientId, _baseTopic, 0, false, "{\"message\":\"good bye\"}")) {
       Serial << "Done" << endl;
       Serial << "MQTT Broker: " << _host << ":" << _port << endl;
       Serial << "MQTT Client ID: " << _clientId << endl;
@@ -77,7 +82,7 @@ void SmartyMqtt::_connect() {
     for (SmartyMqttSubscription* subscription : *SmartyMqttSubscription::getList()) {
       _pubSubClient.subscribe(subscription->getTopic());
     }
-    _publish(_systemTopic, "{\"message\":\"hello world\"}");
+    _publish(_baseTopic, "{\"message\":\"hello world\"}");
   }
 }
 
@@ -108,7 +113,12 @@ void SmartyMqtt::_publishSystem() {
   wifi["ip"] = _wifi.getIpAddress();
   wifi["hostname"] = _wifi.getHostName();
 
-  _publishJson(_systemTopic, root);
+  const char suffix[] = "/system";
+  char systemTopic[strlen(_baseTopic) + strlen(suffix) + 1];
+  strcpy(systemTopic, _baseTopic);
+  strcat(systemTopic, suffix);
+
+  _publishJson(systemTopic, root);
 }
 
 void SmartyMqtt::_publishJson(const char* topic, JsonObject& json) {

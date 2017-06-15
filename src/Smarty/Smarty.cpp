@@ -70,8 +70,8 @@ void Smarty::setup() {
   if (_config.getMqttClientId()[0]) {
     _mqtt.setClientId(_config.getMqttClientId());
   }
-  if (_config.getMqttSystemTopic()[0]) {
-    _mqtt.setSystemTopic(_config.getMqttSystemTopic());
+  if (_config.getMqttBaseTopic()[0]) {
+    _mqtt.setBaseTopic(_config.getMqttBaseTopic());
   }
   _mqtt.setup();
   Serial << "Done" << endl;

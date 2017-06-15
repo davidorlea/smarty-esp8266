@@ -21,7 +21,7 @@ public:
   void setHost(const char*);
   void setPort(const uint16_t);
   void setClientId(const char*);
-  void setSystemTopic(const char*);
+  void setBaseTopic(const char*);
   void setup();
   void loop();
 private:
@@ -33,7 +33,7 @@ private:
   const char* _host = nullptr;
   uint16_t _port = 1883;
   const char* _clientId = nullptr;
-  const char* _systemTopic = nullptr;
+  const char* _baseTopic = nullptr;
   unsigned long _lastConnectionAttempt;
   unsigned long _lastStatusPublish;
   void _connect();

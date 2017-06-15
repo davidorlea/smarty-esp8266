@@ -48,9 +48,9 @@ void SmartyConfig::setup() {
   if (jsonMqttClientId) {
     strlcpy(_mqttClientId, jsonMqttClientId, SMARTY_CONFIG_MAX_MQTT_CLIENT_ID_LENGTH);
   }
-  const char* jsonMqttSystemTopic = json["mqtt"]["systemTopic"];
-  if (jsonMqttSystemTopic) {
-    strlcpy(_mqttSystemTopic, jsonMqttSystemTopic, SMARTY_CONFIG_MAX_MQTT_SYSTEM_TOPIC_LENGTH);
+  const char* jsonMqttBaseTopic = json["mqtt"]["baseTopic"];
+  if (jsonMqttBaseTopic) {
+    strlcpy(_mqttBaseTopic, jsonMqttBaseTopic, SMARTY_CONFIG_MAX_MQTT_BASE_TOPIC_LENGTH);
   }
 
   SPIFFS.end();
@@ -76,6 +76,6 @@ const char* SmartyConfig::getMqttClientId() const {
   return _mqttClientId;
 }
 
-const char* SmartyConfig::getMqttSystemTopic() const {
-  return _mqttSystemTopic;
+const char* SmartyConfig::getMqttBaseTopic() const {
+  return _mqttBaseTopic;
 }
