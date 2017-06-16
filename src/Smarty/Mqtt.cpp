@@ -57,8 +57,6 @@ void SmartyMqtt::loop() {
     _lastConnectionAttempt = now;
     _connect();
   }
-  _pubSubClient.loop();
-
   if (_pubSubClient.connected()) {
     if (_lastStatusPublish == 0 || now - _lastStatusPublish >= MQTT_STATUS_INTERVAL) {
       _lastStatusPublish = now;
@@ -71,6 +69,7 @@ void SmartyMqtt::loop() {
       }
     }
   }
+  _pubSubClient.loop();
 }
 
 void SmartyMqtt::_addCustomPublication(SmartyAbstractActuator* actuator) {
