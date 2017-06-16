@@ -28,12 +28,13 @@ bool SmartyMqttSubscription::isValidTopic(const char *topic) {
   return true;
 }
 
-SmartyMqttSubscription::SmartyMqttSubscription(const char* topic)
-: _topic(topic) {
+SmartyMqttSubscription::SmartyMqttSubscription(const char* topic) {
   if (!SmartyMqttSubscription::isValidTopic(topic)) {
     Serial << "ERROR: Invalid MQTT subscription topic!" << endl;
     abort();
   }
+  _topic = strcpy(new char[strlen(topic) + 1], topic);
+
   if (_list == nullptr) {
     _list = new std::vector<SmartyMqttSubscription*>();
   }
@@ -43,6 +44,7 @@ SmartyMqttSubscription::SmartyMqttSubscription(const char* topic)
 
 SmartyMqttSubscription::~SmartyMqttSubscription() {
   _list->erase(_list->begin() + _listIndex);
+  delete _topic;
 }
 
 const char* SmartyMqttSubscription::getTopic() {
