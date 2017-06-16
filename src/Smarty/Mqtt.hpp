@@ -9,6 +9,8 @@
 #include "Firmware.hpp"
 #include "MqttPublication.hpp"
 #include "MqttSubscription.hpp"
+#include "Transducer/AbstractActuator.hpp"
+#include "Transducer/AbstractSensor.hpp"
 #include "Uptime.hpp"
 #include "Wifi.hpp"
 
@@ -36,6 +38,9 @@ private:
   const char* _baseTopic = nullptr;
   unsigned long _lastConnectionAttempt;
   unsigned long _lastStatusPublish;
+  void _addCustomPublication(SmartyAbstractActuator* actuator);
+  void _addCustomPublication(SmartyAbstractSensor* sensor);
+  void _addCustomSubscription(SmartyAbstractActuator* actuator);
   void _connect();
   void _callback(char*, byte*, unsigned int);
   void _publishSystem();

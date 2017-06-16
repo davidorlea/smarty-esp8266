@@ -40,6 +40,13 @@ void SmartyMqtt::setup() {
   _pubSubClient.setCallback([this](char* topic, byte* payload, unsigned int length) {
     return _callback(topic, payload,length);
   });
+  for (SmartyAbstractActuator* actuator : *SmartyAbstractActuator::getList()) {
+    _addCustomPublication(actuator);
+    _addCustomSubscription(actuator);
+  }
+  for (SmartyAbstractSensor* sensor : *SmartyAbstractSensor::getList()) {
+    _addCustomPublication(sensor);
+  }
 }
 
 void SmartyMqtt::loop() {
@@ -64,6 +71,59 @@ void SmartyMqtt::loop() {
       }
     }
   }
+}
+
+void SmartyMqtt::_addCustomPublication(SmartyAbstractActuator* actuator) {
+  char topic[strlen(_baseTopic) + 1 + strlen(actuator->getName()) + 1];
+  strcpy(topic, _baseTopic);
+  strcat(topic, "/");
+  strcat(topic, actuator->getName());
+
+  // FIXME: Memory leak
+  SmartyMqttPublication* publication = new SmartyMqttPublication(topic);
+  actuator->addActivateCallback([publication](bool changed) {
+      publication->setMessage("1");
+      publication->ready();
+  });
+  actuator->addDeactivateCallback([publication](bool changed) {
+      publication->setMessage("0");
+      publication->ready();
+  });
+
+};
+
+void SmartyMqtt::_addCustomPublication(SmartyAbstractSensor* sensor) {
+  char topic[strlen(_baseTopic) + 1 + strlen(sensor->getName()) + 1];
+  strcpy(topic, _baseTopic);
+  strcat(topic, "/");
+  strcat(topic, sensor->getName());
+
+  // FIXME: Memory leak
+  SmartyMqttPublication* publication = new SmartyMqttPublication(topic);
+  sensor->addStateCallback([publication](uint8_t state) {
+      publication->setMessage("2");
+      publication->ready();
+  });
+};
+
+void SmartyMqtt::_addCustomSubscription(SmartyAbstractActuator* actuator) {
+  char topic[strlen(_baseTopic) + 1 + strlen(actuator->getName()) + 4 + 1];
+  strcpy(topic, _baseTopic);
+  strcat(topic, "/");
+  strcat(topic, actuator->getName());
+  strcat(topic, "/set");
+
+  // FIXME: Memory leak
+  SmartyMqttSubscription* subscription = new SmartyMqttSubscription(topic);
+  subscription->setCallback([actuator](const char* topic, const char* message) {
+    if (strcmp(message, "0") == 0) {
+      actuator->deactivate();
+    } else if (strcmp(message, "1") == 0) {
+      actuator->activate();
+    } else if (strcmp(message, "2") == 0) {
+      actuator->toggle();
+    }
+  });
 }
 
 void SmartyMqtt::_connect() {
