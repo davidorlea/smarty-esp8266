@@ -21,3 +21,7 @@ SmartyAbstractSensor::SmartyAbstractSensor(const char* name)
 SmartyAbstractSensor::~SmartyAbstractSensor() {
   _list->erase(_list->begin() + _listIndex);
 }
+
+void SmartyAbstractSensor::addStateCallback(SMARTY_SENSOR_CALLBACK_TYPE callback) {
+  _stateCallbacks.push_back(callback);
+}

@@ -8,7 +8,6 @@
 
 #define SMARTY_LED_BLINK_INTERVAL_SLOW 800
 #define SMARTY_LED_BLINK_INTERVAL_FAST 400
-#define SMARTY_LED_CALLBACK_TYPE std::function<void (bool ledChanged)>
 
 class SmartyLed : virtual public SmartyAbstractActuator {
 public:
@@ -21,8 +20,6 @@ public:
     FAST = 1
   };
   SmartyLed(const char*, const uint8_t, const State);
-  void setActivateCallback(SMARTY_LED_CALLBACK_TYPE);
-  void setDeactivateCallback(SMARTY_LED_CALLBACK_TYPE);
   bool setup();
   bool loop();
   bool activate();
@@ -38,7 +35,5 @@ private:
   State _virtualState;
   BlinkRate _blinkRate;
   unsigned long _lastBlinkTime;
-  SMARTY_LED_CALLBACK_TYPE _activateCallback;
-  SMARTY_LED_CALLBACK_TYPE _deactivateCallback;
   bool _isBlinking();
 };

@@ -33,32 +33,32 @@ void setup() {
   smarty.setFirmwareName("Smarty Home Automation");
   smarty.setFirmwareVersion("0.1.0");
 
-  button1.setCallback([](uint8_t buttonState) {
+  button1.addStateCallback([](uint8_t state) {
     Serial << button1.getName() << F(" pushed") << endl;
     mqttButtonPub.setMessage("2");
     mqttButtonPub.ready();
     relay1.toggle();
   });
-  led1.setActivateCallback([](bool change) {
-    if (change) {
+  led1.addActivateCallback([](bool changed) {
+    if (changed) {
       Serial << led1.getName() << F(" activated") << endl;
     }
   });
-  led1.setDeactivateCallback([](bool change) {
-    if (change) {
+  led1.addDeactivateCallback([](bool changed) {
+    if (changed) {
       Serial << led1.getName() << F(" deactivated") << endl;
     }
   });
-  relay1.setActivateCallback([](bool change) {
-    if (change) {
+  relay1.addActivateCallback([](bool changed) {
+    if (changed) {
       Serial << relay1.getName() << F(" activated") << endl;
     }
     mqttPowerPub.setMessage("1");
     mqttPowerPub.ready();
     led1.activate();
   });
-  relay1.setDeactivateCallback([](bool change) {
-    if (change) {
+  relay1.addDeactivateCallback([](bool changed) {
+    if (changed) {
       Serial << relay1.getName() << F(" deactivated") << endl;
     }
     mqttPowerPub.setMessage("0");

@@ -21,3 +21,11 @@ SmartyAbstractActuator::SmartyAbstractActuator(const char* name)
 SmartyAbstractActuator::~SmartyAbstractActuator() {
   _list->erase(_list->begin() + _listIndex);
 }
+
+void SmartyAbstractActuator::addActivateCallback(SMARTY_ACTUATOR_CALLBACK_TYPE callback) {
+  _activateCallbacks.push_back(callback);
+}
+
+void SmartyAbstractActuator::addDeactivateCallback(SMARTY_ACTUATOR_CALLBACK_TYPE callback) {
+  _deactivateCallbacks.push_back(callback);
+}
