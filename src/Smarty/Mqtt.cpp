@@ -36,10 +36,6 @@ void SmartyMqtt::setBaseTopic(const char* topic) {
 }
 
 void SmartyMqtt::setup() {
-  _pubSubClient.setServer(_host, _port);
-  _pubSubClient.setCallback([this](char* topic, byte* payload, unsigned int length) {
-    return _callback(topic, payload,length);
-  });
   for (SmartyAbstractActuator* actuator : *SmartyAbstractActuator::getList()) {
     _addCustomPublication(actuator);
     _addCustomSubscription(actuator);
@@ -47,6 +43,10 @@ void SmartyMqtt::setup() {
   for (SmartyAbstractSensor* sensor : *SmartyAbstractSensor::getList()) {
     _addCustomPublication(sensor);
   }
+  _pubSubClient.setServer(_host, _port);
+  _pubSubClient.setCallback([this](char* topic, byte* payload, unsigned int length) {
+      return _callback(topic, payload,length);
+  });
 }
 
 void SmartyMqtt::loop() {
@@ -88,7 +88,6 @@ void SmartyMqtt::_addCustomPublication(SmartyAbstractActuator* actuator) {
       publication->setMessage("0");
       publication->ready();
   });
-
 };
 
 void SmartyMqtt::_addCustomPublication(SmartyAbstractSensor* sensor) {
