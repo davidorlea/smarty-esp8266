@@ -53,12 +53,12 @@ void SmartyMqtt::loop() {
   unsigned long now = millis();
 
   if (!_pubSubClient.connected()
-      && (_lastConnectionAttempt == 0 || now - _lastConnectionAttempt >= MQTT_RECONNECT_INTERVAL)) {
+      && (_lastConnectionAttempt == 0 || now - _lastConnectionAttempt >= SMARTY_MQTT_RECONNECT_INTERVAL)) {
     _lastConnectionAttempt = now;
     _connect();
   }
   if (_pubSubClient.connected()) {
-    if (_lastStatusPublish == 0 || now - _lastStatusPublish >= MQTT_STATUS_INTERVAL) {
+    if (_lastStatusPublish == 0 || now - _lastStatusPublish >= SMARTY_MQTT_STATUS_INTERVAL) {
       _lastStatusPublish = now;
       _publishSystem();
     }
