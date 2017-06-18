@@ -20,6 +20,7 @@
 class SmartyMqtt {
 public:
   SmartyMqtt(SmartyFirmware&, SmartyUptime&, SmartyWifi&);
+  ~SmartyMqtt();
   void setHost(const char*);
   void setPort(const uint16_t);
   void setClientId(const char*);
@@ -38,6 +39,8 @@ private:
   const char* _baseTopic = nullptr;
   unsigned long _lastConnectionAttempt;
   unsigned long _lastStatusPublish;
+  std::vector<SmartyMqttPublication*> _publications;
+  std::vector<SmartyMqttSubscription*> _subscriptions;
   void _addCustomPublication(SmartyAbstractActuator* actuator);
   void _addCustomPublication(SmartyAbstractSensor* sensor);
   void _addCustomSubscription(SmartyAbstractActuator* actuator);

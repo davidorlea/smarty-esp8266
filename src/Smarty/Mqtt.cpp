@@ -17,6 +17,15 @@ SmartyMqtt::SmartyMqtt(SmartyFirmware& firmware, SmartyUptime& uptime, SmartyWif
   _baseTopic = composedBaseTopic;
 }
 
+SmartyMqtt::~SmartyMqtt() {
+  for (SmartyMqttPublication* publication: _publications) {
+    delete publication;
+  }
+  for (SmartyMqttSubscription* subscription: _subscriptions) {
+    delete subscription;
+  }
+}
+
 void SmartyMqtt::setHost(const char* host) {
   _host = host;
 }
@@ -78,7 +87,6 @@ void SmartyMqtt::_addCustomPublication(SmartyAbstractActuator* actuator) {
   strcat(topic, "/");
   strcat(topic, actuator->getName());
 
-  // FIXME: Memory leak
   SmartyMqttPublication* publication = new SmartyMqttPublication(topic);
   actuator->addActivateCallback([publication](bool changed) {
       publication->setMessage("1");
@@ -88,6 +96,8 @@ void SmartyMqtt::_addCustomPublication(SmartyAbstractActuator* actuator) {
       publication->setMessage("0");
       publication->ready();
   });
+
+  _publications.push_back(publication);
 };
 
 void SmartyMqtt::_addCustomPublication(SmartyAbstractSensor* sensor) {
@@ -96,12 +106,13 @@ void SmartyMqtt::_addCustomPublication(SmartyAbstractSensor* sensor) {
   strcat(topic, "/");
   strcat(topic, sensor->getName());
 
-  // FIXME: Memory leak
   SmartyMqttPublication* publication = new SmartyMqttPublication(topic);
   sensor->addStateCallback([publication](uint8_t state) {
       publication->setMessage("2");
       publication->ready();
   });
+
+  _publications.push_back(publication);
 };
 
 void SmartyMqtt::_addCustomSubscription(SmartyAbstractActuator* actuator) {
@@ -111,7 +122,6 @@ void SmartyMqtt::_addCustomSubscription(SmartyAbstractActuator* actuator) {
   strcat(topic, actuator->getName());
   strcat(topic, "/set");
 
-  // FIXME: Memory leak
   SmartyMqttSubscription* subscription = new SmartyMqttSubscription(topic);
   subscription->setCallback([actuator](const char* topic, const char* message) {
     if (strcmp(message, "0") == 0) {
@@ -122,6 +132,8 @@ void SmartyMqtt::_addCustomSubscription(SmartyAbstractActuator* actuator) {
       actuator->toggle();
     }
   });
+
+  _subscriptions.push_back(subscription);
 }
 
 void SmartyMqtt::_connect() {
