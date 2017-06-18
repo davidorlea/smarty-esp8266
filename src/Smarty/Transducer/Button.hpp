@@ -7,7 +7,6 @@
 #include "AbstractSensor.hpp"
 
 #define SMARTY_BUTTON_DEBOUNCE_DELAY 50
-#define SMARTY_BUTTON_CALLBACK_TYPE std::function<void (uint8_t buttonState)>
 
 class SmartyButton : public SmartyAbstractSensor {
 public:
@@ -16,7 +15,6 @@ public:
     SWITCH = 1
   };
   SmartyButton(const char*, const uint8_t, const Mode);
-  void setCallback(SMARTY_BUTTON_CALLBACK_TYPE);
   bool setup();
   bool loop();
   uint8_t state();
@@ -26,5 +24,4 @@ private:
   uint8_t _lastButtonState;
   unsigned long _debounceDelay;
   unsigned long _lastDebounceTime;
-  SMARTY_BUTTON_CALLBACK_TYPE _callback;
 };

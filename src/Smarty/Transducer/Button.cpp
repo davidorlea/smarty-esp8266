@@ -6,12 +6,7 @@ SmartyButton::SmartyButton(const char* name, const uint8_t port, const Mode mode
 , _mode(mode)
 , _lastButtonState(HIGH)
 , _debounceDelay(SMARTY_BUTTON_DEBOUNCE_DELAY)
-, _lastDebounceTime(0)
-, _callback(nullptr) {
-}
-
-void SmartyButton::setCallback(SMARTY_BUTTON_CALLBACK_TYPE callback) {
-  _callback = callback;
+, _lastDebounceTime(0) {
 }
 
 bool SmartyButton::setup() {
@@ -24,8 +19,8 @@ bool SmartyButton::loop() {
   if (currentButtonState != _lastButtonState) {
     unsigned long now = millis();
     if ((now - _lastDebounceTime) > _debounceDelay) {
-      if (_callback != nullptr) {
-        _callback(currentButtonState);
+      for (SMARTY_SENSOR_CALLBACK_TYPE callback: _stateCallbacks) {
+        callback(currentButtonState);
       }
       if (_mode == Mode::SWITCH) {
           _lastButtonState = currentButtonState;

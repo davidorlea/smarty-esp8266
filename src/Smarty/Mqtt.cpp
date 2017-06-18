@@ -17,6 +17,15 @@ SmartyMqtt::SmartyMqtt(SmartyFirmware& firmware, SmartyUptime& uptime, SmartyWif
   _baseTopic = composedBaseTopic;
 }
 
+SmartyMqtt::~SmartyMqtt() {
+  for (SmartyMqttPublication* publication: _publications) {
+    delete publication;
+  }
+  for (SmartyMqttSubscription* subscription: _subscriptions) {
+    delete subscription;
+  }
+}
+
 void SmartyMqtt::setHost(const char* host) {
   _host = host;
 }
@@ -36,9 +45,16 @@ void SmartyMqtt::setBaseTopic(const char* topic) {
 }
 
 void SmartyMqtt::setup() {
+  for (SmartyAbstractActuator* actuator : *SmartyAbstractActuator::getList()) {
+    _addCustomPublication(actuator);
+    _addCustomSubscription(actuator);
+  }
+  for (SmartyAbstractSensor* sensor : *SmartyAbstractSensor::getList()) {
+    _addCustomPublication(sensor);
+  }
   _pubSubClient.setServer(_host, _port);
   _pubSubClient.setCallback([this](char* topic, byte* payload, unsigned int length) {
-    return _callback(topic, payload,length);
+      return _callback(topic, payload,length);
   });
 }
 
@@ -46,14 +62,12 @@ void SmartyMqtt::loop() {
   unsigned long now = millis();
 
   if (!_pubSubClient.connected()
-      && (_lastConnectionAttempt == 0 || now - _lastConnectionAttempt >= MQTT_RECONNECT_INTERVAL)) {
+      && (_lastConnectionAttempt == 0 || now - _lastConnectionAttempt >= SMARTY_MQTT_RECONNECT_INTERVAL)) {
     _lastConnectionAttempt = now;
     _connect();
   }
-  _pubSubClient.loop();
-
   if (_pubSubClient.connected()) {
-    if (_lastStatusPublish == 0 || now - _lastStatusPublish >= MQTT_STATUS_INTERVAL) {
+    if (_lastStatusPublish == 0 || now - _lastStatusPublish >= SMARTY_MQTT_STATUS_INTERVAL) {
       _lastStatusPublish = now;
       _publishSystem();
     }
@@ -64,6 +78,62 @@ void SmartyMqtt::loop() {
       }
     }
   }
+  _pubSubClient.loop();
+}
+
+void SmartyMqtt::_addCustomPublication(SmartyAbstractActuator* actuator) {
+  char topic[strlen(_baseTopic) + 1 + strlen(actuator->getName()) + 1];
+  strcpy(topic, _baseTopic);
+  strcat(topic, "/");
+  strcat(topic, actuator->getName());
+
+  SmartyMqttPublication* publication = new SmartyMqttPublication(topic);
+  actuator->addActivateCallback([publication](bool changed) {
+      publication->setMessage("1");
+      publication->ready();
+  });
+  actuator->addDeactivateCallback([publication](bool changed) {
+      publication->setMessage("0");
+      publication->ready();
+  });
+
+  _publications.push_back(publication);
+};
+
+void SmartyMqtt::_addCustomPublication(SmartyAbstractSensor* sensor) {
+  char topic[strlen(_baseTopic) + 1 + strlen(sensor->getName()) + 1];
+  strcpy(topic, _baseTopic);
+  strcat(topic, "/");
+  strcat(topic, sensor->getName());
+
+  SmartyMqttPublication* publication = new SmartyMqttPublication(topic);
+  sensor->addStateCallback([publication](uint8_t state) {
+      publication->setMessage("2");
+      publication->ready();
+  });
+
+  _publications.push_back(publication);
+};
+
+void SmartyMqtt::_addCustomSubscription(SmartyAbstractActuator* actuator) {
+  char topic[strlen(_baseTopic) + 1 + strlen(actuator->getName()) + 4 + 1];
+  strcpy(topic, _baseTopic);
+  strcat(topic, "/");
+  strcat(topic, actuator->getName());
+  strcat(topic, "/set");
+
+  SmartyMqttSubscription* subscription = new SmartyMqttSubscription(topic);
+  subscription->setCallback([actuator](const char* topic, const char* message) {
+    if (strcmp(message, "0") == 0) {
+      actuator->deactivate();
+    } else if (strcmp(message, "1") == 0) {
+      actuator->activate();
+    } else if (strcmp(message, "2") == 0) {
+      actuator->toggle();
+    }
+  });
+
+  _subscriptions.push_back(subscription);
 }
 
 void SmartyMqtt::_connect() {

@@ -3,17 +3,7 @@
 SmartyRelay::SmartyRelay(const char* name, const uint8_t port, const State state)
 : SmartyAbstractActuator(name)
 , _port(port)
-, _restState(state)
-, _activateCallback(nullptr)
-, _deactivateCallback(nullptr) {
-}
-
-void SmartyRelay::setActivateCallback(SMARTY_RELAY_CALLBACK_TYPE callback) {
-  _activateCallback = callback;
-}
-
-void SmartyRelay::setDeactivateCallback(SMARTY_RELAY_CALLBACK_TYPE callback) {
-  _deactivateCallback = callback;
+, _restState(state) {
 }
 
 bool SmartyRelay::setup() {
@@ -30,8 +20,8 @@ bool SmartyRelay::activate() {
   uint8_t oldState = state();
   uint8_t newState = (uint8_t) State::ON;
   digitalWrite(_port, newState);
-  if (_activateCallback != nullptr) {
-    _activateCallback(oldState != newState);
+  for (SMARTY_ACTUATOR_CALLBACK_TYPE callback: _activateCallbacks) {
+    callback(oldState != newState);
   }
   return true;
 }
@@ -40,8 +30,8 @@ bool SmartyRelay::deactivate() {
   uint8_t oldState = state();
   uint8_t newState = (uint8_t) State::OFF;
   digitalWrite(_port, newState);
-  if (_deactivateCallback != nullptr) {
-    _deactivateCallback(oldState != newState);
+  for (SMARTY_ACTUATOR_CALLBACK_TYPE callback: _deactivateCallbacks) {
+    callback(oldState != newState);
   }
   return true;
 }

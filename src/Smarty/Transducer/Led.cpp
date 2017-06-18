@@ -5,17 +5,7 @@ SmartyLed::SmartyLed(const char* name, const uint8_t port, const State state)
 , _port(port)
 , _restState(state)
 , _virtualState(state)
-, _lastBlinkTime(0)
-, _activateCallback(nullptr)
-, _deactivateCallback(nullptr) {
-}
-
-void SmartyLed::setActivateCallback(SMARTY_LED_CALLBACK_TYPE callback) {
-  _activateCallback = callback;
-}
-
-void SmartyLed::setDeactivateCallback(SMARTY_LED_CALLBACK_TYPE callback) {
-  _deactivateCallback = callback;
+, _lastBlinkTime(0) {
 }
 
 bool SmartyLed::setup() {
@@ -46,8 +36,8 @@ bool SmartyLed::activate() {
   uint8_t oldState = state();
   uint8_t newState = (uint8_t) State::ON;
   digitalWrite(_port, newState);
-  if (_activateCallback != nullptr) {
-    _activateCallback(oldState != newState);
+  for (SMARTY_ACTUATOR_CALLBACK_TYPE callback: _activateCallbacks) {
+    callback(oldState != newState);
   }
   return true;
 }
@@ -60,8 +50,8 @@ bool SmartyLed::deactivate() {
   uint8_t oldState = state();
   uint8_t newState = (uint8_t) State::OFF;
   digitalWrite(_port, newState);
-  if (_deactivateCallback != nullptr) {
-    _deactivateCallback(oldState != newState);
+  for (SMARTY_ACTUATOR_CALLBACK_TYPE callback: _deactivateCallbacks) {
+    callback(oldState != newState);
   }
   return true;
 }
