@@ -6,7 +6,7 @@
 #include <Arduino.h>
 #include "AbstractSensor.hpp"
 
-#define SMARTY_BUTTON_DEBOUNCE_DELAY 50
+#define SMARTY_BUTTON_DEBOUNCE_DELAY 150
 
 class SmartyButton : public SmartyAbstractSensor {
 public:
