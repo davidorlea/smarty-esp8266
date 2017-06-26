@@ -10,6 +10,10 @@
 
 class SmartyButton : public SmartyAbstractSensor {
 public:
+  enum class State : uint8_t {
+    ON = LOW,
+    OFF = HIGH
+  };
   enum class Mode : uint8_t {
     PUSH = 0,
     SWITCH = 1
