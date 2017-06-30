@@ -23,6 +23,8 @@ public:
   ~SmartyMqtt();
   void setHost(const char*);
   void setPort(const uint16_t);
+  void setUsername(const char*);
+  void setPassword(const char*);
   void setClientId(const char*);
   void setBaseTopic(const char*);
   void setup();
@@ -35,6 +37,8 @@ private:
   SmartyWifi& _wifi;
   const char* _host = nullptr;
   uint16_t _port = 1883;
+  const char* _username = nullptr;
+  const char* _password = nullptr;
   const char* _clientId = nullptr;
   const char* _baseTopic = nullptr;
   unsigned long _lastConnectionAttempt;

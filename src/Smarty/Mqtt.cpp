@@ -34,6 +34,14 @@ void SmartyMqtt::setPort(const uint16_t port) {
   _port = port;
 }
 
+void SmartyMqtt::setUsername(const char* username) {
+  _username = username;
+}
+
+void SmartyMqtt::setPassword(const char* password) {
+  _password = password;
+}
+
 void SmartyMqtt::setClientId(const char* clientId) {
   free((void*) _clientId);
   _clientId = clientId;
@@ -138,14 +146,22 @@ void SmartyMqtt::_addCustomSubscription(SmartyAbstractActuator* actuator) {
 
 void SmartyMqtt::_connect() {
   if (!_pubSubClient.connected()) {
-    Serial << "(Re-)Connecting to MQTT broker: ";
+    Serial << "(Re-)Connecting to MQTT broker ..." << endl;
+    Serial << "MQTT Broker: " << _host << ":" << _port << endl;
+    Serial << "MQTT Client ID: " << _clientId << endl;
+    Serial << "MQTT Username: " << ((_username) ? _username : "n/a") << endl;
+    Serial << "MQTT Password: " << ((_password) ? _password : "n/a") << endl;
 
-    if (_pubSubClient.connect(_clientId, _baseTopic, 0, false, "{\"message\":\"good bye\"}")) {
-      Serial << "Done" << endl;
-      Serial << "MQTT Broker: " << _host << ":" << _port << endl;
-      Serial << "MQTT Client ID: " << _clientId << endl;
+    if (_username && _password) {
+      _pubSubClient.connect(_clientId, _username, _password, _baseTopic, 0, false, "{\"message\":\"good bye\"}");
     } else {
-      Serial << "Failed (" << _pubSubClient.state() << ")" << endl;
+      _pubSubClient.connect(_clientId, _baseTopic, 0, false, "{\"message\":\"good bye\"}");
+    }
+
+    if (_pubSubClient.connected()) {
+      Serial << "... successfully (re-)connected to MQTT broker" << endl;
+    } else {
+      Serial << "... failed (re-)connecting to MQTT broker (" << _pubSubClient.state() << ")" << endl;
       return;
     }
 

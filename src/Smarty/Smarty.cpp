@@ -67,6 +67,12 @@ void Smarty::setup() {
   if (_config.getMqttPort()) {
     _mqtt.setPort(_config.getMqttPort());
   }
+  if (_config.getMqttUsername()[0]) {
+    _mqtt.setUsername(_config.getMqttUsername());
+  }
+  if (_config.getMqttPassword()[0]) {
+    _mqtt.setPassword(_config.getMqttPassword());
+  }
   if (_config.getMqttClientId()[0]) {
     _mqtt.setClientId(_config.getMqttClientId());
   }

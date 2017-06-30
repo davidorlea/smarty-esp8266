@@ -44,6 +44,14 @@ void SmartyConfig::setup() {
   if (jsonMqttPort) {
     _mqttPort = jsonMqttPort;
   }
+  const char* jsonMqttUsername = json["mqtt"]["username"];
+  if (jsonMqttUsername) {
+    strlcpy(_mqttUsername, jsonMqttUsername, SMARTY_CONFIG_MAX_MQTT_USERNAME_LENGTH);
+  }
+  const char* jsonMqttPassword = json["mqtt"]["password"];
+  if (jsonMqttPassword) {
+    strlcpy(_mqttPassword, jsonMqttPassword, SMARTY_CONFIG_MAX_MQTT_PASSWORD_LENGTH);
+  }
   const char* jsonMqttClientId = json["mqtt"]["clientId"];
   if (jsonMqttClientId) {
     strlcpy(_mqttClientId, jsonMqttClientId, SMARTY_CONFIG_MAX_MQTT_CLIENT_ID_LENGTH);
@@ -70,6 +78,14 @@ const char* SmartyConfig::getMqttHost() const {
 
 uint16_t SmartyConfig::getMqttPort() const {
   return _mqttPort;
+}
+
+const char* SmartyConfig::getMqttUsername() const {
+  return _mqttUsername;
+}
+
+const char* SmartyConfig::getMqttPassword() const {
+  return _mqttPassword;
 }
 
 const char* SmartyConfig::getMqttClientId() const {

@@ -6,7 +6,9 @@
   "mqtt": {
     "host": "test.mosquitto.org",
     "port": 1883,
-    "clientId": "smarty-esp8266-1",
-    "baseTopic": "smarty/demo/esp8266-1"
+    "username": "my_username",
+    "password": "my_password",
+    "clientId": "my_client_id",
+    "baseTopic": "my/base/topic"
   }
 }
