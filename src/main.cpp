@@ -1,16 +1,20 @@
 #include <Arduino.h>
 #include "Smarty/Smarty.hpp"
 
-Smarty smarty;
-
 // Configuration for custom board
-// BUTTON1_PIN 12
-// RELAY1_PIN 2
+//#define BUTTON1_PIN 14
+//#define LED1_PIN 2
+//#define RELAY1_PIN 16
 
-// Configuration for Sonoff board
-SmartyButton button1("button1", 0, SmartyButton::Mode::PUSH);
-SmartyLed led1("led1", 13, SmartyLed::State::OFF);
-SmartyRelay relay1("relay1", 12, SmartyRelay::State::OFF);
+// Configuration for Sonoff (Basic, Smart Socket, ...)
+#define BUTTON1_PIN 0
+#define LED1_PIN 13
+#define RELAY1_PIN 12
+
+Smarty smarty;
+SmartyButton button1("button1", BUTTON1_PIN, SmartyButton::Mode::PUSH);
+SmartyLed led1("led1", LED1_PIN, SmartyLed::State::OFF);
+SmartyRelay relay1("relay1", RELAY1_PIN, SmartyRelay::State::OFF);
 
 // Demo
 SmartyMqttPublication mqttDemoPub("smarty/demo/esp8266-1/demo/pub");
