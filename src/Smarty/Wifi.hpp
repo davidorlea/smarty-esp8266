@@ -24,8 +24,9 @@ private:
   const char* _password = nullptr;
   bool _isWaitingForConnection = false;
   bool _connect();
-  void _clearDefaults();
-  void _printDebugData();
+  void _clearDefaultSettings();
+  void _clearCurrentSettings();
+  void _printCurrentAndDefaultSettings();
   void _printNetworkData();
   bool _isConnected();
 };

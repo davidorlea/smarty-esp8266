@@ -25,9 +25,8 @@ String SmartyWifi::getHostName() {
 }
 
 void SmartyWifi::setup() {
-  // _clearDefaults();
-  WiFi.disconnect();
-  WiFi.softAPdisconnect();
+  _clearDefaultSettings();
+  _clearCurrentSettings();
 }
 
 bool SmartyWifi::loop() {
@@ -56,22 +55,29 @@ bool SmartyWifi::_connect() {
   }
 }
 
-void SmartyWifi::_clearDefaults() {
-  Serial << "Clearing default Wifi settings (saved in flash): ";
-
-  // Access default settings (saved in flash) - and not only current settings
+void SmartyWifi::_clearDefaultSettings() {
+  // Access default settings (saved in flash)
   WiFi.persistent(true);
-  // Set default (saved in flash) operating mode to none (OFF)
+  // Set default operating mode to none (OFF)
   WiFi.mode(WIFI_OFF);
-  // Clear default (saved in flash) station (STA) settings
+  // Clear default station (STA) settings (and do not touch default Wifi Mode)
   WiFi.disconnect(false);
-  // Clear default (saved in flash) access point (AP) settings
+  // Clear default access point (AP) settings (and do not touch default Wifi Mode)
   WiFi.softAPdisconnect(false);
-
-  Serial << "Done" << endl;
 }
 
-void SmartyWifi::_printDebugData() {
+void SmartyWifi::_clearCurrentSettings() {
+  // Access current settings (not saved in flash)
+  WiFi.persistent(false);
+  // Set current operating mode to none (OFF)
+  WiFi.mode(WIFI_OFF);
+  // Clear current station (STA) settings (and do not touch current Wifi Mode)
+  WiFi.disconnect(false);
+  // Clear current access point (AP) settings (and do not current touch Wifi Mode)
+  WiFi.softAPdisconnect(false);
+}
+
+void SmartyWifi::_printCurrentAndDefaultSettings() {
   struct station_config current_conf;
   struct station_config default_conf;
   wifi_station_get_config(&current_conf);
@@ -85,8 +91,6 @@ void SmartyWifi::_printDebugData() {
   Serial << "Wifi Station current password: " << *current_conf.password << endl;
   Serial << "Wifi Station default SSID (saved in flash): " << *default_conf.ssid << endl;
   Serial << "Wifi Station default password (saved in flash): " << *default_conf.password << endl;
-  // Serial << "Further Wifi Diagnostics: " << endl;
-  // WiFi.printDiag(Serial);
 }
 
 void SmartyWifi::_printNetworkData() {
