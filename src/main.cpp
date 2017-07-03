@@ -16,10 +16,6 @@ SmartyButton button1("button1", BUTTON1_PIN, SmartyButton::Mode::PUSH);
 SmartyLed led1("led1", LED1_PIN, SmartyLed::State::OFF);
 SmartyRelay relay1("relay1", RELAY1_PIN, SmartyRelay::State::OFF);
 
-// Demo
-SmartyMqttPublication mqttDemoPub("smarty/demo/esp8266-1/demo/pub");
-SmartyMqttSubscription mqttDemoSub("smarty/demo/esp8266-1/demo/sub");
-
 void waitForSerialMonitoring() {
   for (int i = 0; i < 5; i++) {
     Serial << ".";
@@ -64,10 +60,6 @@ void setup() {
       Serial << relay1.getName() << F(" deactivated") << endl;
     }
     led1.deactivate();
-  });
-  mqttDemoSub.setCallback([](const char *topic, const char *message) {
-    mqttDemoPub.setMessage("demo pub message");
-    mqttDemoPub.ready();
   });
 
   smarty.setup();
