@@ -61,11 +61,11 @@ void SmartyWifi::_clearDefaults() {
 
   // Access default settings (saved in flash) - and not only current settings
   WiFi.persistent(true);
-  // Set default operating mode to none (OFF)
+  // Set default (saved in flash) operating mode to none (OFF)
   WiFi.mode(WIFI_OFF);
-  // Clear default station (STA) settings
+  // Clear default (saved in flash) station (STA) settings
   WiFi.disconnect(false);
-  // Clear default access point (AP) settings
+  // Clear default (saved in flash) access point (AP) settings
   WiFi.softAPdisconnect(false);
 
   Serial << "Done" << endl;
