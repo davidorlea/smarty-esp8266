@@ -48,6 +48,23 @@ TEST(SmartyMqttPublicationTest, testThatConstructionFailsWithInvalidTopic) {
   EXPECT_DEATH({SmartyMqttPublication publication("an/invalid/+/topic");}, "");
 }
 
+TEST(SmartyMqttPublicationTest, testThatGetRetainInitiallyReturnsFalse) {
+  SmartyMqttPublication publication("a/valid/topic");
+
+  bool result = publication.getRetain();
+
+  EXPECT_FALSE(result);
+}
+
+TEST(SmartyMqttPublicationTest, testThatGetRetainReturnsTrueWhenSet) {
+  SmartyMqttPublication publication("a/valid/topic");
+  publication.setRetain(true);
+
+  bool result = publication.getRetain();
+
+  EXPECT_TRUE(result);
+}
+
 TEST(SmartyMqttPublicationTest, testThatIsReadyInitiallyReturnsFalse) {
   SmartyMqttPublication publication("a/valid/topic");
 

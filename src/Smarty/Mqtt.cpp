@@ -81,7 +81,7 @@ void SmartyMqtt::loop() {
     }
     for (SmartyMqttPublication* publication: *SmartyMqttPublication::getList()) {
       if (publication->isReady()) {
-        _publish(publication->getTopic(), publication->getMessage());
+        _publish(publication->getTopic(), publication->getMessage(), publication->getRetain());
         publication->ready(false);
       }
     }
@@ -207,16 +207,16 @@ void SmartyMqtt::_publishSystem() {
   _publishJson(systemTopic, root);
 }
 
-void SmartyMqtt::_publishJson(const char* topic, JsonObject& json) {
+void SmartyMqtt::_publishJson(const char* topic, JsonObject& json, bool retain) {
   size_t jsonLength = json.measureLength() + 1;
   char payload[jsonLength];
   json.printTo(payload, jsonLength);
 
-  _publish(topic, payload);
+  _publish(topic, payload, retain);
 }
 
-void SmartyMqtt::_publish(const char* topic, const char* payload) {
-  if (_pubSubClient.connected() && _pubSubClient.publish(topic, payload)) {
+void SmartyMqtt::_publish(const char* topic, const char* payload, bool retain) {
+  if (_pubSubClient.connected() && _pubSubClient.publish(topic, payload, retain)) {
     Serial << "Outgoing MQTT message [";
   } else {
     Serial << "Discarded outgoing MQTT message [";

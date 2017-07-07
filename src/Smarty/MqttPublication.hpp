@@ -13,6 +13,8 @@ public:
   const char* getTopic();
   void setMessage(const char*);
   const char* getMessage();
+  void setRetain(bool);
+  bool getRetain();
   void ready(bool = true);
   bool isReady();
 private:
@@ -20,5 +22,6 @@ private:
   std::vector<SmartyMqttPublication*>::size_type _listIndex;
   const char* _topic = nullptr;
   const char* _message = nullptr;
+  bool _retain = false;
   bool _ready = false;
 };

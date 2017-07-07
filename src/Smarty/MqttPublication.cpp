@@ -51,6 +51,14 @@ const char *SmartyMqttPublication::getMessage() {
   return _message;
 }
 
+bool SmartyMqttPublication::getRetain() {
+  return _retain;
+}
+
+void SmartyMqttPublication::setRetain(bool retain) {
+  _retain = retain;
+}
+
 void SmartyMqttPublication::ready(bool ready) {
   _ready = ready;
 }

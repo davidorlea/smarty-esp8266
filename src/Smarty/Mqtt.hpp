@@ -51,6 +51,6 @@ private:
   void _connect();
   void _callback(char*, byte*, unsigned int);
   void _publishSystem();
-  void _publishJson(const char*, JsonObject&);
-  void _publish(const char*, const char*);
+  void _publishJson(const char*, JsonObject&, bool = false);
+  void _publish(const char*, const char*, bool = false);
 };
