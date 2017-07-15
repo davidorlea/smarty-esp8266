@@ -29,6 +29,8 @@ public:
   void setBaseTopic(const char*);
   void setup();
   void loop();
+  void publishJson(const char*, JsonObject&, bool = false);
+  void publish(const char*, const char*, bool = false);
 private:
   WiFiClient _wifiClient;
   PubSubClient _pubSubClient;
@@ -51,6 +53,4 @@ private:
   void _connect();
   void _callback(char*, byte*, unsigned int);
   void _publishSystem();
-  void _publishJson(const char*, JsonObject&, bool = false);
-  void _publish(const char*, const char*, bool = false);
 };

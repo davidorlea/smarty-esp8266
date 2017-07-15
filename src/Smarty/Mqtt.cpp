@@ -81,7 +81,7 @@ void SmartyMqtt::loop() {
     }
     for (SmartyMqttPublication* publication: *SmartyMqttPublication::getList()) {
       if (publication->isReady()) {
-        _publish(publication->getTopic(), publication->getMessage(), publication->getRetain());
+        publish(publication->getTopic(), publication->getMessage(), publication->getRetain());
         publication->ready(false);
       }
     }
@@ -89,18 +89,40 @@ void SmartyMqtt::loop() {
   _pubSubClient.loop();
 }
 
+void SmartyMqtt::publishJson(const char* topic, JsonObject& json, bool retain) {
+  size_t jsonLength = json.measureLength() + 1;
+  char payload[jsonLength];
+  json.printTo(payload, jsonLength);
+
+  publish(topic, payload, retain);
+}
+
+void SmartyMqtt::publish(const char* topic, const char* payload, bool retain) {
+  char composedTopic[strlen(_baseTopic) + 1 + strlen(topic) + 1];
+  strcpy(composedTopic, _baseTopic);
+  strcat(composedTopic, "/");
+  strcat(composedTopic, topic);
+
+  if (_pubSubClient.connected() && _pubSubClient.publish(composedTopic, payload, retain)) {
+    Serial << "Outgoing MQTT message [";
+  } else {
+    Serial << "Discarded outgoing MQTT message [";
+  }
+  Serial << composedTopic << "]: " << payload << endl;
+}
+
 void SmartyMqtt::_addCustomPublication(SmartyAbstractActuator* actuator) {
   actuator->addActivateCallback([this, actuator](bool changed) {
-    _publish(actuator->getName(), "1");
+    publish(actuator->getName(), "1");
   });
   actuator->addDeactivateCallback([this, actuator](bool changed) {
-    _publish(actuator->getName(), "0");
+    publish(actuator->getName(), "0");
   });
 };
 
 void SmartyMqtt::_addCustomPublication(SmartyAbstractSensor* sensor) {
   sensor->addStateCallback([this, sensor](uint8_t state) {
-    _publish(sensor->getName(), "2");
+    publish(sensor->getName(), "2");
   });
 };
 
@@ -149,7 +171,7 @@ void SmartyMqtt::_connect() {
     for (SmartyMqttSubscription* subscription : *SmartyMqttSubscription::getList()) {
       _pubSubClient.subscribe(subscription->getTopic());
     }
-    _publish(_baseTopic, "{\"message\":\"hello world\"}");
+    publish(_baseTopic, "{\"message\":\"hello world\"}");
   }
 }
 
@@ -181,27 +203,6 @@ void SmartyMqtt::_publishSystem() {
   wifi["hostname"] = _wifi.getHostName();
 
   const char suffix[] = "/system";
-  _publishJson(suffix, root);
+  publishJson(suffix, root);
 }
 
-void SmartyMqtt::_publishJson(const char* topic, JsonObject& json, bool retain) {
-  size_t jsonLength = json.measureLength() + 1;
-  char payload[jsonLength];
-  json.printTo(payload, jsonLength);
-
-  _publish(topic, payload, retain);
-}
-
-void SmartyMqtt::_publish(const char* topic, const char* payload, bool retain) {
-  char composedTopic[strlen(_baseTopic) + 1 + strlen(topic) + 1];
-  strcpy(composedTopic, _baseTopic);
-  strcat(composedTopic, "/");
-  strcat(composedTopic, topic);
-
-  if (_pubSubClient.connected() && _pubSubClient.publish(composedTopic, payload, retain)) {
-    Serial << "Outgoing MQTT message [";
-  } else {
-    Serial << "Discarded outgoing MQTT message [";
-  }
-  Serial << composedTopic << "]: " << payload << endl;
-}
