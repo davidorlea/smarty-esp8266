@@ -21,6 +21,6 @@ private:
   std::vector<SmartyTimer*>::size_type _listIndex;
   uint32_t _interval;
   uint32_t _lastUpdate;
-  SMARTY_TIMER_CALLBACK_TYPE _callback;
-  SMARTY_TIMER_CONDITION_TYPE _condition;
+  SMARTY_TIMER_CALLBACK_TYPE _callback = nullptr;
+  SMARTY_TIMER_CONDITION_TYPE _condition = nullptr;
 };
