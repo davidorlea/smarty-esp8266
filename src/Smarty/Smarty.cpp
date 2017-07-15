@@ -7,7 +7,7 @@ Smarty::Smarty()
 , _wifi()
 , _ota()
 , _http(_firmware, _uptime, _wifi)
-, _mqtt(_firmware, _uptime, _wifi) {
+, _mqtt() {
 }
 
 Smarty::~Smarty() {
@@ -127,4 +127,23 @@ void Smarty::_initializeMqtt() {
         _mqtt.publish(sensor->getName(), "2");
     });
   }
+  SmartyTimer* timer = new SmartyTimer(SMARTY_MQTT_STATUS_INTERVAL);
+  timer->setCallback([this]() {
+      StaticJsonBuffer<JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(4) + 128> jsonBuffer;
+      JsonObject& root = jsonBuffer.createObject();
+      root["uptime"] = _uptime.getSeconds();
+      JsonObject& firmware = root.createNestedObject("firmware");
+      firmware["name"] = _firmware.name;
+      firmware["version"] = _firmware.version;
+      JsonObject& wifi = root.createNestedObject("wifi");
+      wifi["ssid"] = _wifi.getSSID();
+      wifi["rssi"] = _wifi.getRSSI();
+      wifi["ip"] = _wifi.getIpAddress();
+      wifi["hostname"] = _wifi.getHostName();
+
+      _mqtt.publishJson("/system", root);
+  });
+  timer->setCondition([this]() {
+     return _mqtt.isConnected();
+  });
 }

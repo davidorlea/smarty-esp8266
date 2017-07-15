@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Arduino.h>
+#include <ArduinoJson.h>
 #include <Streaming.h>
 #include "Config.hpp"
 #include "Firmware.hpp"

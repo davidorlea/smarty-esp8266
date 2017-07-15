@@ -1,13 +1,9 @@
 #include "Mqtt.hpp"
 
-SmartyMqtt::SmartyMqtt(SmartyFirmware& firmware, SmartyUptime& uptime, SmartyWifi& wifi)
+SmartyMqtt::SmartyMqtt()
 : _wifiClient()
 , _pubSubClient(_wifiClient)
-, _firmware(firmware)
-, _uptime(uptime)
-, _wifi(wifi)
-, _lastConnectionAttempt(0)
-, _lastStatusPublish(0) {
+, _lastConnectionAttempt(0) {
   char* composedClientId = (char*) malloc(21 + 1);
   sprintf(composedClientId, "smarty-esp8266-%06x", ESP.getChipId());
   _clientId = composedClientId;
@@ -68,10 +64,6 @@ void SmartyMqtt::loop() {
     _connect();
   }
   if (_pubSubClient.connected()) {
-    if (_lastStatusPublish == 0 || now - _lastStatusPublish >= SMARTY_MQTT_STATUS_INTERVAL) {
-      _lastStatusPublish = now;
-      _publishSystem();
-    }
     for (SmartyMqttPublication* publication: *SmartyMqttPublication::getList()) {
       if (publication->isReady()) {
         publish(publication->getTopic(), publication->getMessage(), publication->getRetain());
@@ -124,6 +116,10 @@ void SmartyMqtt::subscribe(const char* topic, SMARTY_MQTT_SUBSCRIPTION_CALLBACK_
   _subscriptions.push_back(subscription);
 }
 
+bool SmartyMqtt::isConnected() {
+  return _pubSubClient.connected();
+}
+
 void SmartyMqtt::_connect() {
   if (!_pubSubClient.connected()) {
     Serial << "(Re-)Connecting to MQTT broker ..." << endl;
@@ -164,21 +160,4 @@ void SmartyMqtt::_callback(char* topic, byte* payload, unsigned int length) {
       subscription->handle(topic, message);
     }
   }
-}
-
-void SmartyMqtt::_publishSystem() {
-  StaticJsonBuffer<JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(4) + 128> jsonBuffer;
-  JsonObject& root = jsonBuffer.createObject();
-  root["uptime"] = _uptime.getSeconds();
-  JsonObject& firmware = root.createNestedObject("firmware");
-  firmware["name"] = _firmware.name;
-  firmware["version"] = _firmware.version;
-  JsonObject& wifi = root.createNestedObject("wifi");
-  wifi["ssid"] = _wifi.getSSID();
-  wifi["rssi"] = _wifi.getRSSI();
-  wifi["ip"] = _wifi.getIpAddress();
-  wifi["hostname"] = _wifi.getHostName();
-
-  const char suffix[] = "/system";
-  publishJson(suffix, root);
 }
