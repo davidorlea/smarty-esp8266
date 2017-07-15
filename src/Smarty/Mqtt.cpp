@@ -136,7 +136,7 @@ void SmartyMqtt::_connect() {
     if (_username && _password) {
       _pubSubClient.connect(_clientId, _username, _password, composedTopic, 0, (boolean) true, "false");
     } else {
-      _pubSubClient.connect(_clientId, _baseTopic, 0, false, "{\"message\":\"good bye\"}");
+      _pubSubClient.connect(_clientId, composedTopic, 0, (boolean) true, "false");
     }
 
     if (_pubSubClient.connected()) {
