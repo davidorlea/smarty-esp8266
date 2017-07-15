@@ -23,8 +23,8 @@ private:
   void _addCustomRoute(const char*, HTTPMethod, std::function<void (void)>);
   void _addCustomRoute(const char*, const char*, HTTPMethod, std::function<void (void)>);
   void _handleGetSystem();
-  void _handleGetNode(SmartyAbstractTransducer* node);
-  void _handlePostActuator(SmartyAbstractActuator* actuator);
+  void _handleGetTransducer(SmartyAbstractTransducer*);
+  void _handlePostActuator(SmartyAbstractActuator*);
   void _handleBadRequest();
   void _handleNotFound();
   void _sendJson(int, JsonObject&);
