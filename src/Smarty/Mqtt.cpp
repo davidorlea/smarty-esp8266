@@ -88,7 +88,7 @@ void SmartyMqtt::publish(const char* topic, const char* payload, bool retain) {
   strcat(composedTopic, "/");
   strcat(composedTopic, topic);
 
-  if (_pubSubClient.connected() && _pubSubClient.publish(composedTopic, payload, retain)) {
+  if (_pubSubClient.connected() && _pubSubClient.publish(composedTopic, payload, (boolean) retain)) {
     Serial << "Outgoing MQTT message [";
   } else {
     Serial << "Discarded outgoing MQTT message [";
@@ -134,7 +134,7 @@ void SmartyMqtt::_connect() {
     strcat(composedTopic, topic);
 
     if (_username && _password) {
-      _pubSubClient.connect(_clientId, _username, _password, composedTopic, 0, false, "false");
+      _pubSubClient.connect(_clientId, _username, _password, composedTopic, 0, (boolean) true, "false");
     } else {
       _pubSubClient.connect(_clientId, _baseTopic, 0, false, "{\"message\":\"good bye\"}");
     }
@@ -146,7 +146,7 @@ void SmartyMqtt::_connect() {
       return;
     }
 
-    _pubSubClient.publish(composedTopic, "true");
+    _pubSubClient.publish(composedTopic, "true", (boolean) true);
 
     for (SmartyMqttSubscription* subscription : *SmartyMqttSubscription::getList()) {
       _pubSubClient.subscribe(subscription->getTopic());
