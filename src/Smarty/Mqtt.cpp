@@ -91,16 +91,16 @@ void SmartyMqtt::loop() {
 
 void SmartyMqtt::_addCustomPublication(SmartyAbstractActuator* actuator) {
   actuator->addActivateCallback([this, actuator](bool changed) {
-    _publishTransducer(actuator, "1");
+    _publish(actuator->getName(), "1");
   });
   actuator->addDeactivateCallback([this, actuator](bool changed) {
-    _publishTransducer(actuator, "0");
+    _publish(actuator->getName(), "0");
   });
 };
 
 void SmartyMqtt::_addCustomPublication(SmartyAbstractSensor* sensor) {
   sensor->addStateCallback([this, sensor](uint8_t state) {
-    _publishTransducer(sensor, "2");
+    _publish(sensor->getName(), "2");
   });
 };
 
@@ -184,10 +184,6 @@ void SmartyMqtt::_publishSystem() {
   _publishJson(suffix, root);
 }
 
-void SmartyMqtt::_publishTransducer(SmartyAbstractTransducer* transducer, const char* payload, bool retain) {
-  _publish(transducer->getName(), payload, retain);
-}
-
 void SmartyMqtt::_publishJson(const char* topic, JsonObject& json, bool retain) {
   size_t jsonLength = json.measureLength() + 1;
   char payload[jsonLength];
@@ -207,5 +203,5 @@ void SmartyMqtt::_publish(const char* topic, const char* payload, bool retain) {
   } else {
     Serial << "Discarded outgoing MQTT message [";
   }
-  Serial << composedTopic<< "]: " << payload << endl;
+  Serial << composedTopic << "]: " << payload << endl;
 }
