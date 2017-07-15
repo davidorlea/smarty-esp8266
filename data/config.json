@@ -4,7 +4,7 @@
     "password": "my_password"
   },
   "mqtt": {
-    "host": "test.mosquitto.org",
+    "host": "my_host",
     "port": 1883,
     "username": "my_username",
     "password": "my_password",
