@@ -128,8 +128,13 @@ void SmartyMqtt::_connect() {
     Serial << "MQTT Username: " << ((_username) ? _username : "n/a") << endl;
     Serial << "MQTT Password: " << ((_password) ? _password : "n/a") << endl;
 
+    char topic[] = "/$online";
+    char composedTopic[strlen(_baseTopic) + strlen(topic) + 1];
+    strcpy(composedTopic, _baseTopic);
+    strcat(composedTopic, topic);
+
     if (_username && _password) {
-      _pubSubClient.connect(_clientId, _username, _password, _baseTopic, 0, false, "{\"message\":\"good bye\"}");
+      _pubSubClient.connect(_clientId, _username, _password, composedTopic, 0, false, "false");
     } else {
       _pubSubClient.connect(_clientId, _baseTopic, 0, false, "{\"message\":\"good bye\"}");
     }
@@ -141,7 +146,7 @@ void SmartyMqtt::_connect() {
       return;
     }
 
-    _pubSubClient.publish(_baseTopic, "{\"message\":\"hello world\"}");
+    _pubSubClient.publish(composedTopic, "true");
 
     for (SmartyMqttSubscription* subscription : *SmartyMqttSubscription::getList()) {
       _pubSubClient.subscribe(subscription->getTopic());
