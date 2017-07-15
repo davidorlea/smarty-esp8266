@@ -141,10 +141,11 @@ void SmartyMqtt::_connect() {
       return;
     }
 
+    _pubSubClient.publish(_baseTopic, "{\"message\":\"hello world\"}");
+
     for (SmartyMqttSubscription* subscription : *SmartyMqttSubscription::getList()) {
       _pubSubClient.subscribe(subscription->getTopic());
     }
-    publish(_baseTopic, "{\"message\":\"hello world\"}");
   }
 }
 

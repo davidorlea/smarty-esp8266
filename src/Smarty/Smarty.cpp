@@ -105,6 +105,7 @@ void Smarty::_initializeMqtt() {
   if (_config.getMqttBaseTopic()[0]) {
     _mqtt.setBaseTopic(_config.getMqttBaseTopic());
   }
+
   for (SmartyAbstractActuator* actuator : *SmartyAbstractActuator::getList()) {
     actuator->addActivateCallback([this, actuator](bool changed) {
         _mqtt.publish(actuator->getName(), "1");
@@ -127,6 +128,7 @@ void Smarty::_initializeMqtt() {
         _mqtt.publish(sensor->getName(), "2");
     });
   }
+
   SmartyTimer* timer = new SmartyTimer(SMARTY_MQTT_STATUS_INTERVAL);
   timer->setCallback([this]() {
       StaticJsonBuffer<JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(4) + 128> jsonBuffer;
@@ -141,7 +143,7 @@ void Smarty::_initializeMqtt() {
       wifi["ip"] = _wifi.getIpAddress();
       wifi["hostname"] = _wifi.getHostName();
 
-      _mqtt.publishJson("/system", root);
+      _mqtt.publishJson("system", root);
   });
   timer->setCondition([this]() {
      return _mqtt.isConnected();
