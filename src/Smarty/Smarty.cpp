@@ -70,6 +70,9 @@ void Smarty::setup() {
 
 void Smarty::loop() {
   _uptime.update();
+  for (SmartyTimer* timer : *SmartyTimer::getList()) {
+    timer->update();
+  }
   for (SmartyAbstractSensor* sensor : *SmartyAbstractSensor::getList()) {
     sensor->loop();
   }

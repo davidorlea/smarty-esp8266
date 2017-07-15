@@ -7,6 +7,7 @@
 #include "Http.hpp"
 #include "Mqtt.hpp"
 #include "Ota.hpp"
+#include "Timer.hpp"
 #include "Transducer/AbstractActuator.hpp"
 #include "Transducer/AbstractSensor.hpp"
 #include "Transducer/Button.hpp"
