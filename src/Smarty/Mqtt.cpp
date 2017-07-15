@@ -154,7 +154,7 @@ void SmartyMqtt::_connect() {
 }
 
 void SmartyMqtt::_callback(char* topic, byte* payload, unsigned int length) {
-  char message[length+1];
+  char message[length + 1];
   memcpy(message, payload, length);
   message[length] = '\0';
 
@@ -181,20 +181,11 @@ void SmartyMqtt::_publishSystem() {
   wifi["hostname"] = _wifi.getHostName();
 
   const char suffix[] = "/system";
-  char systemTopic[strlen(_baseTopic) + strlen(suffix) + 1];
-  strcpy(systemTopic, _baseTopic);
-  strcat(systemTopic, suffix);
-
-  _publishJson(systemTopic, root);
+  _publishJson(suffix, root);
 }
 
 void SmartyMqtt::_publishTransducer(SmartyAbstractTransducer* transducer, const char* payload, bool retain) {
-  char topic[strlen(_baseTopic) + 1 + strlen(transducer->getName()) + 1];
-  strcpy(topic, _baseTopic);
-  strcat(topic, "/");
-  strcat(topic, transducer->getName());
-
-  _publish(topic, payload, retain);
+  _publish(transducer->getName(), payload, retain);
 }
 
 void SmartyMqtt::_publishJson(const char* topic, JsonObject& json, bool retain) {
@@ -206,10 +197,15 @@ void SmartyMqtt::_publishJson(const char* topic, JsonObject& json, bool retain) 
 }
 
 void SmartyMqtt::_publish(const char* topic, const char* payload, bool retain) {
-  if (_pubSubClient.connected() && _pubSubClient.publish(topic, payload, retain)) {
+  char composedTopic[strlen(_baseTopic) + 1 + strlen(topic) + 1];
+  strcpy(composedTopic, _baseTopic);
+  strcat(composedTopic, "/");
+  strcat(composedTopic, topic);
+
+  if (_pubSubClient.connected() && _pubSubClient.publish(composedTopic, payload, retain)) {
     Serial << "Outgoing MQTT message [";
   } else {
     Serial << "Discarded outgoing MQTT message [";
   }
-  Serial << topic << "]: " << payload << endl;
+  Serial << composedTopic<< "]: " << payload << endl;
 }
