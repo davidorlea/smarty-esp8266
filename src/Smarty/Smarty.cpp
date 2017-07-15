@@ -143,7 +143,7 @@ void Smarty::_initializeMqtt() {
       wifi["ip"] = _wifi.getIpAddress();
       wifi["hostname"] = _wifi.getHostName();
 
-      _mqtt.publishJson("system", root);
+      _mqtt.publishJson("$system", root);
   });
   timer->setCondition([this]() {
      return _mqtt.isConnected();
