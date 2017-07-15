@@ -61,6 +61,29 @@ void Smarty::setup() {
   Serial << "Done" << endl;
 
   Serial << "Initializing MQTT client: ";
+  _initializeMqtt();
+  _mqtt.setup();
+  Serial << "Done" << endl;
+
+  Serial << "... Finished Smarty setup" << endl;
+}
+
+void Smarty::loop() {
+  _uptime.update();
+  for (SmartyAbstractSensor* sensor : *SmartyAbstractSensor::getList()) {
+    sensor->loop();
+  }
+  for (SmartyAbstractActuator* actuator : *SmartyAbstractActuator::getList()) {
+    actuator->loop();
+  }
+  if (_wifi.loop()) {
+    _ota.loop();
+    _http.loop();
+    _mqtt.loop();
+  }
+}
+
+void Smarty::_initializeMqtt() {
   if (_config.getMqttHost()[0]) {
     _mqtt.setHost(_config.getMqttHost());
   }
@@ -100,24 +123,5 @@ void Smarty::setup() {
     sensor->addStateCallback([this, sensor](uint8_t state) {
         _mqtt.publish(sensor->getName(), "2");
     });
-  }
-  _mqtt.setup();
-  Serial << "Done" << endl;
-
-  Serial << "... Finished Smarty setup" << endl;
-}
-
-void Smarty::loop() {
-  _uptime.update();
-  for (SmartyAbstractSensor* sensor : *SmartyAbstractSensor::getList()) {
-    sensor->loop();
-  }
-  for (SmartyAbstractActuator* actuator : *SmartyAbstractActuator::getList()) {
-    actuator->loop();
-  }
-  if (_wifi.loop()) {
-    _ota.loop();
-    _http.loop();
-    _mqtt.loop();
   }
 }
