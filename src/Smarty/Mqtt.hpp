@@ -9,8 +9,6 @@
 #include "Firmware.hpp"
 #include "MqttPublication.hpp"
 #include "MqttSubscription.hpp"
-#include "Transducer/AbstractActuator.hpp"
-#include "Transducer/AbstractSensor.hpp"
 #include "Uptime.hpp"
 #include "Wifi.hpp"
 
@@ -29,6 +27,10 @@ public:
   void setBaseTopic(const char*);
   void setup();
   void loop();
+  void publishJson(const char*, JsonObject&, bool = false);
+  void publish(const char*, const char*, bool = false);
+  void subscribe(const char*, const char*, SMARTY_MQTT_SUBSCRIPTION_CALLBACK_TYPE);
+  void subscribe(const char*, SMARTY_MQTT_SUBSCRIPTION_CALLBACK_TYPE);
 private:
   WiFiClient _wifiClient;
   PubSubClient _pubSubClient;
@@ -45,12 +47,7 @@ private:
   unsigned long _lastStatusPublish;
   std::vector<SmartyMqttPublication*> _publications;
   std::vector<SmartyMqttSubscription*> _subscriptions;
-  void _addCustomPublication(SmartyAbstractActuator* actuator);
-  void _addCustomPublication(SmartyAbstractSensor* sensor);
-  void _addCustomSubscription(SmartyAbstractActuator* actuator);
   void _connect();
   void _callback(char*, byte*, unsigned int);
   void _publishSystem();
-  void _publishJson(const char*, JsonObject&, bool = false);
-  void _publish(const char*, const char*, bool = false);
 };
