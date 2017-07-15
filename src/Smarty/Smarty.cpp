@@ -79,6 +79,28 @@ void Smarty::setup() {
   if (_config.getMqttBaseTopic()[0]) {
     _mqtt.setBaseTopic(_config.getMqttBaseTopic());
   }
+  for (SmartyAbstractActuator* actuator : *SmartyAbstractActuator::getList()) {
+    actuator->addActivateCallback([this, actuator](bool changed) {
+        _mqtt.publish(actuator->getName(), "1");
+    });
+    actuator->addDeactivateCallback([this, actuator](bool changed) {
+        _mqtt.publish(actuator->getName(), "0");
+    });
+    _mqtt.subscribe(actuator->getName(), "/set", [actuator](const char* topic, const char* message) {
+        if (strcmp(message, "0") == 0) {
+          actuator->deactivate();
+        } else if (strcmp(message, "1") == 0) {
+          actuator->activate();
+        } else if (strcmp(message, "2") == 0) {
+          actuator->toggle();
+        }
+    });
+  }
+  for (SmartyAbstractSensor* sensor : *SmartyAbstractSensor::getList()) {
+    sensor->addStateCallback([this, sensor](uint8_t state) {
+        _mqtt.publish(sensor->getName(), "2");
+    });
+  }
   _mqtt.setup();
   Serial << "Done" << endl;
 

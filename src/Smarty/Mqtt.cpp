@@ -53,13 +53,6 @@ void SmartyMqtt::setBaseTopic(const char* topic) {
 }
 
 void SmartyMqtt::setup() {
-  for (SmartyAbstractActuator* actuator : *SmartyAbstractActuator::getList()) {
-    _addCustomPublication(actuator);
-    _addCustomSubscription(actuator);
-  }
-  for (SmartyAbstractSensor* sensor : *SmartyAbstractSensor::getList()) {
-    _addCustomPublication(sensor);
-  }
   _pubSubClient.setServer(_host, _port);
   _pubSubClient.setCallback([this](char* topic, byte* payload, unsigned int length) {
       return _callback(topic, payload,length);
@@ -111,38 +104,22 @@ void SmartyMqtt::publish(const char* topic, const char* payload, bool retain) {
   Serial << composedTopic << "]: " << payload << endl;
 }
 
-void SmartyMqtt::_addCustomPublication(SmartyAbstractActuator* actuator) {
-  actuator->addActivateCallback([this, actuator](bool changed) {
-    publish(actuator->getName(), "1");
-  });
-  actuator->addDeactivateCallback([this, actuator](bool changed) {
-    publish(actuator->getName(), "0");
-  });
-};
+void SmartyMqtt::subscribe(const char* topic, const char* topicSuffix, SMARTY_MQTT_SUBSCRIPTION_CALLBACK_TYPE callback) {
+  char composedTopic[strlen(topic) + strlen(topicSuffix) + 1];
+  strcpy(composedTopic, topic);
+  strcat(composedTopic, topicSuffix);
 
-void SmartyMqtt::_addCustomPublication(SmartyAbstractSensor* sensor) {
-  sensor->addStateCallback([this, sensor](uint8_t state) {
-    publish(sensor->getName(), "2");
-  });
-};
+  subscribe(composedTopic, callback);
+}
 
-void SmartyMqtt::_addCustomSubscription(SmartyAbstractActuator* actuator) {
-  char topic[strlen(_baseTopic) + 1 + strlen(actuator->getName()) + 4 + 1];
-  strcpy(topic, _baseTopic);
-  strcat(topic, "/");
-  strcat(topic, actuator->getName());
-  strcat(topic, "/set");
+void SmartyMqtt::subscribe(const char* topic, SMARTY_MQTT_SUBSCRIPTION_CALLBACK_TYPE callback) {
+  char composedTopic[strlen(_baseTopic) + 1 + strlen(topic) + 1];
+  strcpy(composedTopic, _baseTopic);
+  strcat(composedTopic, "/");
+  strcat(composedTopic, topic);
 
-  SmartyMqttSubscription* subscription = new SmartyMqttSubscription(topic);
-  subscription->setCallback([actuator](const char* topic, const char* message) {
-    if (strcmp(message, "0") == 0) {
-      actuator->deactivate();
-    } else if (strcmp(message, "1") == 0) {
-      actuator->activate();
-    } else if (strcmp(message, "2") == 0) {
-      actuator->toggle();
-    }
-  });
+  SmartyMqttSubscription* subscription = new SmartyMqttSubscription(composedTopic);
+  subscription->setCallback(callback);
 
   _subscriptions.push_back(subscription);
 }
@@ -205,4 +182,3 @@ void SmartyMqtt::_publishSystem() {
   const char suffix[] = "/system";
   publishJson(suffix, root);
 }
-
