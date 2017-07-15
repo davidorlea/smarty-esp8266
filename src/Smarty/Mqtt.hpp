@@ -51,6 +51,7 @@ private:
   void _connect();
   void _callback(char*, byte*, unsigned int);
   void _publishSystem();
+  void _publishTransducer(SmartyAbstractTransducer*, const char*, bool = false);
   void _publishJson(const char*, JsonObject&, bool = false);
   void _publish(const char*, const char*, bool = false);
 };

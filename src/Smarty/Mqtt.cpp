@@ -90,37 +90,18 @@ void SmartyMqtt::loop() {
 }
 
 void SmartyMqtt::_addCustomPublication(SmartyAbstractActuator* actuator) {
-  char topic[strlen(_baseTopic) + 1 + strlen(actuator->getName()) + 1];
-  strcpy(topic, _baseTopic);
-  strcat(topic, "/");
-  strcat(topic, actuator->getName());
-
-  SmartyMqttPublication* publication = new SmartyMqttPublication(topic);
-  actuator->addActivateCallback([publication](bool changed) {
-      publication->setMessage("1");
-      publication->ready();
+  actuator->addActivateCallback([this, actuator](bool changed) {
+    _publishTransducer(actuator, "1");
   });
-  actuator->addDeactivateCallback([publication](bool changed) {
-      publication->setMessage("0");
-      publication->ready();
+  actuator->addDeactivateCallback([this, actuator](bool changed) {
+    _publishTransducer(actuator, "0");
   });
-
-  _publications.push_back(publication);
 };
 
 void SmartyMqtt::_addCustomPublication(SmartyAbstractSensor* sensor) {
-  char topic[strlen(_baseTopic) + 1 + strlen(sensor->getName()) + 1];
-  strcpy(topic, _baseTopic);
-  strcat(topic, "/");
-  strcat(topic, sensor->getName());
-
-  SmartyMqttPublication* publication = new SmartyMqttPublication(topic);
-  sensor->addStateCallback([publication](uint8_t state) {
-      publication->setMessage("2");
-      publication->ready();
+  sensor->addStateCallback([this, sensor](uint8_t state) {
+    _publishTransducer(sensor, "2");
   });
-
-  _publications.push_back(publication);
 };
 
 void SmartyMqtt::_addCustomSubscription(SmartyAbstractActuator* actuator) {
@@ -205,6 +186,15 @@ void SmartyMqtt::_publishSystem() {
   strcat(systemTopic, suffix);
 
   _publishJson(systemTopic, root);
+}
+
+void SmartyMqtt::_publishTransducer(SmartyAbstractTransducer* transducer, const char* payload, bool retain) {
+  char topic[strlen(_baseTopic) + 1 + strlen(transducer->getName()) + 1];
+  strcpy(topic, _baseTopic);
+  strcat(topic, "/");
+  strcat(topic, transducer->getName());
+
+  _publish(topic, payload, retain);
 }
 
 void SmartyMqtt::_publishJson(const char* topic, JsonObject& json, bool retain) {
