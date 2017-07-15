@@ -13,7 +13,7 @@ void SmartyHttp::setup() {
   });
   for (SmartyAbstractActuator* actuator : *SmartyAbstractActuator::getList()) {
     _addCustomRoute("/api/v1/actuator/", actuator->getName(), HTTP_GET, [this, actuator]() {
-      return _handleGetNode(actuator);
+      return _handleGetTransducer(actuator);
     });
     _addCustomRoute("/api/v1/actuator/", actuator->getName(), HTTP_POST, [this, actuator]() {
       return _handlePostActuator(actuator);
@@ -21,7 +21,7 @@ void SmartyHttp::setup() {
   }
   for (SmartyAbstractSensor* sensor : *SmartyAbstractSensor::getList()) {
     _addCustomRoute("/api/v1/sensor/", sensor->getName(), HTTP_GET, [this, sensor]() {
-      return _handleGetNode(sensor);
+      return _handleGetTransducer(sensor);
     });
   }
   _webServer.onNotFound([this]() {
@@ -61,18 +61,18 @@ void SmartyHttp::_handleGetSystem() {
   _sendJson(200, root);
 }
 
-void SmartyHttp::_handleGetNode(SmartyAbstractTransducer* node) {
+void SmartyHttp::_handleGetTransducer(SmartyAbstractTransducer* transducer) {
   StaticJsonBuffer<JSON_OBJECT_SIZE(2) + 64> jsonBuffer;
   JsonObject& root = jsonBuffer.createObject();
-  root["name"] = node->getName();
-  root["state"] = node->state();
+  root["name"] = transducer->getName();
+  root["state"] = transducer->state();
   _sendJson(200, root);
 }
 
 void SmartyHttp::_handlePostActuator(SmartyAbstractActuator* actuator) {
   int state = _extractStateFromJson();
   if (actuator->parseState(state)) {
-    _handleGetNode(actuator);
+    _handleGetTransducer(actuator);
   } else {
     _handleBadRequest();
   }
