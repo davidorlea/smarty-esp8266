@@ -43,12 +43,7 @@ void Smarty::setup() {
   }
 
   Serial << "Initializing Wifi client: ";
-  if (_config.getWifiSSID()[0]) {
-    _wifi.setSSID(_config.getWifiSSID());
-  }
-  if (_config.getWifiPassword()[0]) {
-    _wifi.setPassword(_config.getWifiPassword());
-  }
+  _initializeWifi();
   _wifi.setup();
   Serial << "Done" << endl;
 
@@ -83,6 +78,15 @@ void Smarty::loop() {
     _ota.loop();
     _http.loop();
     _mqtt.loop();
+  }
+}
+
+void Smarty::_initializeWifi() {
+  if (_config.getWifiSSID()[0]) {
+    _wifi.setSSID(_config.getWifiSSID());
+  }
+  if (_config.getWifiPassword()[0]) {
+    _wifi.setPassword(_config.getWifiPassword());
   }
 }
 
