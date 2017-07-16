@@ -6,7 +6,7 @@ SmartyHttp::SmartyHttp()
 
 void SmartyHttp::setup() {
   _webServer.onNotFound([this]() {
-    return handleNotFound();
+    sendErrorResponse(Error::NOT_FOUND);
   });
   _webServer.begin();
 }
@@ -26,22 +26,25 @@ void SmartyHttp::addCustomRoute(const char* uri, HTTPMethod method, std::functio
   _webServer.on(uri, method, handler);
 }
 
-void SmartyHttp::handleOk(JsonObject& json) {
-  _sendJson(200, json);
+void SmartyHttp::sendSuccessResponse(JsonObject& json) {
+  size_t jsonLength = json.measureLength() + 1;
+  char payload[jsonLength];
+  json.printTo(payload, jsonLength);
+  _webServer.send(200, "application/json", payload);
 }
 
-void SmartyHttp::handleBadRequest() {
-  StaticJsonBuffer<JSON_OBJECT_SIZE(1) + 18> jsonBuffer;
-  JsonObject& root = jsonBuffer.createObject();
-  root["error"] = "BAD_REQUEST";
-  _sendJson(400, root);
-}
-
-void SmartyHttp::handleNotFound() {
-  StaticJsonBuffer<JSON_OBJECT_SIZE(1) + 16> jsonBuffer;
-  JsonObject& root = jsonBuffer.createObject();
-  root["error"] = "NOT_FOUND";
-  _sendJson(404, root);
+void SmartyHttp::sendErrorResponse(Error error) {
+  switch(error) {
+    case Error::BAD_REQUEST:
+      _webServer.send(400, "application/json", "{\"error\":\"BAD_REQUEST\"}");
+      break;
+    case Error::NOT_FOUND:
+      _webServer.send(404, "application/json", "{\"error\":\"NOT_FOUND\"}");
+      break;
+    case Error::INTERNAL_SERVER_ERROR:
+      _webServer.send(500, "application/json", "{\"error\":\"INTERNAL_SERVER_ERROR\"}");
+      break;
+  }
 }
 
 int SmartyHttp::extractStateFromJson() {
@@ -57,11 +60,4 @@ int SmartyHttp::extractStateFromJson() {
   }
 
   return root["state"].as<int>();
-}
-
-void SmartyHttp::_sendJson(int code, JsonObject& json) {
-  size_t jsonLength = json.measureLength() + 1;
-  char payload[jsonLength];
-  json.printTo(payload, jsonLength);
-  _webServer.send(code, "application/json", payload);
 }

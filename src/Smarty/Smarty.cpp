@@ -104,7 +104,7 @@ void Smarty::_initializeHttp() {
       wifi["rssi"] = _wifi.getRSSI();
       wifi["ip"] = _wifi.getIpAddress();
       wifi["hostname"] = _wifi.getHostName();
-      _http.handleOk(root);
+      _http.sendSuccessResponse(root);
   });
   for (SmartyAbstractActuator* actuator : *SmartyAbstractActuator::getList()) {
     _http.addCustomRoute("/api/v1/actuator/", actuator->getName(), HTTP_GET, [this, actuator]() {
@@ -112,7 +112,7 @@ void Smarty::_initializeHttp() {
         JsonObject& root = jsonBuffer.createObject();
         root["name"] = actuator->getName();
         root["state"] = actuator->state();
-        _http.handleOk(root);
+        _http.sendSuccessResponse(root);
     });
     _http.addCustomRoute("/api/v1/actuator/", actuator->getName(), HTTP_POST, [this, actuator]() {
         int state = _http.extractStateFromJson();
@@ -121,9 +121,9 @@ void Smarty::_initializeHttp() {
           JsonObject& root = jsonBuffer.createObject();
           root["name"] = actuator->getName();
           root["state"] = actuator->state();
-          _http.handleOk(root);
+          _http.sendSuccessResponse(root);
         } else {
-          _http.handleBadRequest();
+          _http.sendErrorResponse(SmartyHttp::Error::BAD_REQUEST);
         }
     });
   }
@@ -133,7 +133,7 @@ void Smarty::_initializeHttp() {
         JsonObject& root = jsonBuffer.createObject();
         root["name"] = sensor->getName();
         root["state"] = sensor->state();
-        _http.handleOk(root);
+        _http.sendSuccessResponse(root);
     });
   }
 }

@@ -6,16 +6,19 @@
 
 class SmartyHttp {
 public:
+  enum class Error {
+    BAD_REQUEST,
+    NOT_FOUND,
+    INTERNAL_SERVER_ERROR
+  };
   SmartyHttp();
   void setup();
   void loop();
   void addCustomRoute(const char*, const char*, HTTPMethod, std::function<void (void)>);
   void addCustomRoute(const char*, HTTPMethod, std::function<void (void)>);
-  void handleOk(JsonObject &json);
-  void handleBadRequest();
-  void handleNotFound();
+  void sendSuccessResponse(JsonObject&);
+  void sendErrorResponse(Error = Error::INTERNAL_SERVER_ERROR);
   int extractStateFromJson();
 private:
   ESP8266WebServer _webServer;
-  void _sendJson(int, JsonObject&);
 };
