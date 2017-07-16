@@ -6,7 +6,7 @@ Smarty::Smarty()
 , _uptime()
 , _wifi()
 , _ota()
-, _http(_firmware, _uptime, _wifi)
+, _http()
 , _mqtt() {
 }
 
@@ -52,6 +52,7 @@ void Smarty::setup() {
   Serial << "Done" << endl;
 
   Serial << "Initializing HTTP server: ";
+  _initializeHttp();
   _http.setup();
   Serial << "Done" << endl;
 
@@ -87,6 +88,53 @@ void Smarty::_initializeWifi() {
   }
   if (_config.getWifiPassword()[0]) {
     _wifi.setPassword(_config.getWifiPassword());
+  }
+}
+
+void Smarty::_initializeHttp() {
+  _http.addCustomRoute("/api/v1/system", HTTP_GET, [this]() {
+      StaticJsonBuffer<JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(4) + 128> jsonBuffer;
+      JsonObject& root = jsonBuffer.createObject();
+      root["uptime"] = _uptime.getSeconds();
+      JsonObject& firmware = root.createNestedObject("firmware");
+      firmware["name"] = _firmware.name;
+      firmware["version"] = _firmware.version;
+      JsonObject& wifi = root.createNestedObject("wifi");
+      wifi["ssid"] = _wifi.getSSID();
+      wifi["rssi"] = _wifi.getRSSI();
+      wifi["ip"] = _wifi.getIpAddress();
+      wifi["hostname"] = _wifi.getHostName();
+      _http.handleOk(root);
+  });
+  for (SmartyAbstractActuator* actuator : *SmartyAbstractActuator::getList()) {
+    _http.addCustomRoute("/api/v1/actuator/", actuator->getName(), HTTP_GET, [this, actuator]() {
+        StaticJsonBuffer<JSON_OBJECT_SIZE(2) + 64> jsonBuffer;
+        JsonObject& root = jsonBuffer.createObject();
+        root["name"] = actuator->getName();
+        root["state"] = actuator->state();
+        _http.handleOk(root);
+    });
+    _http.addCustomRoute("/api/v1/actuator/", actuator->getName(), HTTP_POST, [this, actuator]() {
+        int state = _http.extractStateFromJson();
+        if (actuator->parseState(state)) {
+          StaticJsonBuffer<JSON_OBJECT_SIZE(2) + 64> jsonBuffer;
+          JsonObject& root = jsonBuffer.createObject();
+          root["name"] = actuator->getName();
+          root["state"] = actuator->state();
+          _http.handleOk(root);
+        } else {
+          _http.handleBadRequest();
+        }
+    });
+  }
+  for (SmartyAbstractSensor* sensor : *SmartyAbstractSensor::getList()) {
+    _http.addCustomRoute("/api/v1/sensor/", sensor->getName(), HTTP_GET, [this, sensor]() {
+        StaticJsonBuffer<JSON_OBJECT_SIZE(2) + 64> jsonBuffer;
+        JsonObject& root = jsonBuffer.createObject();
+        root["name"] = sensor->getName();
+        root["state"] = sensor->state();
+        _http.handleOk(root);
+    });
   }
 }
 

@@ -34,5 +34,6 @@ private:
   SmartyHttp _http;
   SmartyMqtt _mqtt;
   void _initializeWifi();
+  void _initializeHttp();
   void _initializeMqtt();
 };
