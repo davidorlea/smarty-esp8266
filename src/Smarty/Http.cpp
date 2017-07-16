@@ -34,15 +34,15 @@ void SmartyHttp::loop() {
   _webServer.handleClient();
 }
 
-void SmartyHttp::_addCustomRoute(const char* uri, HTTPMethod method, std::function<void (void)> handler) {
-  _addCustomRoute("", uri, method, handler);
-}
-
 void SmartyHttp::_addCustomRoute(const char* uriPrefix, const char* uri, HTTPMethod method, std::function<void (void)> handler) {
   char composedUri[strlen(uriPrefix) + strlen(uri) + 1];
   strcpy(composedUri, uriPrefix);
   strcat(composedUri, uri);
-  _webServer.on(composedUri, method, handler);
+  _addCustomRoute(composedUri, method, handler);
+}
+
+void SmartyHttp::_addCustomRoute(const char* uri, HTTPMethod method, std::function<void (void)> handler) {
+  _webServer.on(uri, method, handler);
 }
 
 void SmartyHttp::_handleGetSystem() {

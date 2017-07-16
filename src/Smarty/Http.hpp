@@ -20,8 +20,8 @@ private:
   SmartyFirmware& _firmware;
   SmartyUptime& _uptime;
   SmartyWifi& _wifi;
-  void _addCustomRoute(const char*, HTTPMethod, std::function<void (void)>);
   void _addCustomRoute(const char*, const char*, HTTPMethod, std::function<void (void)>);
+  void _addCustomRoute(const char*, HTTPMethod, std::function<void (void)>);
   void _handleGetSystem();
   void _handleGetTransducer(SmartyAbstractTransducer*);
   void _handlePostActuator(SmartyAbstractActuator*);
