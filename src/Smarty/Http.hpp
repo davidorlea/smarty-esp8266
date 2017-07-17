@@ -3,30 +3,22 @@
 #include <Arduino.h>
 #include <ArduinoJson.h>
 #include <ESP8266WebServer.h>
-#include "Firmware.hpp"
-#include "Transducer/AbstractActuator.hpp"
-#include "Transducer/AbstractTransducer.hpp"
-#include "Transducer/AbstractSensor.hpp"
-#include "Uptime.hpp"
-#include "Wifi.hpp"
 
 class SmartyHttp {
 public:
-  SmartyHttp(SmartyFirmware&, SmartyUptime&, SmartyWifi&);
+  enum class Error {
+    BAD_REQUEST,
+    NOT_FOUND,
+    INTERNAL_SERVER_ERROR
+  };
+  SmartyHttp();
   void setup();
   void loop();
+  void addCustomRoute(const char*, const char*, HTTPMethod, std::function<void (void)>);
+  void addCustomRoute(const char*, HTTPMethod, std::function<void (void)>);
+  void sendSuccessResponse(JsonObject&);
+  void sendErrorResponse(Error = Error::INTERNAL_SERVER_ERROR);
+  int extractStateFromJson();
 private:
   ESP8266WebServer _webServer;
-  SmartyFirmware& _firmware;
-  SmartyUptime& _uptime;
-  SmartyWifi& _wifi;
-  void _addCustomRoute(const char*, const char*, HTTPMethod, std::function<void (void)>);
-  void _addCustomRoute(const char*, HTTPMethod, std::function<void (void)>);
-  void _handleGetSystem();
-  void _handleGetTransducer(SmartyAbstractTransducer*);
-  void _handlePostActuator(SmartyAbstractActuator*);
-  void _handleBadRequest();
-  void _handleNotFound();
-  void _sendJson(int, JsonObject&);
-  int _extractStateFromJson();
 };

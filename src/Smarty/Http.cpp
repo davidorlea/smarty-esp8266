@@ -1,31 +1,12 @@
 #include "Http.hpp"
 
-SmartyHttp::SmartyHttp(SmartyFirmware& firmware, SmartyUptime& uptime, SmartyWifi& wifi)
-: _webServer(80)
-, _firmware(firmware)
-, _uptime(uptime)
-, _wifi(wifi) {
+SmartyHttp::SmartyHttp()
+: _webServer(80) {
 }
 
 void SmartyHttp::setup() {
-  _addCustomRoute("/api/v1/system", HTTP_GET, [this]() {
-    return _handleGetSystem();
-  });
-  for (SmartyAbstractActuator* actuator : *SmartyAbstractActuator::getList()) {
-    _addCustomRoute("/api/v1/actuator/", actuator->getName(), HTTP_GET, [this, actuator]() {
-      return _handleGetTransducer(actuator);
-    });
-    _addCustomRoute("/api/v1/actuator/", actuator->getName(), HTTP_POST, [this, actuator]() {
-      return _handlePostActuator(actuator);
-    });
-  }
-  for (SmartyAbstractSensor* sensor : *SmartyAbstractSensor::getList()) {
-    _addCustomRoute("/api/v1/sensor/", sensor->getName(), HTTP_GET, [this, sensor]() {
-      return _handleGetTransducer(sensor);
-    });
-  }
   _webServer.onNotFound([this]() {
-    return _handleNotFound();
+    sendErrorResponse(Error::NOT_FOUND);
   });
   _webServer.begin();
 }
@@ -34,72 +15,39 @@ void SmartyHttp::loop() {
   _webServer.handleClient();
 }
 
-void SmartyHttp::_addCustomRoute(const char* uriPrefix, const char* uri, HTTPMethod method, std::function<void (void)> handler) {
+void SmartyHttp::addCustomRoute(const char* uriPrefix, const char* uri, HTTPMethod method, std::function<void (void)> handler) {
   char composedUri[strlen(uriPrefix) + strlen(uri) + 1];
   strcpy(composedUri, uriPrefix);
   strcat(composedUri, uri);
-  _addCustomRoute(composedUri, method, handler);
+  addCustomRoute(composedUri, method, handler);
 }
 
-void SmartyHttp::_addCustomRoute(const char* uri, HTTPMethod method, std::function<void (void)> handler) {
+void SmartyHttp::addCustomRoute(const char* uri, HTTPMethod method, std::function<void (void)> handler) {
   _webServer.on(uri, method, handler);
 }
 
-void SmartyHttp::_handleGetSystem() {
-  StaticJsonBuffer<JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(4) + 128> jsonBuffer;
-  JsonObject& root = jsonBuffer.createObject();
-  root["uptime"] = _uptime.getSeconds();
-  JsonObject& firmware = root.createNestedObject("firmware");
-  firmware["name"] = _firmware.name;
-  firmware["version"] = _firmware.version;
-  JsonObject& wifi = root.createNestedObject("wifi");
-  wifi["ssid"] = _wifi.getSSID();
-  wifi["rssi"] = _wifi.getRSSI();
-  wifi["ip"] = _wifi.getIpAddress();
-  wifi["hostname"] = _wifi.getHostName();
-
-  _sendJson(200, root);
-}
-
-void SmartyHttp::_handleGetTransducer(SmartyAbstractTransducer* transducer) {
-  StaticJsonBuffer<JSON_OBJECT_SIZE(2) + 64> jsonBuffer;
-  JsonObject& root = jsonBuffer.createObject();
-  root["name"] = transducer->getName();
-  root["state"] = transducer->state();
-  _sendJson(200, root);
-}
-
-void SmartyHttp::_handlePostActuator(SmartyAbstractActuator* actuator) {
-  int state = _extractStateFromJson();
-  if (actuator->parseState(state)) {
-    _handleGetTransducer(actuator);
-  } else {
-    _handleBadRequest();
-  }
-}
-
-void SmartyHttp::_handleBadRequest() {
-  StaticJsonBuffer<JSON_OBJECT_SIZE(1) + 18> jsonBuffer;
-  JsonObject& root = jsonBuffer.createObject();
-  root["error"] = "BAD_REQUEST";
-  _sendJson(400, root);
-}
-
-void SmartyHttp::_handleNotFound() {
-  StaticJsonBuffer<JSON_OBJECT_SIZE(1) + 16> jsonBuffer;
-  JsonObject& root = jsonBuffer.createObject();
-  root["error"] = "NOT_FOUND";
-  _sendJson(404, root);
-}
-
-void SmartyHttp::_sendJson(int code, JsonObject& json) {
+void SmartyHttp::sendSuccessResponse(JsonObject& json) {
   size_t jsonLength = json.measureLength() + 1;
   char payload[jsonLength];
   json.printTo(payload, jsonLength);
-  _webServer.send(code, "application/json", payload);
+  _webServer.send(200, "application/json", payload);
 }
 
-int SmartyHttp::_extractStateFromJson() {
+void SmartyHttp::sendErrorResponse(Error error) {
+  switch(error) {
+    case Error::BAD_REQUEST:
+      _webServer.send(400, "application/json", "{\"error\":\"BAD_REQUEST\"}");
+      break;
+    case Error::NOT_FOUND:
+      _webServer.send(404, "application/json", "{\"error\":\"NOT_FOUND\"}");
+      break;
+    case Error::INTERNAL_SERVER_ERROR:
+      _webServer.send(500, "application/json", "{\"error\":\"INTERNAL_SERVER_ERROR\"}");
+      break;
+  }
+}
+
+int SmartyHttp::extractStateFromJson() {
   if (!_webServer.hasArg("plain")) {
     return -1;
   }

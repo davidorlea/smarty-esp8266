@@ -34,5 +34,8 @@ private:
   SmartyHttp _http;
   SmartyMqtt _mqtt;
   void _initializeWifi();
+  void _initializeHttp();
   void _initializeMqtt();
+  JsonObject& _createSystemJson(JsonBuffer&);
+  JsonObject& _createTransducerJson(JsonBuffer&, SmartyAbstractTransducer*);
 };
