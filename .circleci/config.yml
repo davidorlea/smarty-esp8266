@@ -10,34 +10,19 @@ jobs:
     working_directory: ~/repo
     steps:
       - checkout
-
-      # - restore_cache:
-      #     keys:
-      #     - v1-dependencies-{{ checksum "requirements.txt" }}
-      #     # fallback to using the latest cache if no exact match is found
-      #     - v1-dependencies-
-      # - run:
-      #     name: install dependencies
-      #     command: |
-      #       python3 -m venv venv
-      #       . venv/bin/activate
-      #       pip install -r requirements.txt
-      # - save_cache:
-      #     paths:
-      #       - ./venv
-      #     key: v1-dependencies-{{ checksum "requirements.txt" }}
-      # - run:
-      #     name: run tests
-      #     command: |
-      #       . venv/bin/activate
-      #       python manage.py test
-      # - store_artifacts:
-      #     path: test-reports
-      #     destination: test-reports
-
       - run:
           name: Install PlatformIO
           command: sudo pip install platformio
+      - restore_cache:
+          keys:
+          - v1-dependencies
+      - run:
+          name: Install dependencies
+          command: platformio lib -g install ArduinoJson@~5.10.0 PubSubClient@~2.6 Streaming@5
+      - save_cache:
+          key: v1-dependencies
+          paths:
+            - ~/.platformio
       - run:
           name: Run build for custom board
           command: platformio ci examples/Custom/Custom.cpp --lib="." --project-conf="examples/Custom/Custom.ini"
