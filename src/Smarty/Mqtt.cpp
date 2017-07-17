@@ -57,14 +57,13 @@ void SmartyMqtt::setup() {
 
 void SmartyMqtt::loop() {
   unsigned long now = millis();
-
   if (!_pubSubClient.connected()
       && (_lastConnectionAttempt == 0 || now - _lastConnectionAttempt >= SMARTY_MQTT_RECONNECT_INTERVAL)) {
     _lastConnectionAttempt = now;
     _connect();
   }
   if (_pubSubClient.connected()) {
-    for (SmartyMqttPublication* publication: *SmartyMqttPublication::getList()) {
+    for (SmartyMqttPublication* publication: _publications) {
       if (publication->isReady()) {
         publish(publication->getTopic(), publication->getMessage(), publication->getRetain());
         publication->ready(false);
@@ -78,7 +77,6 @@ void SmartyMqtt::publishJson(const char* topic, JsonObject& json, bool retain) {
   size_t jsonLength = json.measureLength() + 1;
   char payload[jsonLength];
   json.printTo(payload, jsonLength);
-
   publish(topic, payload, retain);
 }
 
@@ -100,7 +98,6 @@ void SmartyMqtt::subscribe(const char* topic, const char* topicSuffix, SMARTY_MQ
   char composedTopic[strlen(topic) + strlen(topicSuffix) + 1];
   strcpy(composedTopic, topic);
   strcat(composedTopic, topicSuffix);
-
   subscribe(composedTopic, callback);
 }
 
@@ -112,7 +109,6 @@ void SmartyMqtt::subscribe(const char* topic, SMARTY_MQTT_SUBSCRIPTION_CALLBACK_
 
   SmartyMqttSubscription* subscription = new SmartyMqttSubscription(composedTopic);
   subscription->setCallback(callback);
-
   _subscriptions.push_back(subscription);
 }
 
@@ -148,7 +144,7 @@ void SmartyMqtt::_connect() {
 
     _pubSubClient.publish(composedTopic, "true", (boolean) true);
 
-    for (SmartyMqttSubscription* subscription : *SmartyMqttSubscription::getList()) {
+    for (SmartyMqttSubscription* subscription : _subscriptions) {
       _pubSubClient.subscribe(subscription->getTopic());
     }
   }
@@ -161,7 +157,7 @@ void SmartyMqtt::_callback(char* topic, byte* payload, unsigned int length) {
 
   Serial << "Incoming MQTT message [" << topic << "]: " << message << endl;
 
-  for (SmartyMqttSubscription* subscription : *SmartyMqttSubscription::getList()) {
+  for (SmartyMqttSubscription* subscription : _subscriptions) {
     if (subscription->canHandle(topic)) {
       subscription->handle(topic, message);
     }

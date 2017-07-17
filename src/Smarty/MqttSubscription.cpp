@@ -1,14 +1,5 @@
 #include "MqttSubscription.hpp"
 
-std::vector<SmartyMqttSubscription*>* SmartyMqttSubscription::_list = nullptr;
-
-std::vector<SmartyMqttSubscription*>* SmartyMqttSubscription::getList() {
-  if (_list == nullptr) {
-    _list = new std::vector<SmartyMqttSubscription*>();
-  }
-  return _list;
-}
-
 bool SmartyMqttSubscription::isValidTopic(const char *topic) {
   // Code from http://git.eclipse.org/c/mosquitto/org.eclipse.mosquitto.git/tree/lib/util_mosq.c
   char c = '\0';
@@ -34,16 +25,9 @@ SmartyMqttSubscription::SmartyMqttSubscription(const char* topic) {
     abort();
   }
   _topic = strcpy(new char[strlen(topic) + 1], topic);
-
-  if (_list == nullptr) {
-    _list = new std::vector<SmartyMqttSubscription*>();
-  }
-  _list->push_back(this);
-  _listIndex = _list->size() - 1;
 }
 
 SmartyMqttSubscription::~SmartyMqttSubscription() {
-  _list->erase(_list->begin() + _listIndex);
   delete _topic;
 }
 

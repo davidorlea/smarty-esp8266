@@ -150,28 +150,3 @@ TEST(SmartyMqttSubscriptionTest, testThatHandleCallsCallbackWithCorrectArguments
   EXPECT_STREQ(calledTopic, "some/topic");
   EXPECT_STREQ(calledMessage, "some message");
 }
-
-TEST(SmartyMqttSubscriptionListTest, testThatListIsInitiallyEmpty) {
-  std::vector<SmartyMqttSubscription*>* list = SmartyMqttSubscription::getList();
-
-  EXPECT_EQ(list->size(), 0);
-}
-
-
-TEST(SmartyMqttSubscriptionListTest, testThatSubscriptionIsAddedOnConstruction) {
-  std::vector<SmartyMqttSubscription*>* list = SmartyMqttSubscription::getList();
-
-  SmartyMqttSubscription subscription("a/valid/topic");
-
-  EXPECT_EQ(list->size(), 1);
-}
-
-TEST(SmartyMqttSubscriptionListTest, testThatSubscriptionIsRemovedOnDestruction) {
-  std::vector<SmartyMqttSubscription*>* list = SmartyMqttSubscription::getList();
-
-  {
-    SmartyMqttSubscription subscription("a/valid/topic");
-  }
-
-  EXPECT_EQ(list->size(), 0);
-}

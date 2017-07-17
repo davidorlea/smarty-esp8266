@@ -111,29 +111,3 @@ TEST(SmartyMqttPublicationTest, testThatIsReadyReturnsFalseWhenReadyIsRevoked) {
 
   EXPECT_FALSE(result);
 }
-
-
-TEST(SmartyMqttPublicationListTest, testThatListIsInitiallyEmpty) {
-  std::vector<SmartyMqttPublication*>* list = SmartyMqttPublication::getList();
-
-  EXPECT_EQ(list->size(), 0);
-}
-
-
-TEST(SmartyMqttPublicationListTest, testThatPublicationIsAddedOnConstruction) {
-  std::vector<SmartyMqttPublication*>* list = SmartyMqttPublication::getList();
-
-  SmartyMqttPublication publication("a/valid/topic");
-
-  EXPECT_EQ(list->size(), 1);
-}
-
-TEST(SmartyMqttPublicationListTest, testThatPublicationIsRemovedOnDestruction) {
-  std::vector<SmartyMqttPublication*>* list = SmartyMqttPublication::getList();
-
-  {
-    SmartyMqttPublication publication("a/valid/topic");
-  }
-
-  EXPECT_EQ(list->size(), 0);
-}

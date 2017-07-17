@@ -1,14 +1,5 @@
 #include "MqttPublication.hpp"
 
-std::vector<SmartyMqttPublication*>* SmartyMqttPublication::_list = nullptr;
-
-std::vector<SmartyMqttPublication*>* SmartyMqttPublication::getList() {
-  if (_list == nullptr) {
-    _list = new std::vector<SmartyMqttPublication*>();
-  }
-  return _list;
-}
-
 bool SmartyMqttPublication::isValidTopic(const char* topic) {
   // Code from http://git.eclipse.org/c/mosquitto/org.eclipse.mosquitto.git/tree/lib/util_mosq.c
   while (topic && topic[0]) {
@@ -26,16 +17,9 @@ SmartyMqttPublication::SmartyMqttPublication(const char* topic) {
     abort();
   }
   _topic = strcpy(new char[strlen(topic) + 1], topic);
-
-  if (_list == nullptr) {
-    _list = new std::vector<SmartyMqttPublication*>();
-  }
-  _list->push_back(this);
-  _listIndex = _list->size() - 1;
 }
 
 SmartyMqttPublication::~SmartyMqttPublication() {
-  _list->erase(_list->begin() + _listIndex);
   delete _topic;
 }
 
