@@ -30,6 +30,10 @@ void Smarty::setup() {
   _config.setup();
   Serial << "Done" << endl;
 
+  Serial << "Initializing System: ";
+  _initializeSystem();
+  Serial << "Done" << endl;
+
   for (SmartyAbstractActuator* actuator : *SmartyAbstractActuator::getList()) {
     Serial << "Initializing Actuator " << actuator->getName() << ": ";
     actuator->setup();
@@ -82,6 +86,12 @@ void Smarty::loop() {
   }
 }
 
+void Smarty::_initializeSystem() {
+  if (_config.getName()[0]) {
+    _name = _config.getName();
+  }
+}
+
 void Smarty::_initializeWifi() {
   if (_config.getWifiSSID()[0]) {
     _wifi.setSSID(_config.getWifiSSID());
@@ -93,7 +103,7 @@ void Smarty::_initializeWifi() {
 
 void Smarty::_initializeHttp() {
   _http.addCustomRoute("/api/v1/system", HTTP_GET, [this]() {
-      StaticJsonBuffer<JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(4) + 128> jsonBuffer;
+      StaticJsonBuffer<JSON_OBJECT_SIZE(4) + JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(4) + 128> jsonBuffer;
       JsonObject& json = _createSystemJson(jsonBuffer);
       _http.sendSuccessResponse(json);
   });
@@ -168,7 +178,7 @@ void Smarty::_initializeMqtt() {
 
   SmartyTimer* timer = new SmartyTimer(SMARTY_MQTT_STATUS_INTERVAL);
   timer->setCallback([this]() {
-      StaticJsonBuffer<JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(4) + 128> jsonBuffer;
+      StaticJsonBuffer<JSON_OBJECT_SIZE(4) + JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(4) + 128> jsonBuffer;
       JsonObject& json = _createSystemJson(jsonBuffer);
       _mqtt.publishJson("$system", json);
   });
@@ -179,6 +189,9 @@ void Smarty::_initializeMqtt() {
 
 JsonObject& Smarty::_createSystemJson(JsonBuffer& jsonBuffer) {
   JsonObject& rootJson = jsonBuffer.createObject();
+  if (_name) {
+    rootJson["name"] = _name;
+  }
   rootJson["uptime"] = _uptime.getSeconds();
   JsonObject& firmwareJson = rootJson.createNestedObject("firmware");
   firmwareJson["name"] = _firmware.name;

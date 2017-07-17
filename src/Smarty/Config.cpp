@@ -28,6 +28,10 @@ void SmartyConfig::setup() {
     return;
   }
 
+  const char* jsonName = json["name"];
+  if (jsonName) {
+    strlcpy(_name, jsonName, SMARTY_CONFIG_MAX_NAME_LENGTH);
+  }
   const char* jsonWifiSSID = json["wifi"]["ssid"];
   if (jsonWifiSSID) {
     strlcpy(_wifiSSID, jsonWifiSSID, SMARTY_CONFIG_MAX_WIFI_SSID_LENGTH);
@@ -62,6 +66,10 @@ void SmartyConfig::setup() {
   }
 
   SPIFFS.end();
+}
+
+const char *SmartyConfig::getName() const {
+  return _name;
 }
 
 const char* SmartyConfig::getWifiSSID() const {

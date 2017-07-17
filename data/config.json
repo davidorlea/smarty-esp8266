@@ -1,4 +1,5 @@
 {
+  "name": "My Device Name",
   "wifi": {
     "ssid": "my_ssid",
     "password": "my_password"

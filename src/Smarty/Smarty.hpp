@@ -33,6 +33,8 @@ private:
   SmartyOta _ota;
   SmartyHttp _http;
   SmartyMqtt _mqtt;
+  const char* _name = nullptr;
+  void _initializeSystem();
   void _initializeWifi();
   void _initializeHttp();
   void _initializeMqtt();
