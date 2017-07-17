@@ -36,4 +36,6 @@ private:
   void _initializeWifi();
   void _initializeHttp();
   void _initializeMqtt();
+  JsonObject& _createSystemJson(JsonBuffer&);
+  JsonObject& _createTransducerJson(JsonBuffer&, SmartyAbstractTransducer*);
 };
