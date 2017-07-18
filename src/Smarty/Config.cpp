@@ -40,6 +40,10 @@ void SmartyConfig::setup() {
   if (jsonWifiPassword) {
     strlcpy(_wifiPassword, jsonWifiPassword, SMARTY_CONFIG_MAX_WIFI_PASSWORD_LENGTH);
   }
+  const char* jsonWifiHostname = json["wifi"]["hostname"];
+  if (jsonWifiHostname) {
+    strlcpy(_wifiHostname, jsonWifiHostname, SMARTY_CONFIG_MAX_WIFI_HOSTNAME_LENGTH);
+  }
   const char* jsonMqttHost = json["mqtt"]["host"];
   if (jsonMqttHost) {
     strlcpy(_mqttHost, jsonMqttHost, SMARTY_CONFIG_MAX_MQTT_HOST_LENGTH);
@@ -78,6 +82,10 @@ const char* SmartyConfig::getWifiSSID() const {
 
 const char* SmartyConfig::getWifiPassword() const {
   return _wifiPassword;
+}
+
+const char *SmartyConfig::getWifiHostname() const {
+  return _wifiHostname;
 }
 
 const char* SmartyConfig::getMqttHost() const {

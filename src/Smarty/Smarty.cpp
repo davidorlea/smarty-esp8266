@@ -99,6 +99,9 @@ void Smarty::_initializeWifi() {
   if (_config.getWifiPassword()[0]) {
     _wifi.setPassword(_config.getWifiPassword());
   }
+  if (_config.getWifiHostname()[0]) {
+    _wifi.setHostname(_config.getWifiHostname());
+  }
 }
 
 void Smarty::_initializeHttp() {

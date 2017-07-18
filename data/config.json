@@ -2,7 +2,8 @@
   "name": "My Device Name",
   "wifi": {
     "ssid": "my_ssid",
-    "password": "my_password"
+    "password": "my_password",
+    "hostname": "my_hostname"
   },
   "mqtt": {
     "host": "my_host",

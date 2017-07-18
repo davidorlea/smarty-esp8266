@@ -1,11 +1,22 @@
 #include "Wifi.hpp"
 
+SmartyWifi::SmartyWifi() {
+  char* composedHostname = (char*) malloc(21 + 1);
+  sprintf(composedHostname, "smarty-esp8266-%06x", ESP.getChipId());
+  _hostname = composedHostname;
+}
+
 void SmartyWifi::setSSID(const char* ssid) {
   _ssid = ssid;
 }
 
 void SmartyWifi::setPassword(const char* password) {
   _password = password;
+}
+
+void SmartyWifi::setHostname(const char* hostname) {
+  free((void*) _hostname);
+  _hostname = hostname;
 }
 
 String SmartyWifi::getSSID() {
@@ -43,6 +54,7 @@ bool SmartyWifi::_connect() {
       _isWaitingForConnection = true;
       WiFi.persistent(false);
       WiFi.begin(_ssid, _password);
+      WiFi.hostname(_hostname);
     }
     return false;
   } else {
