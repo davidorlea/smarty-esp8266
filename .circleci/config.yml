@@ -22,12 +22,18 @@ jobs:
       - run:
           name: Run build for custom board
           command: platformio ci examples/Custom/Custom.cpp --lib="." --project-conf="examples/Custom/Custom.ini"
+          environment:
+            PLATFORMIO_BUILD_FLAGS: -Werror
       - run:
           name: Run build for Sonoff Basic board
           command: platformio ci examples/SonoffBasic/SonoffBasic.cpp --lib="." --project-conf="examples/SonoffBasic/SonoffBasic.ini"
+          environment:
+            PLATFORMIO_BUILD_FLAGS: -Werror
       - run:
           name: Run build for Sonoff S20 board
           command: platformio ci examples/SonoffS20/SonoffS20.cpp --lib="." --project-conf="examples/SonoffS20/SonoffS20.ini"
+          environment:
+            PLATFORMIO_BUILD_FLAGS: -Werror
       - save_cache:
           key: v1-dependencies-{{ epoch }}
           paths:
