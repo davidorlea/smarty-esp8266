@@ -29,6 +29,6 @@ jobs:
           name: Run build for Sonoff S20 board
           command: platformio ci examples/SonoffS20/SonoffS20.cpp --lib="." --project-conf="examples/SonoffS20/SonoffS20.ini"
       - save_cache:
-          key: v1-dependencies
+          key: v1-dependencies-{{ epoch }}
           paths:
             - ~/.platformio
