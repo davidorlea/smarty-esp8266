@@ -14,9 +14,6 @@ SmartyMqtt::SmartyMqtt()
 }
 
 SmartyMqtt::~SmartyMqtt() {
-  for (SmartyMqttPublication* publication: _publications) {
-    delete publication;
-  }
   for (SmartyMqttSubscription* subscription: _subscriptions) {
     delete subscription;
   }
@@ -61,14 +58,6 @@ void SmartyMqtt::loop() {
       && (_lastConnectionAttempt == 0 || now - _lastConnectionAttempt >= SMARTY_MQTT_RECONNECT_INTERVAL)) {
     _lastConnectionAttempt = now;
     _connect();
-  }
-  if (_pubSubClient.connected()) {
-    for (SmartyMqttPublication* publication: _publications) {
-      if (publication->isReady()) {
-        publish(publication->getTopic(), publication->getMessage(), publication->getRetain());
-        publication->ready(false);
-      }
-    }
   }
   _pubSubClient.loop();
 }

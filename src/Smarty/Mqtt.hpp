@@ -7,7 +7,6 @@
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 #include <Streaming.h>
-#include "MqttPublication.hpp"
 #include "MqttSubscription.hpp"
 
 #define SMARTY_MQTT_RECONNECT_INTERVAL (1000UL * 60) // 60 seconds
@@ -40,7 +39,6 @@ private:
   const char* _clientId = nullptr;
   const char* _baseTopic = nullptr;
   unsigned long _lastConnectionAttempt;
-  std::vector<SmartyMqttPublication*> _publications;
   std::vector<SmartyMqttSubscription*> _subscriptions;
   void _connect();
   void _callback(char*, byte*, unsigned int);
