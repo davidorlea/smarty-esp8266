@@ -75,7 +75,8 @@ void SmartyMqtt::publish(const char* topic, const char* payload, bool retain) {
   strcat(composedTopic, "/");
   strcat(composedTopic, topic);
 
-  if (_pubSubClient.connected() && _pubSubClient.publish(composedTopic, payload, (boolean) retain)) {
+  bool result = _pubSubClient.publish(composedTopic, payload, (boolean) retain);
+  if (result) {
     Serial << "Outgoing MQTT message [";
   } else {
     Serial << "Discarded outgoing MQTT message [";
