@@ -106,20 +106,21 @@ void Smarty::_initializeWifi() {
 
 void Smarty::_initializeHttp() {
   _http.addCustomRoute("/api/v1/system", HTTP_GET, [this]() {
+      // Extending buffer space (128 bytes) for String objects. See comment below.
       StaticJsonBuffer<JSON_OBJECT_SIZE(4) + JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(4) + 128> jsonBuffer;
       JsonObject& json = _createSystemJson(jsonBuffer);
       _http.sendSuccessResponse(json);
   });
   for (SmartyAbstractActuator* actuator : *SmartyAbstractActuator::getList()) {
     _http.addCustomRoute("/api/v1/actuator/", actuator->getName(), HTTP_GET, [this, actuator]() {
-        StaticJsonBuffer<JSON_OBJECT_SIZE(2) + 64> jsonBuffer;
+        StaticJsonBuffer<JSON_OBJECT_SIZE(2)> jsonBuffer;
         JsonObject& json = _createTransducerJson(jsonBuffer, actuator);
         _http.sendSuccessResponse(json);
     });
     _http.addCustomRoute("/api/v1/actuator/", actuator->getName(), HTTP_POST, [this, actuator]() {
         int state = _http.extractStateFromJson();
         if (actuator->parseState(state)) {
-          StaticJsonBuffer<JSON_OBJECT_SIZE(2) + 64> jsonBuffer;
+          StaticJsonBuffer<JSON_OBJECT_SIZE(2)> jsonBuffer;
           JsonObject& json = _createTransducerJson(jsonBuffer, actuator);
           _http.sendSuccessResponse(json);
         } else {
@@ -129,7 +130,7 @@ void Smarty::_initializeHttp() {
   }
   for (SmartyAbstractSensor* sensor : *SmartyAbstractSensor::getList()) {
     _http.addCustomRoute("/api/v1/sensor/", sensor->getName(), HTTP_GET, [this, sensor]() {
-        StaticJsonBuffer<JSON_OBJECT_SIZE(2) + 64> jsonBuffer;
+        StaticJsonBuffer<JSON_OBJECT_SIZE(2)> jsonBuffer;
         JsonObject& json = _createTransducerJson(jsonBuffer, sensor);
         _http.sendSuccessResponse(json);
     });
@@ -181,6 +182,7 @@ void Smarty::_initializeMqtt() {
 
   SmartyTimer* timer = new SmartyTimer(SMARTY_MQTT_STATUS_INTERVAL);
   timer->setCallback([this]() {
+      // Extending buffer space (128 bytes) for String objects. See comment below.
       StaticJsonBuffer<JSON_OBJECT_SIZE(4) + JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(4) + 128> jsonBuffer;
       JsonObject& json = _createSystemJson(jsonBuffer);
       _mqtt.publishJson("$system", json);
@@ -189,6 +191,16 @@ void Smarty::_initializeMqtt() {
      return _mqtt.isConnected();
   });
 }
+
+// Debug JSON buffer sizes with:
+// Serial << "Usage of StaticJsonBuffer is " << jsonBuffer.size() << " out of " << jsonBuffer.capacity() << endl;
+// Serial << "Length of JsonObject is " << json.measureLength() + 1 << endl;
+//
+// WARNING 1: if you pass a String or a const char* to parseArray() or parseObject, the JsonBuffer will make a copy of
+// the input, so it will need to be significantly bigger.
+//
+// WARNING 2: if you use String to create your JSON keys or values, their content will automatically be duplicated in
+// the JsonBuffer, so you need to add the total length of all strings in the size of the JsonBuffer.
 
 JsonObject& Smarty::_createSystemJson(JsonBuffer& jsonBuffer) {
   JsonObject& rootJson = jsonBuffer.createObject();
