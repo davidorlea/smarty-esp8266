@@ -10,7 +10,7 @@
 #include "MqttSubscription.hpp"
 
 #define SMARTY_MQTT_RECONNECT_INTERVAL (1000UL * 60) // 60 seconds
-#define SMARTY_MQTT_STATUS_INTERVAL (1000UL * 60) // 60 seconds
+#define SMARTY_MQTT_STATUS_INTERVAL (1000UL * 60 * 5) // 5 minutes
 
 class SmartyMqtt {
 public:
