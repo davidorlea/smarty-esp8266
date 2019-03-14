@@ -17,7 +17,7 @@ public:
   SmartyMqtt();
   ~SmartyMqtt();
   void setHost(const char*);
-  void setPort(const uint16_t);
+  void setPort(uint16_t);
   void setUsername(const char*);
   void setPassword(const char*);
   void setClientId(const char*);

@@ -19,16 +19,16 @@ public:
     SLOW = 0,
     FAST = 1
   };
-  SmartyLed(const char*, const uint8_t, const State);
-  bool setup();
-  bool loop();
-  bool activate();
-  bool deactivate();
-  bool toggle();
-  bool parseState(int);
+  SmartyLed(const char*, uint8_t, State);
+  bool setup() override;
+  bool loop() override;
+  bool activate() override;
+  bool deactivate() override;
+  bool toggle() override;
+  bool parseState(int) override;
   bool startBlinking(BlinkRate = BlinkRate::FAST);
   bool stopBlinking();
-  uint8_t state();
+  uint8_t state() override;
 private:
   const uint8_t _port;
   const State _restState;

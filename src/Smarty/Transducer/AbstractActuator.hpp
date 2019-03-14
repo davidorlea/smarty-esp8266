@@ -17,7 +17,7 @@ public:
   virtual bool parseState(int) = 0;
 protected:
   static std::vector<SmartyAbstractActuator*>* _list;
-  SmartyAbstractActuator(const char*);
+  explicit SmartyAbstractActuator(const char*);
   virtual ~SmartyAbstractActuator();
   std::vector<SMARTY_ACTUATOR_CALLBACK_TYPE> _activateCallbacks;
   std::vector<SMARTY_ACTUATOR_CALLBACK_TYPE> _deactivateCallbacks;

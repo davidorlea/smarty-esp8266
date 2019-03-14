@@ -12,14 +12,14 @@ public:
     ON = HIGH,
     OFF = LOW
   };
-  SmartyRelay(const char*, const uint8_t, const State);
-  bool setup();
-  bool loop();
-  bool activate();
-  bool deactivate();
-  bool toggle();
-  bool parseState(int);
-  uint8_t state();
+  SmartyRelay(const char*, uint8_t, State);
+  bool setup() override;
+  bool loop() override;
+  bool activate() override;
+  bool deactivate() override;
+  bool toggle() override;
+  bool parseState(int) override;
+  uint8_t state() override;
 private:
   const uint8_t _port;
   const State _restState;

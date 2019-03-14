@@ -1,7 +1,7 @@
 #include "Wifi.hpp"
 
 SmartyWifi::SmartyWifi() {
-  char* composedHostname = (char*) malloc(21 + 1);
+  auto * composedHostname = (char*) malloc(21 + 1);
   sprintf(composedHostname, "smarty-esp8266-%06x", ESP.getChipId());
   _hostname = composedHostname;
 }
@@ -90,8 +90,8 @@ void SmartyWifi::_clearCurrentSettings() {
 }
 
 void SmartyWifi::_printCurrentAndDefaultSettings() {
-  struct station_config current_conf;
-  struct station_config default_conf;
+  struct station_config current_conf{};
+  struct station_config default_conf{};
   wifi_station_get_config(&current_conf);
   wifi_station_get_config_default(&default_conf);
 

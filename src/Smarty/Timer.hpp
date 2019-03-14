@@ -11,7 +11,7 @@
 class SmartyTimer {
 public:
   static std::vector<SmartyTimer*>* getList();
-  SmartyTimer(uint32_t);
+  explicit SmartyTimer(uint32_t);
   ~SmartyTimer();
   void setCallback(SMARTY_TIMER_CALLBACK_TYPE);
   void setCondition(SMARTY_TIMER_CONDITION_TYPE);

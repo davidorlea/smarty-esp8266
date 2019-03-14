@@ -12,7 +12,7 @@ public:
   void addStateCallback(SMARTY_SENSOR_CALLBACK_TYPE);
 protected:
   static std::vector<SmartyAbstractSensor*>* _list;
-  SmartyAbstractSensor(const char*);
+  explicit SmartyAbstractSensor(const char*);
   virtual ~SmartyAbstractSensor();
   std::vector<SMARTY_SENSOR_CALLBACK_TYPE> _stateCallbacks;
 private:

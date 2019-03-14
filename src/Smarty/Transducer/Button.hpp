@@ -18,10 +18,10 @@ public:
     PUSH = 0,
     SWITCH = 1
   };
-  SmartyButton(const char*, const uint8_t, const Mode);
-  bool setup();
-  bool loop();
-  uint8_t state();
+  SmartyButton(const char*, uint8_t, Mode);
+  bool setup() override;
+  bool loop() override;
+  uint8_t state() override;
 private:
   const uint8_t _port;
   const Mode _mode;

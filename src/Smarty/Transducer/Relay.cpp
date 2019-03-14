@@ -18,7 +18,7 @@ bool SmartyRelay::loop() {
 
 bool SmartyRelay::activate() {
   uint8_t oldState = state();
-  uint8_t newState = (uint8_t) State::ON;
+  auto newState = (uint8_t) State::ON;
   digitalWrite(_port, newState);
   for (SMARTY_ACTUATOR_CALLBACK_TYPE callback: _activateCallbacks) {
     callback(oldState != newState);
@@ -28,7 +28,7 @@ bool SmartyRelay::activate() {
 
 bool SmartyRelay::deactivate() {
   uint8_t oldState = state();
-  uint8_t newState = (uint8_t) State::OFF;
+  auto newState = (uint8_t) State::OFF;
   digitalWrite(_port, newState);
   for (SMARTY_ACTUATOR_CALLBACK_TYPE callback: _deactivateCallbacks) {
     callback(oldState != newState);

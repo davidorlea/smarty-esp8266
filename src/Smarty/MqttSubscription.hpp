@@ -9,7 +9,7 @@
 class SmartyMqttSubscription {
 public:
   static bool isValidTopic(const char*);
-  SmartyMqttSubscription(const char*);
+  explicit SmartyMqttSubscription(const char*);
   ~SmartyMqttSubscription();
   const char* getTopic();
   void setCallback(SMARTY_MQTT_SUBSCRIPTION_CALLBACK_TYPE);

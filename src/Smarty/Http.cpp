@@ -36,13 +36,13 @@ void SmartyHttp::sendSuccessResponse(JsonObject& json) {
 void SmartyHttp::sendErrorResponse(Error error) {
   switch(error) {
     case Error::BAD_REQUEST:
-      _webServer.send(400, "application/json", "{\"error\":\"BAD_REQUEST\"}");
+      _webServer.send(400, "application/json", R"({"error":"BAD_REQUEST"})");
       break;
     case Error::NOT_FOUND:
-      _webServer.send(404, "application/json", "{\"error\":\"NOT_FOUND\"}");
+      _webServer.send(404, "application/json", R"({"error":"NOT_FOUND"})");
       break;
     case Error::INTERNAL_SERVER_ERROR:
-      _webServer.send(500, "application/json", "{\"error\":\"INTERNAL_SERVER_ERROR\"}");
+      _webServer.send(500, "application/json", R"({"error":"INTERNAL_SERVER_ERROR"})");
       break;
   }
 }

@@ -11,5 +11,5 @@ public:
   virtual uint8_t state() = 0;
 protected:
   const char* _name;
-  SmartyAbstractTransducer(const char*);
+  explicit SmartyAbstractTransducer(const char*);
 };
