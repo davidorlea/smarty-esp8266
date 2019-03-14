@@ -1,9 +1,6 @@
 #include "Mqtt.hpp"
 
-SmartyMqtt::SmartyMqtt()
-: _wifiClient()
-, _pubSubClient(_wifiClient)
-, _lastConnectionAttempt(0) {
+SmartyMqtt::SmartyMqtt() {
   auto * composedClientId = (char*) malloc(21 + 1);
   sprintf(composedClientId, "smarty-esp8266-%06x", ESP.getChipId());
   _clientId = composedClientId;

@@ -1,15 +1,5 @@
 #include "Smarty.hpp"
 
-Smarty::Smarty()
-: _config()
-, _firmware()
-, _uptime()
-, _wifi()
-, _ota()
-, _http()
-, _mqtt() {
-}
-
 Smarty::~Smarty() {
   Serial << "ERROR: Destruction of Smarty not allowed!" << endl;
   abort();

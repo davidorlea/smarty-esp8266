@@ -10,8 +10,7 @@ std::vector<SmartyTimer*>* SmartyTimer::getList() {
 }
 
 SmartyTimer::SmartyTimer(uint32_t interval)
-: _interval(interval)
-, _lastUpdate(0) {
+: _interval(interval) {
   if (_list == nullptr) {
     _list = new std::vector<SmartyTimer*>();
   }

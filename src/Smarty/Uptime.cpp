@@ -1,10 +1,5 @@
 #include "Uptime.hpp"
 
-SmartyUptime::SmartyUptime()
-: _milliseconds(0)
-, _lastUpdate(0) {
-}
-
 void SmartyUptime::update() {
   uint32_t now = millis();
   _milliseconds += (now - _lastUpdate);

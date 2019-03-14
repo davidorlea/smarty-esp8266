@@ -29,15 +29,15 @@ public:
   void subscribe(const char*, SMARTY_MQTT_SUBSCRIPTION_CALLBACK_TYPE);
   bool isConnected();
 private:
-  WiFiClient _wifiClient;
-  PubSubClient _pubSubClient;
+  WiFiClient _wifiClient{};
+  PubSubClient _pubSubClient{_wifiClient};
   const char* _host = nullptr;
   uint16_t _port = 1883;
   const char* _username = nullptr;
   const char* _password = nullptr;
   const char* _clientId = nullptr;
   const char* _baseTopic = nullptr;
-  unsigned long _lastConnectionAttempt;
+  unsigned long _lastConnectionAttempt = 0;
   std::vector<SmartyMqttSubscription*> _subscriptions;
   void _connect();
   void _callback(char*, byte*, unsigned int);

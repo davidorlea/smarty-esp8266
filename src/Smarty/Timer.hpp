@@ -20,7 +20,7 @@ private:
   static std::vector<SmartyTimer*>* _list;
   std::vector<SmartyTimer*>::size_type _listIndex;
   uint32_t _interval;
-  uint32_t _lastUpdate;
+  uint32_t _lastUpdate = 0;
   SMARTY_TIMER_CALLBACK_TYPE _callback = nullptr;
   SMARTY_TIMER_CONDITION_TYPE _condition = nullptr;
 };

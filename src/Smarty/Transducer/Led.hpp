@@ -32,7 +32,7 @@ private:
   const uint8_t _port;
   const State _restState;
   State _virtualState;
-  BlinkRate _blinkRate;
-  unsigned long _lastBlinkTime;
+  BlinkRate _blinkRate = BlinkRate::FAST;
+  unsigned long _lastBlinkTime = 0;
   bool _isBlinking();
 };

@@ -11,7 +11,6 @@ public:
     NOT_FOUND,
     INTERNAL_SERVER_ERROR
   };
-  SmartyHttp();
   void setup();
   void loop();
   void addCustomRoute(const char*, const char*, HTTPMethod, std::function<void (void)>);
@@ -20,5 +19,5 @@ public:
   void sendErrorResponse(Error = Error::INTERNAL_SERVER_ERROR);
   int extractStateFromJson();
 private:
-  ESP8266WebServer _webServer;
+  ESP8266WebServer _webServer{80};
 };

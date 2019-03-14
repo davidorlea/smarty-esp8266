@@ -1,9 +1,5 @@
 #include "Http.hpp"
 
-SmartyHttp::SmartyHttp()
-: _webServer(80) {
-}
-
 void SmartyHttp::setup() {
   _webServer.onNotFound([this]() {
     sendErrorResponse(Error::NOT_FOUND);

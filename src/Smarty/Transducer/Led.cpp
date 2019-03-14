@@ -4,8 +4,7 @@ SmartyLed::SmartyLed(const char* name, const uint8_t port, const State state)
 : SmartyAbstractActuator(name)
 , _port(port)
 , _restState(state)
-, _virtualState(state)
-, _lastBlinkTime(0) {
+, _virtualState(state) {
 }
 
 bool SmartyLed::setup() {

@@ -24,7 +24,7 @@ public:
 private:
   const uint8_t _port;
   const Mode _mode;
-  uint8_t _lastButtonState;
-  unsigned long _debounceDelay;
-  unsigned long _lastDebounceTime;
+  uint8_t _lastButtonState = (uint8_t) State::OFF;
+  unsigned long _debounceDelay = BUTTON_DEBOUNCE_DELAY;
+  unsigned long _lastDebounceTime = 0;
 };

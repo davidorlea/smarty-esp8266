@@ -19,20 +19,19 @@
 
 class Smarty {
 public:
-  Smarty();
   ~Smarty();
   void setFirmwareName(const char*);
   void setFirmwareVersion(const char*);
   void setup();
   void loop();
 private:
-  SmartyConfig _config;
-  SmartyFirmware _firmware;
-  SmartyUptime _uptime;
-  SmartyWifi _wifi;
-  SmartyOta _ota;
-  SmartyHttp _http;
-  SmartyMqtt _mqtt;
+  SmartyConfig _config{};
+  SmartyFirmware _firmware{};
+  SmartyUptime _uptime{};
+  SmartyWifi _wifi{};
+  SmartyOta _ota{};
+  SmartyHttp _http{};
+  SmartyMqtt _mqtt{};
   const char* _name = nullptr;
   void _initializeSystem();
   void _initializeWifi();

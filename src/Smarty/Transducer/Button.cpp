@@ -3,10 +3,7 @@
 SmartyButton::SmartyButton(const char* name, const uint8_t port, const Mode mode)
 : SmartyAbstractSensor(name)
 , _port(port)
-, _mode(mode)
-, _lastButtonState((uint8_t) State::OFF)
-, _debounceDelay(BUTTON_DEBOUNCE_DELAY)
-, _lastDebounceTime(0) {
+, _mode(mode) {
 }
 
 bool SmartyButton::setup() {
