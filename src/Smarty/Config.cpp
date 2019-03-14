@@ -30,23 +30,23 @@ void SmartyConfig::setup() {
 
   const char* jsonName = json["name"];
   if (jsonName) {
-    strlcpy(_name, jsonName, SMARTY_CONFIG_MAX_NAME_LENGTH);
+    strlcpy(_name, jsonName, CONFIG_MAX_NAME_LENGTH);
   }
   const char* jsonWifiSSID = json["wifi"]["ssid"];
   if (jsonWifiSSID) {
-    strlcpy(_wifiSSID, jsonWifiSSID, SMARTY_CONFIG_MAX_WIFI_SSID_LENGTH);
+    strlcpy(_wifiSSID, jsonWifiSSID, CONFIG_MAX_WIFI_SSID_LENGTH);
   }
   const char* jsonWifiPassword = json["wifi"]["password"];
   if (jsonWifiPassword) {
-    strlcpy(_wifiPassword, jsonWifiPassword, SMARTY_CONFIG_MAX_WIFI_PASSWORD_LENGTH);
+    strlcpy(_wifiPassword, jsonWifiPassword, CONFIG_MAX_WIFI_PASSWORD_LENGTH);
   }
   const char* jsonWifiHostname = json["wifi"]["hostname"];
   if (jsonWifiHostname) {
-    strlcpy(_wifiHostname, jsonWifiHostname, SMARTY_CONFIG_MAX_WIFI_HOSTNAME_LENGTH);
+    strlcpy(_wifiHostname, jsonWifiHostname, CONFIG_MAX_WIFI_HOSTNAME_LENGTH);
   }
   const char* jsonMqttHost = json["mqtt"]["host"];
   if (jsonMqttHost) {
-    strlcpy(_mqttHost, jsonMqttHost, SMARTY_CONFIG_MAX_MQTT_HOST_LENGTH);
+    strlcpy(_mqttHost, jsonMqttHost, CONFIG_MAX_MQTT_HOST_LENGTH);
   }
   uint16_t jsonMqttPort = json["mqtt"]["port"];
   if (jsonMqttPort) {
@@ -54,19 +54,19 @@ void SmartyConfig::setup() {
   }
   const char* jsonMqttUsername = json["mqtt"]["username"];
   if (jsonMqttUsername) {
-    strlcpy(_mqttUsername, jsonMqttUsername, SMARTY_CONFIG_MAX_MQTT_USERNAME_LENGTH);
+    strlcpy(_mqttUsername, jsonMqttUsername, CONFIG_MAX_MQTT_USERNAME_LENGTH);
   }
   const char* jsonMqttPassword = json["mqtt"]["password"];
   if (jsonMqttPassword) {
-    strlcpy(_mqttPassword, jsonMqttPassword, SMARTY_CONFIG_MAX_MQTT_PASSWORD_LENGTH);
+    strlcpy(_mqttPassword, jsonMqttPassword, CONFIG_MAX_MQTT_PASSWORD_LENGTH);
   }
   const char* jsonMqttClientId = json["mqtt"]["clientId"];
   if (jsonMqttClientId) {
-    strlcpy(_mqttClientId, jsonMqttClientId, SMARTY_CONFIG_MAX_MQTT_CLIENT_ID_LENGTH);
+    strlcpy(_mqttClientId, jsonMqttClientId, CONFIG_MAX_MQTT_CLIENT_ID_LENGTH);
   }
   const char* jsonMqttBaseTopic = json["mqtt"]["baseTopic"];
   if (jsonMqttBaseTopic) {
-    strlcpy(_mqttBaseTopic, jsonMqttBaseTopic, SMARTY_CONFIG_MAX_MQTT_BASE_TOPIC_LENGTH);
+    strlcpy(_mqttBaseTopic, jsonMqttBaseTopic, CONFIG_MAX_MQTT_BASE_TOPIC_LENGTH);
   }
 
   SPIFFS.end();

@@ -180,7 +180,7 @@ void Smarty::_initializeMqtt() {
     });
   }
 
-  auto * timer = new SmartyTimer(SMARTY_MQTT_STATUS_INTERVAL);
+  auto * timer = new SmartyTimer(SmartyMqtt::MQTT_STATUS_INTERVAL);
   timer->setCallback([this]() {
       // Extending buffer space (128 bytes) for String objects. See comment below.
       StaticJsonBuffer<JSON_OBJECT_SIZE(4) + JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(4) + 128> jsonBuffer;

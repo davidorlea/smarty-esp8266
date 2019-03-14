@@ -18,9 +18,9 @@ bool SmartyLed::loop() {
   if (_lastBlinkTime) {
     unsigned long now = millis();
     if ((_blinkRate == BlinkRate::SLOW &&
-         now - _lastBlinkTime >= SMARTY_LED_BLINK_INTERVAL_SLOW) ||
+         now - _lastBlinkTime >= LED_BLINK_INTERVAL_SLOW) ||
         (_blinkRate == BlinkRate::FAST &&
-         now - _lastBlinkTime >= SMARTY_LED_BLINK_INTERVAL_FAST)) {
+         now - _lastBlinkTime >= LED_BLINK_INTERVAL_FAST)) {
       _lastBlinkTime = now;
       digitalWrite(_port, (uint8_t) !state());
     }

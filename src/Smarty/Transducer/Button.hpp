@@ -6,8 +6,6 @@
 #include <Arduino.h>
 #include "AbstractSensor.hpp"
 
-#define SMARTY_BUTTON_DEBOUNCE_DELAY 150
-
 class SmartyButton : public SmartyAbstractSensor {
 public:
   enum class State : uint8_t {
@@ -18,6 +16,7 @@ public:
     PUSH = 0,
     SWITCH = 1
   };
+  static const unsigned long BUTTON_DEBOUNCE_DELAY = 150;
   SmartyButton(const char*, uint8_t, Mode);
   bool setup() override;
   bool loop() override;

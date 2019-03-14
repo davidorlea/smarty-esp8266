@@ -6,9 +6,6 @@
 #include <Arduino.h>
 #include "AbstractActuator.hpp"
 
-#define SMARTY_LED_BLINK_INTERVAL_SLOW 800
-#define SMARTY_LED_BLINK_INTERVAL_FAST 400
-
 class SmartyLed : virtual public SmartyAbstractActuator {
 public:
   enum class State : uint8_t {
@@ -19,6 +16,8 @@ public:
     SLOW = 0,
     FAST = 1
   };
+  static const unsigned long LED_BLINK_INTERVAL_SLOW = 800;
+  static const unsigned long LED_BLINK_INTERVAL_FAST = 400;
   SmartyLed(const char*, uint8_t, State);
   bool setup() override;
   bool loop() override;

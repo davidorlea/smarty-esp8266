@@ -5,7 +5,7 @@ SmartyButton::SmartyButton(const char* name, const uint8_t port, const Mode mode
 , _port(port)
 , _mode(mode)
 , _lastButtonState((uint8_t) State::OFF)
-, _debounceDelay(SMARTY_BUTTON_DEBOUNCE_DELAY)
+, _debounceDelay(BUTTON_DEBOUNCE_DELAY)
 , _lastDebounceTime(0) {
 }
 

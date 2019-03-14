@@ -9,11 +9,10 @@
 #include <Streaming.h>
 #include "MqttSubscription.hpp"
 
-#define SMARTY_MQTT_RECONNECT_INTERVAL (1000UL * 60) // 60 seconds
-#define SMARTY_MQTT_STATUS_INTERVAL (1000UL * 60 * 5) // 5 minutes
-
 class SmartyMqtt {
 public:
+  static const unsigned long MQTT_RECONNECT_INTERVAL = 1000UL * 60;
+  static const unsigned long MQTT_STATUS_INTERVAL = 1000UL * 300;
   SmartyMqtt();
   ~SmartyMqtt();
   void setHost(const char*);

@@ -55,7 +55,7 @@ void SmartyMqtt::setup() {
 void SmartyMqtt::loop() {
   unsigned long now = millis();
   if (!_pubSubClient.connected()
-      && (_lastConnectionAttempt == 0 || now - _lastConnectionAttempt >= SMARTY_MQTT_RECONNECT_INTERVAL)) {
+      && (_lastConnectionAttempt == 0 || now - _lastConnectionAttempt >= MQTT_RECONNECT_INTERVAL)) {
     _lastConnectionAttempt = now;
     _connect();
   }
