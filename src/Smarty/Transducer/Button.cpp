@@ -8,6 +8,7 @@ SmartyButton::SmartyButton(const char* name, const uint8_t port, const Mode mode
 
 bool SmartyButton::setup() {
   pinMode(_port, INPUT_PULLUP);
+  _lastButtonState = (uint8_t) digitalRead(_port);
   return true;
 }
 
