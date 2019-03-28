@@ -14,7 +14,7 @@ env:
   matrix:
     - PLATFORMIO_CI_SRC="examples/CustomV1/CustomV1.cpp" PROJECT_CONF="examples/CustomV1/CustomV1.ini"
     - PLATFORMIO_CI_SRC="examples/CustomV2/CustomV2.cpp" PROJECT_CONF="examples/CustomV2/CustomV2.ini"
-    - PLATFORMIO_CI_SRC="examples/CustomV2/CustomV3.cpp" PROJECT_CONF="examples/CustomV3/CustomV3.ini"
+    - PLATFORMIO_CI_SRC="examples/CustomV3/CustomV3.cpp" PROJECT_CONF="examples/CustomV3/CustomV3.ini"
     - PLATFORMIO_CI_SRC="examples/SonoffBasic/SonoffBasic.cpp" PROJECT_CONF="examples/SonoffBasic/SonoffBasic.ini"
     - PLATFORMIO_CI_SRC="examples/SonoffS20/SonoffS20.cpp" PROJECT_CONF="examples/SonoffS20/SonoffS20.ini"
 
