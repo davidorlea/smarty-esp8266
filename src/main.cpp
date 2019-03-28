@@ -13,8 +13,8 @@
 
 Smarty smarty;
 SmartyButton button1("button1", BUTTON1_PIN, SmartyButton::Mode::PUSH);
-SmartyLed led1("led1", LED1_PIN, SmartyLed::State::OFF);
-SmartyRelay relay1("relay1", RELAY1_PIN, SmartyRelay::State::OFF);
+SmartyLed led1("led1", LED1_PIN, SmartyLed::Wiring::INVERSE);
+SmartyRelay relay1("relay1", RELAY1_PIN, SmartyRelay::Wiring::REGULAR);
 
 void waitForSerialMonitoring() {
   for (int i = 0; i < 5; i++) {

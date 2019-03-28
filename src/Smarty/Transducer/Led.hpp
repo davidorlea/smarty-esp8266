@@ -9,10 +9,16 @@
 class SmartyLed : virtual public SmartyAbstractActuator {
 public:
   enum class State : uint8_t {
-    ON = LOW,
-    OFF = HIGH
+    OFF = 0,
+    ON = 1,
+    TOGGLE = 2,
+    UNKNOWN = 3
   };
-  SmartyLed(const char*, uint8_t, State);
+  enum class Wiring {
+    REGULAR,
+    INVERSE
+  };
+  SmartyLed(const char*, uint8_t, Wiring);
   bool setup() override;
   bool loop() override;
   bool activate() override;
@@ -22,5 +28,5 @@ public:
   uint8_t state() override;
 private:
   const uint8_t _port;
-  const State _restState;
+  const Wiring _wiring;
 };
