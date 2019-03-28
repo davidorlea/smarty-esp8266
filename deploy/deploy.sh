@@ -1,7 +1,7 @@
 #!/bin/bash
 
-pio ci examples/CustomV2/CustomV2.cpp --lib="." --project-conf="deploy/OutdoorFrontdoorLight.ini"
-pio ci examples/CustomV2/CustomV2.cpp --lib="." --project-conf="deploy/OutdoorBackdoorLight.ini"
+pio ci examples/CustomV3/CustomV3.cpp --lib="." --project-conf="deploy/OutdoorFrontdoorLight.ini"
+pio ci examples/CustomV3/CustomV3.cpp --lib="." --project-conf="deploy/OutdoorBackdoorLight.ini"
 pio ci examples/CustomV2/CustomV2.cpp --lib="." --project-conf="deploy/KitchenCeilingLight.ini"
 pio ci examples/CustomV2/CustomV2.cpp --lib="." --project-conf="deploy/LivingRoomCeilingLight.ini"
 pio ci examples/CustomV2/CustomV2.cpp --lib="." --project-conf="deploy/HallCeilingLight.ini"
