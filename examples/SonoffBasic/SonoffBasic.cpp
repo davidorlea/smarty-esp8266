@@ -7,7 +7,7 @@
 
 Smarty smarty;
 SmartyButton button1("button1", BUTTON1_PIN, SmartyButton::Mode::PUSH);
-SmartyLed led1("led1", LED1_PIN, SmartyRelay::Wiring::INVERSE);
+SmartyLed led1("led1", LED1_PIN, SmartyLed::Wiring::INVERSE);
 SmartyRelay relay1("relay1", RELAY1_PIN, SmartyRelay::Wiring::REGULAR);
 
 void waitForSerialMonitoring() {
