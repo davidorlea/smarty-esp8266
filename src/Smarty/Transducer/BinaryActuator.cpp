@@ -1,22 +1,22 @@
-#include "Led.hpp"
+#include "BinaryActuator.hpp"
 
-SmartyLed::SmartyLed(const char* name, const uint8_t port, const Wiring wiring)
+SmartyBinaryActuator::SmartyBinaryActuator(const char* name, const uint8_t port, const Wiring wiring)
 : SmartyAbstractActuator(name)
 , _port(port)
 , _wiring(wiring) {
 }
 
-bool SmartyLed::setup() {
+bool SmartyBinaryActuator::setup() {
   pinMode(_port, OUTPUT);
   digitalWrite(_port, (uint8_t) ((_wiring == Wiring::REGULAR) ? LOW : HIGH));
   return true;
 }
 
-bool SmartyLed::loop() {
+bool SmartyBinaryActuator::loop() {
   return false;
 }
 
-bool SmartyLed::activate() {
+bool SmartyBinaryActuator::activate() {
   int oldState = digitalRead(_port);
   int newState = (_wiring == Wiring::REGULAR) ? HIGH : LOW;
   digitalWrite(_port, (uint8_t) newState);
@@ -26,7 +26,7 @@ bool SmartyLed::activate() {
   return oldState != newState;
 }
 
-bool SmartyLed::deactivate() {
+bool SmartyBinaryActuator::deactivate() {
   int oldState = digitalRead(_port);
   int newState = (_wiring == Wiring::REGULAR) ? LOW : HIGH;
   digitalWrite(_port, (uint8_t) newState);
@@ -36,7 +36,7 @@ bool SmartyLed::deactivate() {
   return oldState != newState;
 }
 
-bool SmartyLed::toggle() {
+bool SmartyBinaryActuator::toggle() {
   switch ((State) state()) {
     case State::OFF:
       return activate();
@@ -47,7 +47,7 @@ bool SmartyLed::toggle() {
   }
 }
 
-bool SmartyLed::parseState(int state) {
+bool SmartyBinaryActuator::parseState(int state) {
   switch((State) state) {
     case State::OFF:
       return deactivate();
@@ -60,7 +60,7 @@ bool SmartyLed::parseState(int state) {
   }
 }
 
-uint8_t SmartyLed::state() {
+uint8_t SmartyBinaryActuator::state() {
   switch (digitalRead(_port)) {
     case LOW:
       return (uint8_t) ((_wiring == Wiring::REGULAR) ? State::OFF : State::ON);

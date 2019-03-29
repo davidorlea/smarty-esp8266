@@ -6,7 +6,7 @@
 #include <Arduino.h>
 #include "AbstractActuator.hpp"
 
-class SmartyLed : virtual public SmartyAbstractActuator {
+class SmartyBinaryActuator : virtual public SmartyAbstractActuator {
 public:
   enum class State : uint8_t {
     OFF = 0,
@@ -18,7 +18,7 @@ public:
     REGULAR,
     INVERSE
   };
-  SmartyLed(const char*, uint8_t, Wiring);
+  SmartyBinaryActuator(const char*, uint8_t, Wiring);
   bool setup() override;
   bool loop() override;
   bool activate() override;

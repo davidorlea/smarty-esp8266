@@ -11,9 +11,8 @@
 #include "Timer.hpp"
 #include "Transducer/AbstractActuator.hpp"
 #include "Transducer/AbstractSensor.hpp"
+#include "Transducer/BinaryActuator.hpp"
 #include "Transducer/Button.hpp"
-#include "Transducer/Led.hpp"
-#include "Transducer/Relay.hpp"
 #include "Uptime.hpp"
 #include "Wifi.hpp"
 

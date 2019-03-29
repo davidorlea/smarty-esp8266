@@ -6,7 +6,7 @@
 
 Smarty smarty;
 SmartyButton button1("button1", BUTTON1_PIN, SmartyButton::Mode::SWITCH);
-SmartyRelay relay1("relay1", RELAY1_PIN, SmartyRelay::Wiring::REGULAR);
+SmartyBinaryActuator relay1("relay1", RELAY1_PIN, SmartyBinaryActuator::Wiring::REGULAR);
 
 void waitForSerialMonitoring() {
   for (int i = 0; i < 5; i++) {
