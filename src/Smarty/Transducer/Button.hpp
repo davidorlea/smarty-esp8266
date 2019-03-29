@@ -16,7 +16,7 @@ public:
     PUSH = 0,
     SWITCH = 1
   };
-  static const unsigned long BUTTON_DEBOUNCE_DELAY = 150;
+  static const unsigned long BUTTON_DEBOUNCE_DELAY = 50;
   SmartyButton(const char*, uint8_t, Mode);
   bool setup() override;
   bool loop() override;
@@ -24,6 +24,7 @@ public:
 private:
   const uint8_t _port;
   const Mode _mode;
+  uint8_t _currentButtonState = (uint8_t) State::OFF;
   uint8_t _lastButtonState = (uint8_t) State::OFF;
   unsigned long _debounceDelay = BUTTON_DEBOUNCE_DELAY;
   unsigned long _lastDebounceTime = 0;
