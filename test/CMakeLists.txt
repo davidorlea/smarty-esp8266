@@ -19,10 +19,18 @@ add_executable(HardwareTests
         ${CMAKE_CURRENT_SOURCE_DIR}/mock/Arduino.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/mock/ArduinoMock.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/mock/HardwareSerialMock.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/mock/TestFixture.cpp
         ${CMAKE_SOURCE_DIR}/src/Smarty/MqttSubscription.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/MqttSubscriptionTest.cpp
         ${CMAKE_SOURCE_DIR}/src/Smarty/Uptime.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/UptimeTest.cpp
+        ${CMAKE_SOURCE_DIR}/src/Smarty/Transducer/AbstractTransducer.cpp
+        ${CMAKE_SOURCE_DIR}/src/Smarty/Transducer/AbstractActuator.cpp
+        ${CMAKE_SOURCE_DIR}/src/Smarty/Transducer/AbstractSensor.cpp
+        ${CMAKE_SOURCE_DIR}/src/Smarty/Transducer/BinaryActuator.cpp
+        ${CMAKE_SOURCE_DIR}/src/Smarty/Transducer/Button.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/BinaryActuatorTest.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/ButtonTest.cpp
 )
 
 target_link_libraries(HardwareTests gtest gtest_main)

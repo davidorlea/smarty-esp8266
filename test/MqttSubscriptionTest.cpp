@@ -1,7 +1,9 @@
 #include <gtest/gtest.h>
 #include "Smarty/MqttSubscription.hpp"
 
-TEST(SmartyMqttSubscriptionTest, testThatValidSimpleTopicIsAccepted) {
+class SmartyMqttSubscriptionTest : public TestFixture {};
+
+TEST_F(SmartyMqttSubscriptionTest, testThatValidSimpleTopicIsAccepted) {
   bool result1 = SmartyMqttSubscription::isValidTopic("a/valid/topic");
   bool result2 = SmartyMqttSubscription::isValidTopic("a");
   bool result3 = SmartyMqttSubscription::isValidTopic("/");
@@ -13,7 +15,7 @@ TEST(SmartyMqttSubscriptionTest, testThatValidSimpleTopicIsAccepted) {
   EXPECT_TRUE(result4);
 }
 
-TEST(SmartyMqttSubscriptionTest, testThatValidSingleLevelTopicIsAccepted) {
+TEST_F(SmartyMqttSubscriptionTest, testThatValidSingleLevelTopicIsAccepted) {
   bool result1 = SmartyMqttSubscription::isValidTopic("a/valid/+/topic/+");
   bool result2 = SmartyMqttSubscription::isValidTopic("a/valid/+/topic");
   bool result3 = SmartyMqttSubscription::isValidTopic("a/valid/topic/+");
@@ -25,7 +27,7 @@ TEST(SmartyMqttSubscriptionTest, testThatValidSingleLevelTopicIsAccepted) {
   EXPECT_TRUE(result4);
 }
 
-TEST(SmartyMqttSubscriptionTest, testThatValidMultiLevelTopicIsAccepted) {
+TEST_F(SmartyMqttSubscriptionTest, testThatValidMultiLevelTopicIsAccepted) {
   bool result1 = SmartyMqttSubscription::isValidTopic("a/valid/topic/#");
   bool result2 = SmartyMqttSubscription::isValidTopic("#");
 
@@ -33,7 +35,7 @@ TEST(SmartyMqttSubscriptionTest, testThatValidMultiLevelTopicIsAccepted) {
   EXPECT_TRUE(result2);
 }
 
-TEST(SmartyMqttSubscriptionTest, testThatInvalidSingleLevelTopicIsRejected) {
+TEST_F(SmartyMqttSubscriptionTest, testThatInvalidSingleLevelTopicIsRejected) {
   bool result1 = SmartyMqttSubscription::isValidTopic("an/invalid+/topic");
   bool result2 = SmartyMqttSubscription::isValidTopic("an/+invalid/topic");
 
@@ -41,7 +43,7 @@ TEST(SmartyMqttSubscriptionTest, testThatInvalidSingleLevelTopicIsRejected) {
   EXPECT_FALSE(result2);
 }
 
-TEST(SmartyMqttSubscriptionTest, testThatInvalidMultiLevelTopicIsRejected) {
+TEST_F(SmartyMqttSubscriptionTest, testThatInvalidMultiLevelTopicIsRejected) {
   bool result1 = SmartyMqttSubscription::isValidTopic("an/invalid/topic/#/#");
   bool result2 = SmartyMqttSubscription::isValidTopic("an/invalid/#/topic");
   bool result3 = SmartyMqttSubscription::isValidTopic("an/invalid#/topic");
@@ -53,14 +55,14 @@ TEST(SmartyMqttSubscriptionTest, testThatInvalidMultiLevelTopicIsRejected) {
   EXPECT_FALSE(result4);
 }
 
-TEST(SmartyMqttSubscriptionTest, testThatConstructionFailsWithInvalidTopic) {
+TEST_F(SmartyMqttSubscriptionTest, testThatConstructionFailsWithInvalidTopic) {
 
   EXPECT_CALL(Serial, print("ERROR: Invalid MQTT subscription topic!"));
   EXPECT_CALL(Serial, println());
   EXPECT_DEATH({SmartyMqttSubscription subscription("a/valid/#/topic");}, "");
 }
 
-TEST(SmartyMqttSubscriptionTest, testThatCanHandleReturnsTrueForSubscriptionTopic) {
+TEST_F(SmartyMqttSubscriptionTest, testThatCanHandleReturnsTrueForSubscriptionTopic) {
   SmartyMqttSubscription subscription("a/valid/topic");
 
   bool result = subscription.canHandle("a/valid/topic");
@@ -68,7 +70,7 @@ TEST(SmartyMqttSubscriptionTest, testThatCanHandleReturnsTrueForSubscriptionTopi
   EXPECT_TRUE(result);
 }
 
-TEST(SmartyMqttSubscriptionTest, testThatCanHandleReturnsFalseForMismatchingTopic) {
+TEST_F(SmartyMqttSubscriptionTest, testThatCanHandleReturnsFalseForMismatchingTopic) {
   SmartyMqttSubscription subscription("a/valid/topic");
 
   bool result = subscription.canHandle("a/mismatching/topic");
@@ -76,7 +78,7 @@ TEST(SmartyMqttSubscriptionTest, testThatCanHandleReturnsFalseForMismatchingTopi
   EXPECT_FALSE(result);
 }
 
-TEST(SmartyMqttSubscriptionTest, testThatCanHandleReturnsTrueForMatchingSingleLevelTopic) {
+TEST_F(SmartyMqttSubscriptionTest, testThatCanHandleReturnsTrueForMatchingSingleLevelTopic) {
   SmartyMqttSubscription subscription("a/+/valid/topic");
 
   bool result1 = subscription.canHandle("a/first/valid/topic");
@@ -86,7 +88,7 @@ TEST(SmartyMqttSubscriptionTest, testThatCanHandleReturnsTrueForMatchingSingleLe
   EXPECT_TRUE(result2);
 }
 
-TEST(SmartyMqttSubscriptionTest, testThatCanHandleReturnsFalseForMismatchingSingleLevelTopic) {
+TEST_F(SmartyMqttSubscriptionTest, testThatCanHandleReturnsFalseForMismatchingSingleLevelTopic) {
   SmartyMqttSubscription subscription("a/+/valid/topic");
 
   bool result1 = subscription.canHandle("a/first/mismatching/topic");
@@ -96,7 +98,7 @@ TEST(SmartyMqttSubscriptionTest, testThatCanHandleReturnsFalseForMismatchingSing
   EXPECT_FALSE(result2);
 }
 
-TEST(SmartyMqttSubscriptionTest, testThatCanHandleReturnsTrueForMatchingSuffixSingleLevelTopic) {
+TEST_F(SmartyMqttSubscriptionTest, testThatCanHandleReturnsTrueForMatchingSuffixSingleLevelTopic) {
   SmartyMqttSubscription subscription("a/valid/topic/+");
 
   bool result = subscription.canHandle("a/valid/topic/first");
@@ -104,7 +106,7 @@ TEST(SmartyMqttSubscriptionTest, testThatCanHandleReturnsTrueForMatchingSuffixSi
   EXPECT_TRUE(result);
 }
 
-TEST(SmartyMqttSubscriptionTest, testThatCanHandleReturnsFalseForMismatchingSuffixSingleLevelTopic) {
+TEST_F(SmartyMqttSubscriptionTest, testThatCanHandleReturnsFalseForMismatchingSuffixSingleLevelTopic) {
   SmartyMqttSubscription subscription("a/valid/topic/+");
 
   bool result1 = subscription.canHandle("a/valid/topic");
@@ -114,7 +116,7 @@ TEST(SmartyMqttSubscriptionTest, testThatCanHandleReturnsFalseForMismatchingSuff
   EXPECT_FALSE(result2);
 }
 
-TEST(SmartyMqttSubscriptionTest, testThatCanHandleReturnsTrueForMatchingMultiLevelTopic) {
+TEST_F(SmartyMqttSubscriptionTest, testThatCanHandleReturnsTrueForMatchingMultiLevelTopic) {
   SmartyMqttSubscription subscription("a/valid/topic/#");
 
   bool result1 = subscription.canHandle("a/valid/topic");
@@ -126,7 +128,7 @@ TEST(SmartyMqttSubscriptionTest, testThatCanHandleReturnsTrueForMatchingMultiLev
   EXPECT_TRUE(result3);
 }
 
-TEST(SmartyMqttSubscriptionTest, testThatCanHandleReturnsFalseForMismatchingMultiLevelTopic) {
+TEST_F(SmartyMqttSubscriptionTest, testThatCanHandleReturnsFalseForMismatchingMultiLevelTopic) {
   SmartyMqttSubscription subscription("a/valid/topic/#");
 
   bool result = subscription.canHandle("a/first/valid/topic");
@@ -134,7 +136,7 @@ TEST(SmartyMqttSubscriptionTest, testThatCanHandleReturnsFalseForMismatchingMult
   EXPECT_FALSE(result);
 }
 
-TEST(SmartyMqttSubscriptionTest, testThatHandleCallsCallbackWithCorrectArguments) {
+TEST_F(SmartyMqttSubscriptionTest, testThatHandleCallsCallbackWithCorrectArguments) { // NOLINT(cert-err58-cpp)
   const char* calledTopic;
   const char* calledMessage;
 
