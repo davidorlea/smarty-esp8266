@@ -9,3 +9,4 @@ pio ci examples/SonoffS20/SonoffS20.cpp --lib="." --project-conf="deploy/LivingR
 pio ci examples/SonoffS20/SonoffS20.cpp --lib="." --project-conf="deploy/KitchenCabinetLight.ini"
 pio ci examples/SonoffBasic/SonoffBasic.cpp --lib="." --project-conf="deploy/KitchenSideboardLight.ini"
 pio ci examples/SonoffBasic/SonoffBasic.cpp --lib="." --project-conf="deploy/BedroomAmbientLight.ini"
+pio ci examples/SonoffBasic/SonoffBasic.cpp --lib="." --project-conf="deploy/BedroomBedLight.ini"
