@@ -8,3 +8,4 @@ pio ci examples/CustomV2/CustomV2.cpp --lib="." --project-conf="deploy/HallCeili
 pio ci examples/SonoffS20/SonoffS20.cpp --lib="." --project-conf="deploy/LivingRoomSofaLight.ini"
 pio ci examples/SonoffS20/SonoffS20.cpp --lib="." --project-conf="deploy/KitchenCabinetLight.ini"
 pio ci examples/SonoffBasic/SonoffBasic.cpp --lib="." --project-conf="deploy/KitchenSideboardLight.ini"
+pio ci examples/SonoffBasic/SonoffBasic.cpp --lib="." --project-conf="deploy/BedroomAmbientLight.ini"
