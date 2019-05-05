@@ -131,12 +131,7 @@ void SmartyMqtt::_connect() {
       Serial << "... failed (re-)connecting to MQTT broker" << endl;
       return;
     }
-
-    char topic[] = "/$online";
-    char composedTopic[strlen(_baseTopic) + strlen(topic) + 1];
-    strcpy(composedTopic, _baseTopic);
-    strcat(composedTopic, topic);
-    _mqttClient.publish(composedTopic, "true", (boolean) true, 0);
+    publish("$online", "true", true);
 
     for (SmartyMqttSubscription* subscription : _subscriptions) {
       _mqttClient.subscribe(subscription->getTopic(), 0);
