@@ -20,8 +20,8 @@
     "name": "ArduinoJson",
     "version": "~5.10.0"
   }, {
-    "name": "PubSubClient",
-    "version": "~2.6"
+    "name": "MQTT",
+    "version": "~2.4.3"
   }, {
     "name": "Streaming",
     "version": "5"
