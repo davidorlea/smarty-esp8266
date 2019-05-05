@@ -50,7 +50,7 @@ include_directories("$ENV{HOME}/.platformio/packages/toolchain-xtensa/xtensa-lx1
 include_directories("$ENV{HOME}/.platformio/packages/tool-unity")
 
 include_directories(${CMAKE_SOURCE_DIR}/.piolibdeps/ArduinoJson_ID64/src)
-include_directories(${CMAKE_SOURCE_DIR}/.piolibdeps/PubSubClient_ID89/src)
+include_directories(${CMAKE_SOURCE_DIR}/.piolibdeps/MQTT_ID617/src)
 include_directories(${CMAKE_SOURCE_DIR}/.piolibdeps/Streaming_ID560)
 
 FILE(GLOB_RECURSE SRC_LIST "${CMAKE_SOURCE_DIR}/src/*.*")

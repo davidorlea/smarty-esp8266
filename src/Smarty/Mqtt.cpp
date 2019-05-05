@@ -1,6 +1,7 @@
 #include "Mqtt.hpp"
 
-SmartyMqtt::SmartyMqtt() {
+SmartyMqtt::SmartyMqtt()
+: _mqttClient(this, 384) {
   auto * composedClientId = (char*) malloc(21 + 1);
   sprintf(composedClientId, "smarty-esp8266-%06x", ESP.getChipId());
   _clientId = composedClientId;
@@ -43,20 +44,27 @@ void SmartyMqtt::setBaseTopic(const char* topic) {
 }
 
 void SmartyMqtt::setup() {
-  _pubSubClient.setServer(_host, _port);
-  _pubSubClient.setCallback([this](char* topic, byte* payload, unsigned int length) {
-      return _callback(topic, payload,length);
+  char topic[] = "/$online";
+  char composedTopic[strlen(_baseTopic) + strlen(topic) + 1];
+  strcpy(composedTopic, _baseTopic);
+  strcat(composedTopic, topic);
+
+  _mqttClient.begin(_host, _port, _wifiClient);
+  _mqttClient.setWill(composedTopic, "false", (boolean) true, 0);
+  _mqttClient.onMessageAdvanced([](MQTTClient* client, char* topic, char *bytes, int length) {
+    auto* parent = static_cast<SmartyMqtt*>(static_cast<SmartyMQTTClient*>(client)->parent); // NOLINT(cppcoreguidelines-pro-type-static-cast-downcast)
+    parent->_callback(topic, bytes, length);
   });
 }
 
 void SmartyMqtt::loop() {
   unsigned long now = millis();
-  if (!_pubSubClient.connected()
+  if (!_mqttClient.connected()
       && (_lastConnectionAttempt == 0 || now - _lastConnectionAttempt >= MQTT_RECONNECT_INTERVAL)) {
     _lastConnectionAttempt = now;
     _connect();
   }
-  _pubSubClient.loop();
+  _mqttClient.loop();
 }
 
 void SmartyMqtt::publishJson(const char* topic, JsonObject& json, bool retain) {
@@ -72,7 +80,7 @@ void SmartyMqtt::publish(const char* topic, const char* payload, bool retain) {
   strcat(composedTopic, "/");
   strcat(composedTopic, topic);
 
-  bool result = _pubSubClient.publish(composedTopic, payload, (boolean) retain);
+  bool result = _mqttClient.publish(composedTopic, payload, (boolean) retain, 0);
   if (result) {
     Serial << "Outgoing MQTT message [";
   } else {
@@ -100,46 +108,40 @@ void SmartyMqtt::subscribe(const char* topic, SMARTY_MQTT_SUBSCRIPTION_CALLBACK_
 }
 
 bool SmartyMqtt::isConnected() {
-  return _pubSubClient.connected();
+  return _mqttClient.connected();
 }
 
 void SmartyMqtt::_connect() {
-  if (!_pubSubClient.connected()) {
+  if (!_mqttClient.connected()) {
     Serial << "(Re-)Connecting to MQTT broker ..." << endl;
     Serial << "MQTT Broker: " << _host << ":" << _port << endl;
     Serial << "MQTT Client ID: " << _clientId << endl;
     Serial << "MQTT Username: " << ((_username) ? _username : "n/a") << endl;
     Serial << "MQTT Password: " << ((_password) ? _password : "n/a") << endl;
 
-    char topic[] = "/$online";
-    char composedTopic[strlen(_baseTopic) + strlen(topic) + 1];
-    strcpy(composedTopic, _baseTopic);
-    strcat(composedTopic, topic);
-
     if (_username && _password) {
-      _pubSubClient.connect(_clientId, _username, _password, composedTopic, 0, (boolean) true, "false");
+      _mqttClient.connect(_clientId, _username, _password);
     } else {
-      _pubSubClient.connect(_clientId, composedTopic, 0, (boolean) true, "false");
+      _mqttClient.connect(_clientId);
     }
 
-    if (_pubSubClient.connected()) {
+    if (_mqttClient.connected()) {
       Serial << "... successfully (re-)connected to MQTT broker" << endl;
     } else {
-      Serial << "... failed (re-)connecting to MQTT broker (" << _pubSubClient.state() << ")" << endl;
+      Serial << "... failed (re-)connecting to MQTT broker" << endl;
       return;
     }
-
-    _pubSubClient.publish(composedTopic, "true", (boolean) true);
+    publish("$online", "true", true);
 
     for (SmartyMqttSubscription* subscription : _subscriptions) {
-      _pubSubClient.subscribe(subscription->getTopic());
+      _mqttClient.subscribe(subscription->getTopic(), 0);
     }
   }
 }
 
-void SmartyMqtt::_callback(char* topic, byte* payload, unsigned int length) {
+void SmartyMqtt::_callback(char* topic, char* bytes, int length) {
   char message[length + 1];
-  memcpy(message, payload, length);
+  memcpy(message, bytes, length);
   message[length] = '\0';
 
   Serial << "Incoming MQTT message [" << topic << "]: " << message << endl;
