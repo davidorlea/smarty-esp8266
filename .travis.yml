@@ -20,7 +20,7 @@ env:
 
 install:
   - pip install -U platformio
-  - platformio lib -g install ArduinoJson@~5.10.0 PubSubClient@~2.6 Streaming@5
+  - platformio lib -g install ArduinoJson@~5.10.0 MQTT@~2.4.3 Streaming@5
 
 script:
   - platformio ci --lib="." --project-conf=$PROJECT_CONF

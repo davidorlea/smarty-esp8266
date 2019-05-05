@@ -5,8 +5,8 @@
 #include <ArduinoJson.h>
 #include <Esp.h>
 #include <ESP8266WiFi.h>
-#include <PubSubClient.h>
 #include <Streaming.h>
+#include "MqttClient.hpp"
 #include "MqttSubscription.hpp"
 
 class SmartyMqtt {
@@ -30,7 +30,7 @@ public:
   bool isConnected();
 private:
   WiFiClient _wifiClient{};
-  PubSubClient _pubSubClient{_wifiClient};
+  SmartyMQTTClient _mqttClient;
   const char* _host = nullptr;
   uint16_t _port = 1883;
   const char* _username = nullptr;
@@ -40,5 +40,5 @@ private:
   unsigned long _lastConnectionAttempt = 0;
   std::vector<SmartyMqttSubscription*> _subscriptions;
   void _connect();
-  void _callback(char*, byte*, unsigned int);
+  void _callback(char*, char*, int);
 };
