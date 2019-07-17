@@ -103,15 +103,15 @@ void Smarty::_initializeHttp() {
   });
   for (SmartyAbstractActuator* actuator : *SmartyAbstractActuator::getList()) {
     _http.addCustomRoute("/api/v1/actuator/", actuator->getName(), HTTP_GET, [this, actuator]() {
-      StaticJsonBuffer<JSON_OBJECT_SIZE(2)> jsonBuffer;
-      JsonObject& json = _createTransducerJson(jsonBuffer, actuator);
+      StaticJsonBuffer<SmartyAbstractActuator::JSON_SIZE> jsonBuffer;
+      JsonObject& json = actuator->toJson(jsonBuffer);
       _http.sendSuccessResponse(json);
     });
     _http.addCustomRoute("/api/v1/actuator/", actuator->getName(), HTTP_POST, [this, actuator]() {
       int state = _http.extractStateFromJson();
       if (actuator->parseState(state)) {
-        StaticJsonBuffer<JSON_OBJECT_SIZE(2)> jsonBuffer;
-        JsonObject& json = _createTransducerJson(jsonBuffer, actuator);
+        StaticJsonBuffer<SmartyAbstractActuator::JSON_SIZE> jsonBuffer;
+        JsonObject& json = actuator->toJson(jsonBuffer);
         _http.sendSuccessResponse(json);
       } else {
         _http.sendErrorResponse(SmartyHttp::Error::BAD_REQUEST);
@@ -120,8 +120,8 @@ void Smarty::_initializeHttp() {
   }
   for (SmartyAbstractSensor* sensor : *SmartyAbstractSensor::getList()) {
     _http.addCustomRoute("/api/v1/sensor/", sensor->getName(), HTTP_GET, [this, sensor]() {
-      StaticJsonBuffer<JSON_OBJECT_SIZE(2)> jsonBuffer;
-      JsonObject& json = _createTransducerJson(jsonBuffer, sensor);
+      StaticJsonBuffer<SmartyAbstractSensor::JSON_SIZE> jsonBuffer;
+      JsonObject& json = sensor->toJson(jsonBuffer);
       _http.sendSuccessResponse(json);
     });
   }
@@ -206,12 +206,5 @@ JsonObject& Smarty::_createSystemJson(JsonBuffer& jsonBuffer) {
   wifiJson["rssi"] = _wifi.getRSSI();
   wifiJson["ip"] = _wifi.getIpAddress();
   wifiJson["hostname"] = _wifi.getHostName();
-  return rootJson;
-}
-
-JsonObject& Smarty::_createTransducerJson(JsonBuffer& jsonBuffer, SmartyAbstractTransducer* transducer) {
-  JsonObject& rootJson = jsonBuffer.createObject();
-  rootJson["name"] = transducer->getName();
-  rootJson["state"] = transducer->state();
   return rootJson;
 }
