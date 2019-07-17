@@ -96,33 +96,33 @@ void Smarty::_initializeWifi() {
 
 void Smarty::_initializeHttp() {
   _http.addCustomRoute("/api/v1/system", HTTP_GET, [this]() {
-      // Extending buffer space (128 bytes) for String objects. See comment below.
-      StaticJsonBuffer<JSON_OBJECT_SIZE(4) + JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(4) + 128> jsonBuffer;
-      JsonObject& json = _createSystemJson(jsonBuffer);
-      _http.sendSuccessResponse(json);
+    // Extending buffer space (128 bytes) for String objects. See comment below.
+    StaticJsonBuffer<JSON_OBJECT_SIZE(4) + JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(4) + 128> jsonBuffer;
+    JsonObject& json = _createSystemJson(jsonBuffer);
+    _http.sendSuccessResponse(json);
   });
   for (SmartyAbstractActuator* actuator : *SmartyAbstractActuator::getList()) {
     _http.addCustomRoute("/api/v1/actuator/", actuator->getName(), HTTP_GET, [this, actuator]() {
+      StaticJsonBuffer<JSON_OBJECT_SIZE(2)> jsonBuffer;
+      JsonObject& json = _createTransducerJson(jsonBuffer, actuator);
+      _http.sendSuccessResponse(json);
+    });
+    _http.addCustomRoute("/api/v1/actuator/", actuator->getName(), HTTP_POST, [this, actuator]() {
+      int state = _http.extractStateFromJson();
+      if (actuator->parseState(state)) {
         StaticJsonBuffer<JSON_OBJECT_SIZE(2)> jsonBuffer;
         JsonObject& json = _createTransducerJson(jsonBuffer, actuator);
         _http.sendSuccessResponse(json);
-    });
-    _http.addCustomRoute("/api/v1/actuator/", actuator->getName(), HTTP_POST, [this, actuator]() {
-        int state = _http.extractStateFromJson();
-        if (actuator->parseState(state)) {
-          StaticJsonBuffer<JSON_OBJECT_SIZE(2)> jsonBuffer;
-          JsonObject& json = _createTransducerJson(jsonBuffer, actuator);
-          _http.sendSuccessResponse(json);
-        } else {
-          _http.sendErrorResponse(SmartyHttp::Error::BAD_REQUEST);
-        }
+      } else {
+        _http.sendErrorResponse(SmartyHttp::Error::BAD_REQUEST);
+      }
     });
   }
   for (SmartyAbstractSensor* sensor : *SmartyAbstractSensor::getList()) {
     _http.addCustomRoute("/api/v1/sensor/", sensor->getName(), HTTP_GET, [this, sensor]() {
-        StaticJsonBuffer<JSON_OBJECT_SIZE(2)> jsonBuffer;
-        JsonObject& json = _createTransducerJson(jsonBuffer, sensor);
-        _http.sendSuccessResponse(json);
+      StaticJsonBuffer<JSON_OBJECT_SIZE(2)> jsonBuffer;
+      JsonObject& json = _createTransducerJson(jsonBuffer, sensor);
+      _http.sendSuccessResponse(json);
     });
   }
 }
@@ -149,33 +149,33 @@ void Smarty::_initializeMqtt() {
 
   for (SmartyAbstractActuator* actuator : *SmartyAbstractActuator::getList()) {
     actuator->addActivateCallback([this, actuator](bool changed) {
-        _mqtt.publish(actuator->getName(), "1");
+      _mqtt.publish(actuator->getName(), "1");
     });
     actuator->addDeactivateCallback([this, actuator](bool changed) {
-        _mqtt.publish(actuator->getName(), "0");
+      _mqtt.publish(actuator->getName(), "0");
     });
     _mqtt.subscribe(actuator->getName(), "/set", [actuator](const char* topic, const char* message) {
-        if (strcmp(message, "0") == 0) {
-          actuator->deactivate();
-        } else if (strcmp(message, "1") == 0) {
-          actuator->activate();
-        } else if (strcmp(message, "2") == 0) {
-          actuator->toggle();
-        }
+      if (strcmp(message, "0") == 0) {
+        actuator->deactivate();
+      } else if (strcmp(message, "1") == 0) {
+        actuator->activate();
+      } else if (strcmp(message, "2") == 0) {
+        actuator->toggle();
+      }
     });
   }
   for (SmartyAbstractSensor* sensor : *SmartyAbstractSensor::getList()) {
     sensor->addStateCallback([this, sensor](uint8_t state) {
-        _mqtt.publish(sensor->getName(), "2");
+      _mqtt.publish(sensor->getName(), "2");
     });
   }
 
   auto * timer = new SmartyTimer(SmartyMqtt::MQTT_STATUS_INTERVAL);
   timer->setCallback([this]() {
-      // Extending buffer space (128 bytes) for String objects. See comment below.
-      StaticJsonBuffer<JSON_OBJECT_SIZE(4) + JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(4) + 128> jsonBuffer;
-      JsonObject& json = _createSystemJson(jsonBuffer);
-      _mqtt.publishJson("$system", json);
+    // Extending buffer space (128 bytes) for String objects. See comment below.
+    StaticJsonBuffer<JSON_OBJECT_SIZE(4) + JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(4) + 128> jsonBuffer;
+    JsonObject& json = _createSystemJson(jsonBuffer);
+    _mqtt.publishJson("$system", json);
   });
   timer->setCondition([this]() {
      return _mqtt.isConnected();
