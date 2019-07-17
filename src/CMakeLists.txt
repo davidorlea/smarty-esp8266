@@ -1,6 +1,6 @@
 set(CMAKE_C_COMPILER "$ENV{HOME}/.platformio/packages/toolchain-xtensa/bin/xtensa-lx106-elf-gcc")
 set(CMAKE_CXX_COMPILER "$ENV{HOME}/.platformio/packages/toolchain-xtensa/bin/xtensa-lx106-elf-g++")
-set(CMAKE_C_FLAGS_DISTRIBUTION "-std=gnu99 -Wpointer-arith -Wno-implicit-function-declaration -Wl,-EL -fno-inline-functions -nostdlib -Os -mlongcalls -mtext-section-literals -falign-functions=4 -ffunction-sections -fdata-sections -Wall -DARDUINO=20300 -DLWIP_OPEN_SRC -DF_CPU=80000000L -D__ets__ -DICACHE_FLASH -DPLATFORMIO=30400 -DESP8266 -DARDUINO_ARCH_ESP8266 -DARDUINO_ESP8266_ESP12 -DMQTT_MAX_PACKET_SIZE=256 -U__STRICT_ANSI__")
+set(CMAKE_C_FLAGS_DISTRIBUTION "-std=gnu99 -Wpointer-arith -Wno-implicit-function-declaration -Wl,-EL -fno-inline-functions -nostdlib -Os -mlongcalls -mtext-section-literals -falign-functions=4 -ffunction-sections -fdata-sections -Wall -DARDUINO=20300 -DLWIP_OPEN_SRC -DF_CPU=80000000L -D__ets__ -DICACHE_FLASH -DPLATFORMIO=30400 -DESP8266 -DARDUINO_ARCH_ESP8266 -DARDUINO_ESP8266_ESP12 -U__STRICT_ANSI__")
 set(CMAKE_CXX_FLAGS_DISTRIBUTION "-fno-rtti -fno-exceptions -std=c++11 -Os -mlongcalls -mtext-section-literals -falign-functions=4 -ffunction-sections -fdata-sections -Wall -DARDUINO=20300 -DLWIP_OPEN_SRC -DF_CPU=80000000L -D__ets__ -DICACHE_FLASH -DPLATFORMIO=30400 -DESP8266 -DARDUINO_ARCH_ESP8266 -DARDUINO_ESP8266_ESP12 -DMQTT_MAX_PACKET_SIZE=256 -U__STRICT_ANSI__")
 set(CMAKE_CXX_STANDARD 11)
 
@@ -13,7 +13,6 @@ add_definitions(-DPLATFORMIO=30400)
 add_definitions(-DESP8266)
 add_definitions(-DARDUINO_ARCH_ESP8266)
 add_definitions(-DARDUINO_ESP8266_ESP12)
-add_definitions(-DMQTT_MAX_PACKET_SIZE=256)
 
 include_directories("$ENV{HOME}/.platformio/packages/framework-arduinoespressif8266/cores/esp8266")
 include_directories("$ENV{HOME}/.platformio/packages/framework-arduinoespressif8266/libraries/ESP8266WiFi/src")

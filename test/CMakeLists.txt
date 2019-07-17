@@ -9,7 +9,6 @@ add_definitions(-DPLATFORMIO=30400)
 add_definitions(-DESP8266)
 add_definitions(-DARDUINO_ARCH_ESP8266)
 add_definitions(-DARDUINO_ESP8266_ESP12)
-add_definitions(-DMQTT_MAX_PACKET_SIZE=256)
 
 include_directories(${CMAKE_SOURCE_DIR}/.piolibdeps/Streaming_ID560)
 
