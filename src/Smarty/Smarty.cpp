@@ -98,21 +98,18 @@ void Smarty::_initializeHttp() {
   _http.addCustomRoute("/api/v1/system", HTTP_GET, [this]() {
     // Extending buffer space (128 bytes) for String objects. See comment below.
     StaticJsonBuffer<JSON_OBJECT_SIZE(4) + JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(4) + 128> jsonBuffer;
-    JsonObject& json = _createSystemJson(jsonBuffer);
-    _http.sendSuccessResponse(json);
+    _http.sendSuccessResponse(_createSystemJson(jsonBuffer));
   });
   for (SmartyAbstractActuator* actuator : *SmartyAbstractActuator::getList()) {
     _http.addCustomRoute("/api/v1/actuator/", actuator->getName(), HTTP_GET, [this, actuator]() {
       StaticJsonBuffer<SmartyAbstractActuator::JSON_SIZE> jsonBuffer;
-      JsonObject& json = actuator->toJson(jsonBuffer);
-      _http.sendSuccessResponse(json);
+      _http.sendSuccessResponse(actuator->toJson(jsonBuffer));
     });
     _http.addCustomRoute("/api/v1/actuator/", actuator->getName(), HTTP_POST, [this, actuator]() {
       int state = _http.extractStateFromJson();
       if (actuator->parseState(state)) {
         StaticJsonBuffer<SmartyAbstractActuator::JSON_SIZE> jsonBuffer;
-        JsonObject& json = actuator->toJson(jsonBuffer);
-        _http.sendSuccessResponse(json);
+        _http.sendSuccessResponse(actuator->toJson(jsonBuffer));
       } else {
         _http.sendErrorResponse(SmartyHttp::Error::BAD_REQUEST);
       }
@@ -121,8 +118,7 @@ void Smarty::_initializeHttp() {
   for (SmartyAbstractSensor* sensor : *SmartyAbstractSensor::getList()) {
     _http.addCustomRoute("/api/v1/sensor/", sensor->getName(), HTTP_GET, [this, sensor]() {
       StaticJsonBuffer<SmartyAbstractSensor::JSON_SIZE> jsonBuffer;
-      JsonObject& json = sensor->toJson(jsonBuffer);
-      _http.sendSuccessResponse(json);
+      _http.sendSuccessResponse(sensor->toJson(jsonBuffer));
     });
   }
 }
@@ -174,8 +170,7 @@ void Smarty::_initializeMqtt() {
   timer->setCallback([this]() {
     // Extending buffer space (128 bytes) for String objects. See comment below.
     StaticJsonBuffer<JSON_OBJECT_SIZE(4) + JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(4) + 128> jsonBuffer;
-    JsonObject& json = _createSystemJson(jsonBuffer);
-    _mqtt.publishJson("$system", json);
+    _mqtt.publishJson("$system", _createSystemJson(jsonBuffer));
   });
   timer->setCondition([this]() {
      return _mqtt.isConnected();
