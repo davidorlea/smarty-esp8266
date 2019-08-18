@@ -37,10 +37,10 @@ bool SmartyBinaryActuator::deactivate() {
 }
 
 bool SmartyBinaryActuator::toggle() {
-  switch ((State) state()) {
-    case State::OFF:
+  switch (_readState()) {
+    case SmartyBinaryActuatorState::State::OFF:
       return activate();
-    case State::ON:
+    case SmartyBinaryActuatorState::State::ON:
       return deactivate();
     default:
       return false;
@@ -48,25 +48,33 @@ bool SmartyBinaryActuator::toggle() {
 }
 
 bool SmartyBinaryActuator::parseState(int state) {
-  switch((State) state) {
-    case State::OFF:
+  switch((SmartyBinaryActuatorState::State) state) {
+    case SmartyBinaryActuatorState::State::OFF:
       return deactivate();
-    case State::ON:
+    case SmartyBinaryActuatorState::State::ON:
       return activate();
-    case State::TOGGLE:
+    case SmartyBinaryActuatorState::State::TOGGLE:
       return toggle();
     default:
       return false;
   }
 }
 
-uint8_t SmartyBinaryActuator::state() {
+JsonObject& SmartyBinaryActuator::toJson(JsonBuffer& jsonBuffer) {
+  JsonObject& rootJson = SmartyAbstractActuator::toJson(jsonBuffer);
+  rootJson["type"] = "binaryActuator";
+  _state.setBinaryActuatorState(_readState());
+  _state.applyNestedJson(rootJson);
+  return rootJson;
+}
+
+SmartyBinaryActuatorState::State SmartyBinaryActuator::_readState() {
   switch (digitalRead(_port)) {
     case LOW:
-      return (uint8_t) ((_wiring == Wiring::REGULAR) ? State::OFF : State::ON);
+      return (_wiring == Wiring::REGULAR) ? SmartyBinaryActuatorState::State::OFF : SmartyBinaryActuatorState::State::ON;
     case HIGH:
-      return (uint8_t) ((_wiring == Wiring::REGULAR) ? State::ON : State::OFF);
+      return (_wiring == Wiring::REGULAR) ? SmartyBinaryActuatorState::State::ON : SmartyBinaryActuatorState::State::OFF;
     default:
-      return (uint8_t) State::UNKNOWN;
+      return SmartyBinaryActuatorState::State::UNKNOWN;
   }
 }

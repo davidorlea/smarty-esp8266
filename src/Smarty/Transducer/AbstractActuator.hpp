@@ -2,6 +2,7 @@
 
 #include <functional>
 #include <vector>
+#include <ArduinoJson.h>
 #include "AbstractTransducer.hpp"
 
 #define SMARTY_ACTUATOR_CALLBACK_TYPE std::function<void (bool changed)>
@@ -11,6 +12,7 @@ public:
   static const std::vector<SmartyAbstractActuator*>* getList();
   void addActivateCallback(SMARTY_ACTUATOR_CALLBACK_TYPE);
   void addDeactivateCallback(SMARTY_ACTUATOR_CALLBACK_TYPE);
+  JsonObject& toJson(JsonBuffer&) override;
   virtual bool activate() = 0;
   virtual bool deactivate() = 0;
   virtual bool toggle() = 0;

@@ -11,6 +11,5 @@ const char* SmartyAbstractTransducer::getName() {
 JsonObject& SmartyAbstractTransducer::toJson(JsonBuffer& jsonBuffer) {
   JsonObject& rootJson = jsonBuffer.createObject();
   rootJson["name"] = this->getName();
-  rootJson["state"] = this->state();
   return rootJson;
 }

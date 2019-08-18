@@ -4,16 +4,12 @@
 #include <functional>
 #include <vector>
 #include <Arduino.h>
+#include <ArduinoJson.h>
 #include "AbstractActuator.hpp"
+#include "BinaryActuatorState.hpp"
 
 class SmartyBinaryActuator : virtual public SmartyAbstractActuator {
 public:
-  enum class State : uint8_t {
-    OFF = 0,
-    ON = 1,
-    TOGGLE = 2,
-    UNKNOWN = 3
-  };
   enum class Wiring {
     REGULAR,
     INVERSE
@@ -25,8 +21,10 @@ public:
   bool deactivate() override;
   bool toggle() override;
   bool parseState(int) override;
-  uint8_t state() override;
+  JsonObject& toJson(JsonBuffer&) override;
 private:
+  SmartyBinaryActuatorState _state{};
   const uint8_t _port;
   const Wiring _wiring;
+  SmartyBinaryActuatorState::State _readState();
 };

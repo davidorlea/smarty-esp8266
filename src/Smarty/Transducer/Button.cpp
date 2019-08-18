@@ -8,21 +8,21 @@ SmartyButton::SmartyButton(const char* name, const uint8_t port, const Mode mode
 
 bool SmartyButton::setup() {
   pinMode(_port, INPUT_PULLUP);
-  _currentButtonState = (uint8_t) digitalRead(_port);
+  _currentButtonState = _readState();
   _lastButtonState = _currentButtonState;
   return true;
 }
 
 bool SmartyButton::loop() {
-    uint8_t buttonState = state();
+    auto buttonState = _readState();
     unsigned long now = millis();
     if (buttonState != _lastButtonState) {
         _lastDebounceTime = now;
     }
     if ((now - _lastDebounceTime) > _debounceDelay && buttonState != _currentButtonState) {
-        if (_mode == Mode::SWITCH || buttonState == (uint8_t) State::ON) {
+        if (_mode == Mode::SWITCH || buttonState == SmartyButtonState::State::ON) {
             for (SMARTY_SENSOR_CALLBACK_TYPE callback: _stateCallbacks) {
-                callback(buttonState);
+                callback();
             }
         }
         _currentButtonState = buttonState;
@@ -31,6 +31,22 @@ bool SmartyButton::loop() {
     return true;
 }
 
-uint8_t SmartyButton::state() {
-  return (uint8_t) digitalRead(_port);
+JsonObject& SmartyButton::toJson(JsonBuffer& jsonBuffer) {
+  JsonObject& rootJson = SmartyAbstractSensor::toJson(jsonBuffer);
+  rootJson["type"] = "button";
+  switch (_mode) {
+    case Mode::PUSH:
+      rootJson["mode"] = "push";
+      break;
+    case Mode::SWITCH:
+      rootJson["mode"] = "switch";
+      break;
+  }
+  _state.setButtonState(_readState());
+  _state.applyNestedJson(rootJson);
+  return rootJson;
+}
+
+SmartyButtonState::State SmartyButton::_readState() {
+  return (SmartyButtonState::State) digitalRead(_port);
 }

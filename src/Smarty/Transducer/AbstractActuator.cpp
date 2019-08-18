@@ -29,3 +29,9 @@ void SmartyAbstractActuator::addActivateCallback(SMARTY_ACTUATOR_CALLBACK_TYPE c
 void SmartyAbstractActuator::addDeactivateCallback(SMARTY_ACTUATOR_CALLBACK_TYPE callback) {
   _deactivateCallbacks.push_back(callback);
 }
+
+JsonObject& SmartyAbstractActuator::toJson(JsonBuffer& jsonBuffer) {
+  JsonObject& rootJson = SmartyAbstractTransducer::toJson(jsonBuffer);
+  rootJson["class"] = "actuator";
+  return rootJson;
+}

@@ -165,7 +165,7 @@ void Smarty::_initializeMqtt() {
     });
   }
   for (SmartyAbstractSensor* sensor : *SmartyAbstractSensor::getList()) {
-    sensor->addStateCallback([this, sensor](uint8_t state) {
+    sensor->addStateCallback([this, sensor]() {
       _mqtt.publish(sensor->getName(), "2");
     });
   }
