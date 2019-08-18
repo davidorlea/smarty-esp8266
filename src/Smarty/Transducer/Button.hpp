@@ -2,7 +2,6 @@
 
 #include <cstdint>
 #include <functional>
-#include <vector>
 #include <Arduino.h>
 #include <ArduinoJson.h>
 #include "AbstractSensor.hpp"
