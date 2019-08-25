@@ -18,10 +18,10 @@
   "platforms": "espressif8266",
   "dependencies": [{
     "name": "ArduinoJson",
-    "version": "~5.10.0"
+    "version": "5.10.1"
   }, {
     "name": "MQTT",
-    "version": "~2.4.3"
+    "version": "2.4.3"
   }, {
     "name": "Streaming",
     "version": "5"
