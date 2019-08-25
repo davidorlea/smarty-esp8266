@@ -29,7 +29,7 @@ void setup() {
   smarty.setFirmwareName("Smarty Home Automation");
   smarty.setFirmwareVersion("0.1.0");
 
-  button1.addStateCallback([](uint8_t state) {
+  button1.addStateCallback([]() {
     Serial << button1.getName() << F(" pushed") << endl;
     relay1.toggle();
   });
