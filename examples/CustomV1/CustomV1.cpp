@@ -5,7 +5,7 @@
 #define RELAY1_PIN 16
 
 Smarty smarty;
-SmartyButton button1("button1", BUTTON1_PIN, SmartyButton::Mode::PUSH);
+SmartyButton button1("button1", BUTTON1_PIN, SmartyButton::Mode::SWITCH);
 SmartyBinaryActuator relay1("relay1", RELAY1_PIN, SmartyBinaryActuator::Wiring::REGULAR);
 
 void waitForSerialMonitoring() {
@@ -28,7 +28,7 @@ void setup() {
   smarty.setFirmwareVersion("0.1.0");
 
   button1.addStateCallback([](uint8_t state) {
-    Serial << button1.getName() << F(" pushed") << endl;
+    Serial << button1.getName() << F(" switched") << endl;
     relay1.toggle();
   });
   relay1.addActivateCallback([](bool changed) {

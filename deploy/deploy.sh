@@ -1,13 +1,13 @@
 #!/bin/bash
 
-pio ci examples/CustomV3/CustomV3.cpp --lib="." --project-conf="deploy/OutdoorFrontdoorLight.ini"
-pio ci examples/CustomV3/CustomV3.cpp --lib="." --project-conf="deploy/OutdoorBackdoorLight.ini"
-pio ci examples/CustomV2/CustomV2.cpp --lib="." --project-conf="deploy/KitchenCeilingLight.ini"
-pio ci examples/CustomV2/CustomV2.cpp --lib="." --project-conf="deploy/LivingRoomCeilingLight.ini"
-pio ci examples/CustomV2/CustomV2.cpp --lib="." --project-conf="deploy/BedroomCeilingLight.ini"
-pio ci examples/CustomV2/CustomV2.cpp --lib="." --project-conf="deploy/HallCeilingLight.ini"
-pio ci examples/SonoffS20/SonoffS20.cpp --lib="." --project-conf="deploy/LivingRoomSofaLight.ini"
-pio ci examples/SonoffS20/SonoffS20.cpp --lib="." --project-conf="deploy/KitchenCabinetLight.ini"
-pio ci examples/SonoffBasic/SonoffBasic.cpp --lib="." --project-conf="deploy/KitchenSideboardLight.ini"
-pio ci examples/SonoffBasic/SonoffBasic.cpp --lib="." --project-conf="deploy/BedroomAmbientLight.ini"
-pio ci examples/SonoffBasic/SonoffBasic.cpp --lib="." --project-conf="deploy/BedroomBedLight.ini"
+pio run --environment custom-v3-current --target upload --upload-port 192.168.178.40       # OutdoorFrontdoorLight
+pio run --environment custom-v3-current --target upload --upload-port 192.168.178.45       # OutdoorBackdoorLight
+pio run --environment custom-v2-current --target upload --upload-port 192.168.178.35       # KitchenCeilingLight
+pio run --environment custom-v2-current --target upload --upload-port 192.168.178.32       # LivingRoomCeilingLight
+pio run --environment custom-v2-current --target upload --upload-port 192.168.178.38       # BedroomCeilingLight
+pio run --environment custom-v2-current --target upload --upload-port 192.168.178.36       # HallCeilingLight
+pio run --environment sonoff-s20-current --target upload --upload-port 192.168.178.33      # LivingRoomSofaLight
+pio run --environment sonoff-s20-current --target upload --upload-port 192.168.178.28      # KitchenCabinetLight
+pio run --environment sonoff-basic-current --target upload --upload-port 192.168.178.47    # KitchenSideboardLight
+pio run --environment sonoff-basic-current --target upload --upload-port 192.168.178.44    # BedroomAmbientLight
+pio run --environment sonoff-basic-current --target upload --upload-port 192.168.178.46    # BedroomBedLight
