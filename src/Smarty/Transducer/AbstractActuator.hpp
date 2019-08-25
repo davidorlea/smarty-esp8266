@@ -16,7 +16,7 @@ public:
   virtual bool activate() = 0;
   virtual bool deactivate() = 0;
   virtual bool toggle() = 0;
-  virtual bool parseState(int) = 0;
+  virtual bool fromJson(StaticJsonBufferBase&, const char*) = 0;
 protected:
   static std::vector<SmartyAbstractActuator*>* _list;
   explicit SmartyAbstractActuator(const char*);

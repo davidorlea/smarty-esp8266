@@ -106,10 +106,10 @@ void Smarty::_initializeHttp() {
       _http.sendSuccessResponse(actuator->toJson(jsonBuffer));
     });
     _http.addCustomRoute("/api/v1/actuator/", actuator->getName(), HTTP_POST, [this, actuator]() {
-      int state = _http.extractStateFromJson();
-      if (actuator->parseState(state)) {
-        StaticJsonBuffer<SmartyAbstractActuator::JSON_SIZE> jsonBuffer;
-        _http.sendSuccessResponse(actuator->toJson(jsonBuffer));
+      StaticJsonBuffer<SmartyAbstractActuator::JSON_SIZE> requestJsonBuffer;
+      if (actuator->fromJson(requestJsonBuffer, _http.getRequestBody())) {
+        StaticJsonBuffer<SmartyAbstractActuator::JSON_SIZE> responseJsonBuffer;
+        _http.sendSuccessResponse(actuator->toJson(responseJsonBuffer));
       } else {
         _http.sendErrorResponse(SmartyHttp::Error::BAD_REQUEST);
       }
@@ -145,24 +145,22 @@ void Smarty::_initializeMqtt() {
 
   for (SmartyAbstractActuator* actuator : *SmartyAbstractActuator::getList()) {
     actuator->addActivateCallback([this, actuator](bool changed) {
-      _mqtt.publish(actuator->getName(), "1");
+      StaticJsonBuffer<SmartyAbstractActuator::JSON_SIZE> jsonBuffer;
+      _mqtt.publishJson(actuator->getName(), actuator->toJson(jsonBuffer));
     });
     actuator->addDeactivateCallback([this, actuator](bool changed) {
-      _mqtt.publish(actuator->getName(), "0");
+      StaticJsonBuffer<SmartyAbstractActuator::JSON_SIZE> jsonBuffer;
+      _mqtt.publishJson(actuator->getName(), actuator->toJson(jsonBuffer));
     });
-    _mqtt.subscribe(actuator->getName(), "/set", [actuator](const char* topic, const char* message) {
-      if (strcmp(message, "0") == 0) {
-        actuator->deactivate();
-      } else if (strcmp(message, "1") == 0) {
-        actuator->activate();
-      } else if (strcmp(message, "2") == 0) {
-        actuator->toggle();
-      }
+    _mqtt.subscribe(actuator->getName(), "/set", [this, actuator](const char* topic, const char* message) {
+      StaticJsonBuffer<SmartyAbstractActuator::JSON_SIZE> jsonBuffer;
+      actuator->fromJson(jsonBuffer, message);
     });
   }
   for (SmartyAbstractSensor* sensor : *SmartyAbstractSensor::getList()) {
     sensor->addStateCallback([this, sensor]() {
-      _mqtt.publish(sensor->getName(), "2");
+      StaticJsonBuffer<SmartyAbstractSensor::JSON_SIZE> jsonBuffer;
+      _mqtt.publishJson(sensor->getName(), sensor->toJson(jsonBuffer));
     });
   }
 

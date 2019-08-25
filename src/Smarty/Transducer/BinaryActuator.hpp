@@ -19,11 +19,12 @@ public:
   bool activate() override;
   bool deactivate() override;
   bool toggle() override;
-  bool parseState(int) override;
   JsonObject& toJson(JsonBuffer&) override;
+  bool fromJson(StaticJsonBufferBase&, const char*) override;
 private:
   SmartyBinaryActuatorState _state{};
   const uint8_t _port;
   const Wiring _wiring;
+  bool _parseState(int);
   SmartyBinaryActuatorState::State _readState();
 };

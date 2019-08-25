@@ -47,25 +47,40 @@ bool SmartyBinaryActuator::toggle() {
   }
 }
 
-bool SmartyBinaryActuator::parseState(int state) {
-  switch((SmartyBinaryActuatorState::State) state) {
-    case SmartyBinaryActuatorState::State::OFF:
-      return deactivate();
-    case SmartyBinaryActuatorState::State::ON:
-      return activate();
-    case SmartyBinaryActuatorState::State::TOGGLE:
-      return toggle();
-    default:
-      return false;
-  }
-}
-
 JsonObject& SmartyBinaryActuator::toJson(JsonBuffer& jsonBuffer) {
   JsonObject& rootJson = SmartyAbstractActuator::toJson(jsonBuffer);
   rootJson["type"] = "binaryActuator";
   _state.setBinaryActuatorState(_readState());
   _state.applyNestedJson(rootJson);
   return rootJson;
+}
+
+bool SmartyBinaryActuator::fromJson(StaticJsonBufferBase& jsonBuffer, const char* message) {
+  JsonObject& rootObject = jsonBuffer.parseObject(message);
+  if (!rootObject.success() || !rootObject.containsKey("state") || !rootObject.is<JsonObject>("state")) {
+    return false;
+  }
+  JsonObject& stateObject = rootObject.get<JsonObject&>("state");
+  if (!stateObject.success() || !stateObject.containsKey("binaryActuator") || !stateObject.is<int>("binaryActuator")) {
+    return false;
+  }
+  return _parseState(stateObject.get<int>("binaryActuator"));
+}
+
+bool SmartyBinaryActuator::_parseState(int state) {
+  switch((SmartyBinaryActuatorState::State) state) {
+    case SmartyBinaryActuatorState::State::OFF:
+      deactivate();
+      return true;
+    case SmartyBinaryActuatorState::State::ON:
+      activate();
+      return true;
+    case SmartyBinaryActuatorState::State::TOGGLE:
+      toggle();
+      return true;
+    default:
+      return false;
+  }
 }
 
 SmartyBinaryActuatorState::State SmartyBinaryActuator::_readState() {

@@ -43,17 +43,6 @@ void SmartyHttp::sendErrorResponse(Error error) {
   }
 }
 
-int SmartyHttp::extractStateFromJson() {
-  if (!_webServer.hasArg("plain")) {
-    return -1;
-  }
-
-  StaticJsonBuffer<JSON_OBJECT_SIZE(1) + 16> jsonBuffer;
-  JsonObject& root = jsonBuffer.parseObject(_webServer.arg("plain").c_str());
-
-  if (!root.success() || !root.containsKey("state")) {
-    return -1;
-  }
-
-  return root["state"].as<int>();
+const char* SmartyHttp::getRequestBody() {
+  return _webServer.arg("plain").c_str();
 }
