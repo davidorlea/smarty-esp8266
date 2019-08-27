@@ -26,6 +26,7 @@ void setup() {
 
   smarty.setFirmwareName("Smarty Home Automation");
   smarty.setFirmwareVersion("0.1.0");
+  smarty.setFirmwareBuildTime(BUILD_TIME);
 
   button1.addStateCallback([]() {
     Serial << button1.getName() << F(" switched") << endl;
