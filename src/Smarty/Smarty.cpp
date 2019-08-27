@@ -13,6 +13,10 @@ void Smarty::setFirmwareVersion(const char* firmwareVersion) {
   _firmware.version = firmwareVersion;
 }
 
+void Smarty::setFirmwareBuildTime(int firmwareBuildTime) {
+  _firmware.buildTime = firmwareBuildTime;
+}
+
 void Smarty::setup() {
   Serial << "Starting Smarty setup ..." << endl;
 
@@ -173,7 +177,7 @@ void Smarty::_initializeMqtt() {
   auto * timer = new SmartyTimer(SmartyMqtt::MQTT_STATUS_INTERVAL);
   timer->setCallback([this]() {
     // Extending buffer space (128 bytes) for String objects. See comment below.
-    StaticJsonBuffer<JSON_OBJECT_SIZE(4) + JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(4) + 128> jsonBuffer;
+    StaticJsonBuffer<JSON_OBJECT_SIZE(4) + JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(4) + 128> jsonBuffer;
     JsonObject& json = _createSystemJson(jsonBuffer);
     _mqtt.publishJson("$system", json);
   });
@@ -201,6 +205,7 @@ JsonObject& Smarty::_createSystemJson(JsonBuffer& jsonBuffer) {
   JsonObject& firmwareJson = rootJson.createNestedObject("firmware");
   firmwareJson["name"] = _firmware.name;
   firmwareJson["version"] = _firmware.version;
+  firmwareJson["buildTime"] = _firmware.buildTime;
   JsonObject& wifiJson = rootJson.createNestedObject("wifi");
   wifiJson["ssid"] = _wifi.getSSID();
   wifiJson["rssi"] = _wifi.getRSSI();

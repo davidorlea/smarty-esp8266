@@ -52,6 +52,9 @@ void setup() {
 
   smarty.setFirmwareName("Smarty Home Automation");
   smarty.setFirmwareVersion("0.1.0");
+  #if defined BUILD_TIME
+  smarty.setFirmwareBuildTime(BUILD_TIME);
+  #endif
 
   #if defined DEVICE_CUSTOM_V2 || defined DEVICE_CUSTOM_V3 || defined DEVICE_SONOFF_BASIC || defined DEVICE_SONOFF_S20
   button1.addStateCallback([](uint8_t state) {
