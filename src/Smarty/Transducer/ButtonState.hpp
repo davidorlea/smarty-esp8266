@@ -12,7 +12,7 @@ public:
     OFF = HIGH
   };
   void setButtonState(State buttonState);
-  JsonObject& applyNestedJson(JsonObject&) override;
+  JsonObject& toJson(JsonObject&) override;
 private:
   State _buttonState{};
 };

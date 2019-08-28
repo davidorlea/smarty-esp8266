@@ -4,7 +4,7 @@ void SmartyBinaryActuatorState::setBinaryActuatorState(SmartyBinaryActuatorState
   _binaryActuatorState = binaryActuatorState;
 }
 
-JsonObject& SmartyBinaryActuatorState::applyNestedJson(JsonObject& rootJson) {
+JsonObject& SmartyBinaryActuatorState::toJson(JsonObject& rootJson) {
   JsonObject& stateJson = rootJson.createNestedObject("state");
   stateJson["binaryActuator"] = (int) this->_binaryActuatorState;
   return stateJson;

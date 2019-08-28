@@ -1,8 +1,6 @@
 #pragma once
 
-#include <ArduinoJson.h>
+#include <Smarty/AbstractJsonSerializable.hpp>
 
-class SmartyAbstractState {
-public:
-  virtual JsonObject& applyNestedJson(JsonObject&) = 0;
+class SmartyAbstractState : public SmartyAbstractJsonSerializable {
 };

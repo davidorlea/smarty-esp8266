@@ -1,8 +1,12 @@
 #pragma once
 
-class SmartyFirmware {
+#include "AbstractJsonSerializable.hpp"
+
+class SmartyFirmware : public  SmartyAbstractJsonSerializable {
 public:
-  const char* name;
-  const char* version;
-  int buildTime;
+  static const unsigned int JSON_SIZE = JSON_OBJECT_SIZE(3);
+  const char* name = nullptr;
+  const char* version = nullptr;
+  int buildTime = 0;
+  JsonObject& toJson(JsonObject&) override;
 };

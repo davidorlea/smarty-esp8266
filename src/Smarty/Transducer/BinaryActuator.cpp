@@ -51,7 +51,7 @@ JsonObject& SmartyBinaryActuator::toJson(JsonBuffer& jsonBuffer) {
   JsonObject& rootJson = SmartyAbstractActuator::toJson(jsonBuffer);
   rootJson["type"] = "binaryActuator";
   _state.setBinaryActuatorState(_readState());
-  _state.applyNestedJson(rootJson);
+  _state.toJson(rootJson);
   return rootJson;
 }
 

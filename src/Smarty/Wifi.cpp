@@ -44,6 +44,15 @@ bool SmartyWifi::loop() {
   return _connect();
 }
 
+JsonObject& SmartyWifi::toJson(JsonObject& rootJson) {
+  JsonObject& wifiJson = rootJson.createNestedObject("wifi");
+  wifiJson["ssid"] = getSSID();
+  wifiJson["rssi"] = getRSSI();
+  wifiJson["ip"] = getIpAddress();
+  wifiJson["hostname"] = getHostName();
+  return wifiJson;
+}
+
 bool SmartyWifi::_connect() {
   if (!_ssid || !_password) {
     return false;

@@ -101,7 +101,7 @@ void Smarty::_initializeWifi() {
 void Smarty::_initializeHttp() {
   _http.addCustomRoute("/api/v1/system", HTTP_GET, [this]() {
     // Extending buffer space (128 bytes) for String objects. See comment below.
-    StaticJsonBuffer<JSON_OBJECT_SIZE(4) + JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(4) + 128> jsonBuffer;
+    StaticJsonBuffer<JSON_OBJECT_SIZE(4) + SmartyUptime::JSON_SIZE + SmartyFirmware::JSON_SIZE + SmartyWifi::JSON_SIZE + 128> jsonBuffer;
     _http.sendSuccessResponse(_createSystemJson(jsonBuffer));
   });
   for (SmartyAbstractActuator* actuator : *SmartyAbstractActuator::getList()) {
@@ -171,7 +171,7 @@ void Smarty::_initializeMqtt() {
   auto* timer = new SmartyTimer(SmartyMqtt::MQTT_STATUS_INTERVAL);
   timer->setCallback([this]() {
     // Extending buffer space (128 bytes) for String objects. See comment below.
-    StaticJsonBuffer<JSON_OBJECT_SIZE(4) + JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(4) + 128> jsonBuffer;
+    StaticJsonBuffer<JSON_OBJECT_SIZE(4) + SmartyUptime::JSON_SIZE + SmartyFirmware::JSON_SIZE + SmartyWifi::JSON_SIZE + 128> jsonBuffer;
     _mqtt.publishJson("$system", _createSystemJson(jsonBuffer));
   });
   timer->setCondition([this]() {
@@ -194,15 +194,8 @@ JsonObject& Smarty::_createSystemJson(JsonBuffer& jsonBuffer) {
   if (_name) {
     rootJson["name"] = _name;
   }
-  rootJson["uptime"] = _uptime.getSeconds();
-  JsonObject& firmwareJson = rootJson.createNestedObject("firmware");
-  firmwareJson["name"] = _firmware.name;
-  firmwareJson["version"] = _firmware.version;
-  firmwareJson["buildTime"] = _firmware.buildTime;
-  JsonObject& wifiJson = rootJson.createNestedObject("wifi");
-  wifiJson["ssid"] = _wifi.getSSID();
-  wifiJson["rssi"] = _wifi.getRSSI();
-  wifiJson["ip"] = _wifi.getIpAddress();
-  wifiJson["hostname"] = _wifi.getHostName();
+  _uptime.toJson(rootJson);
+  _firmware.toJson(rootJson);
+  _wifi.toJson(rootJson);
   return rootJson;
 }

@@ -43,7 +43,7 @@ JsonObject& SmartyButton::toJson(JsonBuffer& jsonBuffer) {
     break;
   }
   _state.setButtonState(_readState());
-  _state.applyNestedJson(rootJson);
+  _state.toJson(rootJson);
   return rootJson;
 }
 

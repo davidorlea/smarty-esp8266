@@ -13,7 +13,7 @@ public:
     UNKNOWN = 3
   };
   void setBinaryActuatorState(State binaryActuatorState);
-  JsonObject& applyNestedJson(JsonObject&) override;
+  JsonObject& toJson(JsonObject&) override;
 private:
   State _binaryActuatorState{};
 };
