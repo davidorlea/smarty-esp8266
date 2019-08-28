@@ -82,7 +82,7 @@ void Smarty::loop() {
 
 void Smarty::_initializeSystem() {
   if (_config.getName()[0]) {
-    _name = _config.getName();
+    _system.setName(_config.getName());
   }
 }
 
@@ -191,9 +191,7 @@ void Smarty::_initializeMqtt() {
 
 JsonObject& Smarty::_createSystemJson(JsonBuffer& jsonBuffer) {
   JsonObject& rootJson = jsonBuffer.createObject();
-  if (_name) {
-    rootJson["name"] = _name;
-  }
+  _system.toJson(rootJson);
   _uptime.toJson(rootJson);
   _firmware.toJson(rootJson);
   _wifi.toJson(rootJson);

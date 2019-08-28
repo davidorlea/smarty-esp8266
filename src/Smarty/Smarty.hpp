@@ -8,6 +8,7 @@
 #include "Http.hpp"
 #include "Mqtt.hpp"
 #include "Ota.hpp"
+#include "System.hpp"
 #include "Timer.hpp"
 #include "Transducer/AbstractActuator.hpp"
 #include "Transducer/AbstractSensor.hpp"
@@ -26,13 +27,13 @@ public:
   void loop();
 private:
   SmartyConfig _config{};
+  SmartySystem _system{};
   SmartyFirmware _firmware{};
   SmartyUptime _uptime{};
   SmartyWifi _wifi{};
   SmartyOta _ota{};
   SmartyHttp _http{};
   SmartyMqtt _mqtt{};
-  const char* _name = nullptr;
   void _initializeSystem();
   void _initializeWifi();
   void _initializeHttp();
