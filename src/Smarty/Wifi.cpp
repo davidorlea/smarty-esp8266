@@ -1,7 +1,7 @@
 #include "Wifi.hpp"
 
 SmartyWifi::SmartyWifi() {
-  auto * composedHostname = (char*) malloc(21 + 1);
+  auto* composedHostname = (char*) malloc(21 + 1);
   sprintf(composedHostname, "smarty-esp8266-%06x", ESP.getChipId());
   _hostname = composedHostname;
 }
