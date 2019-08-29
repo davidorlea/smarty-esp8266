@@ -34,8 +34,6 @@ private:
   SmartyOta _ota{};
   SmartyHttp _http{};
   SmartyMqtt _mqtt{};
-  void _initializeSystem();
-  void _initializeWifi();
   void _initializeHttp();
   void _initializeMqtt();
   JsonObject& _createSystemJson(JsonBuffer&);

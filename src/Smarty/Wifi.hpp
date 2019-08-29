@@ -6,6 +6,7 @@
 #include <IPAddress.h>
 #include <Streaming.h>
 #include "AbstractJsonSerializable.hpp"
+#include "WifiConfig.hpp"
 
 extern "C" {
   #include "user_interface.h"
@@ -15,14 +16,11 @@ class SmartyWifi : public SmartyAbstractJsonSerializable {
 public:
   static const unsigned int JSON_SIZE = JSON_OBJECT_SIZE(4);
   SmartyWifi();
-  void setSSID(const char*);
-  void setPassword(const char*);
-  void setHostname(const char*);
   String getSSID();
   int32_t getRSSI();
   String getIpAddress();
   String getHostName();
-  void setup();
+  void setup(SmartyWifiConfig&);
   bool loop();
   JsonObject& toJson(JsonObject&) override;
 private:

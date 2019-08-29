@@ -17,33 +17,28 @@ SmartyMqtt::~SmartyMqtt() {
   }
 }
 
-void SmartyMqtt::setHost(const char* host) {
-  _host = host;
-}
+void SmartyMqtt::setup(SmartyMqttConfig& config) {
+  if (config.getMqttHost()[0]) {
+    _host = config.getMqttHost();
+  }
+  if (config.getMqttPort()) {
+    _port = config.getMqttPort();
+  }
+  if (config.getMqttUsername()[0]) {
+    _username = config.getMqttUsername();
+  }
+  if (config.getMqttPassword()[0]) {
+    _password = config.getMqttPassword();
+  }
+  if (config.getMqttClientId()[0]) {
+    free((void*) _clientId);
+    _clientId = config.getMqttClientId();
+  }
+  if (config.getMqttBaseTopic()[0]) {
+    free((void*) _baseTopic);
+    _baseTopic = config.getMqttBaseTopic();
+  }
 
-void SmartyMqtt::setPort(const uint16_t port) {
-  _port = port;
-}
-
-void SmartyMqtt::setUsername(const char* username) {
-  _username = username;
-}
-
-void SmartyMqtt::setPassword(const char* password) {
-  _password = password;
-}
-
-void SmartyMqtt::setClientId(const char* clientId) {
-  free((void*) _clientId);
-  _clientId = clientId;
-}
-
-void SmartyMqtt::setBaseTopic(const char* topic) {
-  free((void*) _baseTopic);
-  _baseTopic = topic;
-}
-
-void SmartyMqtt::setup() {
   char topic[] = "/$online";
   char composedTopic[strlen(_baseTopic) + strlen(topic) + 1];
   strcpy(composedTopic, _baseTopic);

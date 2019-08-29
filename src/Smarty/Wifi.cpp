@@ -6,19 +6,6 @@ SmartyWifi::SmartyWifi() {
   _hostname = composedHostname;
 }
 
-void SmartyWifi::setSSID(const char* ssid) {
-  _ssid = ssid;
-}
-
-void SmartyWifi::setPassword(const char* password) {
-  _password = password;
-}
-
-void SmartyWifi::setHostname(const char* hostname) {
-  free((void*) _hostname);
-  _hostname = hostname;
-}
-
 String SmartyWifi::getSSID() {
   return WiFi.SSID();
 }
@@ -35,7 +22,17 @@ String SmartyWifi::getHostName() {
   return WiFi.hostname();
 }
 
-void SmartyWifi::setup() {
+void SmartyWifi::setup(SmartyWifiConfig& config) {
+  if (config.getWifiSSID()[0]) {
+    _ssid = config.getWifiSSID();
+  }
+  if (config.getWifiPassword()[0]) {
+    _password = config.getWifiPassword();
+  }
+  if (config.getWifiHostname()[0]) {
+    free((void*) _hostname);
+    _hostname = config.getWifiHostname();
+  }
   _clearDefaultSettings();
   _clearCurrentSettings();
 }

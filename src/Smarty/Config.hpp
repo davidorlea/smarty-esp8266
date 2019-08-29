@@ -4,12 +4,15 @@
 #include <ArduinoJson.h>
 #include <FS.h>
 #include <Streaming.h>
+#include "MqttConfig.hpp"
+#include "SystemConfig.hpp"
+#include "WifiConfig.hpp"
 
 #define SMARTY_CONFIG_FILE "/config.json"
 #define SMARTY_CONFIG_MAX_FILE_SIZE 1000
 #define SMARTY_CONFIG_MAX_JSON_SIZE JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(6)
 
-class SmartyConfig {
+class SmartyConfig : public SmartyMqttConfig, public SmartySystemConfig, public SmartyWifiConfig {
 public:
   static const unsigned int CONFIG_MAX_NAME_LENGTH = 255 + 1;
   static const unsigned int CONFIG_MAX_WIFI_SSID_LENGTH = 32 + 1;
@@ -21,16 +24,16 @@ public:
   static const unsigned int CONFIG_MAX_MQTT_CLIENT_ID_LENGTH = 23 + 1;
   static const unsigned int CONFIG_MAX_MQTT_BASE_TOPIC_LENGTH = 128 + 1;
   void setup();
-  const char* getName() const;
-  const char* getWifiSSID() const;
-  const char* getWifiPassword() const;
-  const char* getWifiHostname() const;
-  const char* getMqttHost() const;
-  uint16_t getMqttPort() const;
-  const char* getMqttUsername() const;
-  const char* getMqttPassword() const;
-  const char* getMqttClientId() const;
-  const char* getMqttBaseTopic() const;
+  const char* getName() const override;
+  const char* getWifiSSID() const override;
+  const char* getWifiPassword() const override;
+  const char* getWifiHostname() const override;
+  const char* getMqttHost() const override;
+  uint16_t getMqttPort() const override;
+  const char* getMqttUsername() const override;
+  const char* getMqttPassword() const override;
+  const char* getMqttClientId() const override;
+  const char* getMqttBaseTopic() const override;
 private:
   char _name[CONFIG_MAX_NAME_LENGTH] = "";
   char _wifiSSID[CONFIG_MAX_WIFI_SSID_LENGTH] = "";

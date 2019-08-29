@@ -25,7 +25,7 @@ void Smarty::setup() {
   Serial << "Done" << endl;
 
   Serial << "Initializing System: ";
-  _initializeSystem();
+  _system.setup(_config);
   Serial << "Done" << endl;
 
   for (SmartyAbstractActuator* actuator : *SmartyAbstractActuator::getList()) {
@@ -41,8 +41,7 @@ void Smarty::setup() {
   }
 
   Serial << "Initializing Wifi client: ";
-  _initializeWifi();
-  _wifi.setup();
+  _wifi.setup(_config);
   Serial << "Done" << endl;
 
   Serial << "Initializing OTA Update server: ";
@@ -56,7 +55,7 @@ void Smarty::setup() {
 
   Serial << "Initializing MQTT client: ";
   _initializeMqtt();
-  _mqtt.setup();
+  _mqtt.setup(_config);
   Serial << "Done" << endl;
 
   Serial << "... Finished Smarty setup" << endl;
@@ -77,24 +76,6 @@ void Smarty::loop() {
     _ota.loop();
     _http.loop();
     _mqtt.loop();
-  }
-}
-
-void Smarty::_initializeSystem() {
-  if (_config.getName()[0]) {
-    _system.setName(_config.getName());
-  }
-}
-
-void Smarty::_initializeWifi() {
-  if (_config.getWifiSSID()[0]) {
-    _wifi.setSSID(_config.getWifiSSID());
-  }
-  if (_config.getWifiPassword()[0]) {
-    _wifi.setPassword(_config.getWifiPassword());
-  }
-  if (_config.getWifiHostname()[0]) {
-    _wifi.setHostname(_config.getWifiHostname());
   }
 }
 
@@ -128,25 +109,6 @@ void Smarty::_initializeHttp() {
 }
 
 void Smarty::_initializeMqtt() {
-  if (_config.getMqttHost()[0]) {
-    _mqtt.setHost(_config.getMqttHost());
-  }
-  if (_config.getMqttPort()) {
-    _mqtt.setPort(_config.getMqttPort());
-  }
-  if (_config.getMqttUsername()[0]) {
-    _mqtt.setUsername(_config.getMqttUsername());
-  }
-  if (_config.getMqttPassword()[0]) {
-    _mqtt.setPassword(_config.getMqttPassword());
-  }
-  if (_config.getMqttClientId()[0]) {
-    _mqtt.setClientId(_config.getMqttClientId());
-  }
-  if (_config.getMqttBaseTopic()[0]) {
-    _mqtt.setBaseTopic(_config.getMqttBaseTopic());
-  }
-
   for (SmartyAbstractActuator* actuator : *SmartyAbstractActuator::getList()) {
     actuator->addActivateCallback([this, actuator](bool changed) {
       StaticJsonBuffer<SmartyAbstractActuator::JSON_SIZE> jsonBuffer;

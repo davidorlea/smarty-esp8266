@@ -7,6 +7,7 @@
 #include <ESP8266WiFi.h>
 #include <Streaming.h>
 #include "MqttClient.hpp"
+#include "MqttConfig.hpp"
 #include "MqttSubscription.hpp"
 
 class SmartyMqtt {
@@ -15,13 +16,7 @@ public:
   static const unsigned long MQTT_STATUS_INTERVAL = 1000UL * 300;
   SmartyMqtt();
   ~SmartyMqtt();
-  void setHost(const char*);
-  void setPort(uint16_t);
-  void setUsername(const char*);
-  void setPassword(const char*);
-  void setClientId(const char*);
-  void setBaseTopic(const char*);
-  void setup();
+  void setup(SmartyMqttConfig&);
   void loop();
   void publishJson(const char*, JsonObject&, bool = false);
   void publish(const char*, const char*, bool = false);
