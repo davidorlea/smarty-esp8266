@@ -37,36 +37,59 @@ bool SmartyBinaryActuator::deactivate() {
 }
 
 bool SmartyBinaryActuator::toggle() {
-  switch ((State) state()) {
-    case State::OFF:
+  switch (_readState()) {
+    case SmartyBinaryActuatorState::State::OFF:
       return activate();
-    case State::ON:
+    case SmartyBinaryActuatorState::State::ON:
       return deactivate();
     default:
       return false;
   }
 }
 
-bool SmartyBinaryActuator::parseState(int state) {
-  switch((State) state) {
-    case State::OFF:
-      return deactivate();
-    case State::ON:
-      return activate();
-    case State::TOGGLE:
-      return toggle();
+JsonObject& SmartyBinaryActuator::toJson(JsonBuffer& jsonBuffer) {
+  JsonObject& rootJson = SmartyAbstractActuator::toJson(jsonBuffer);
+  rootJson["type"] = "binaryActuator";
+  _state.setBinaryActuatorState(_readState());
+  _state.toJson(rootJson);
+  return rootJson;
+}
+
+bool SmartyBinaryActuator::fromJson(StaticJsonBufferBase& jsonBuffer, const char* message) {
+  JsonObject& rootObject = jsonBuffer.parseObject(message);
+  if (!rootObject.success() || !rootObject.containsKey("state") || !rootObject.is<JsonObject>("state")) {
+    return false;
+  }
+  JsonObject& stateObject = rootObject.get<JsonObject&>("state");
+  if (!stateObject.success() || !stateObject.containsKey("binaryActuator") || !stateObject.is<int>("binaryActuator")) {
+    return false;
+  }
+  return _parseState(stateObject.get<int>("binaryActuator"));
+}
+
+bool SmartyBinaryActuator::_parseState(int state) {
+  switch((SmartyBinaryActuatorState::State) state) {
+    case SmartyBinaryActuatorState::State::OFF:
+      deactivate();
+      return true;
+    case SmartyBinaryActuatorState::State::ON:
+      activate();
+      return true;
+    case SmartyBinaryActuatorState::State::TOGGLE:
+      toggle();
+      return true;
     default:
       return false;
   }
 }
 
-uint8_t SmartyBinaryActuator::state() {
+SmartyBinaryActuatorState::State SmartyBinaryActuator::_readState() {
   switch (digitalRead(_port)) {
     case LOW:
-      return (uint8_t) ((_wiring == Wiring::REGULAR) ? State::OFF : State::ON);
+      return (_wiring == Wiring::REGULAR) ? SmartyBinaryActuatorState::State::OFF : SmartyBinaryActuatorState::State::ON;
     case HIGH:
-      return (uint8_t) ((_wiring == Wiring::REGULAR) ? State::ON : State::OFF);
+      return (_wiring == Wiring::REGULAR) ? SmartyBinaryActuatorState::State::ON : SmartyBinaryActuatorState::State::OFF;
     default:
-      return (uint8_t) State::UNKNOWN;
+      return SmartyBinaryActuatorState::State::UNKNOWN;
   }
 }

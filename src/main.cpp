@@ -57,7 +57,7 @@ void setup() {
   #endif
 
   #if defined DEVICE_CUSTOM_V2 || defined DEVICE_CUSTOM_V3 || defined DEVICE_SONOFF_BASIC || defined DEVICE_SONOFF_S20
-  button1.addStateCallback([](uint8_t state) {
+  button1.addStateCallback([]() {
     Serial << button1.getName() << F(" pushed") << endl;
     relay1.toggle();
   });

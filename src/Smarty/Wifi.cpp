@@ -1,7 +1,7 @@
 #include "Wifi.hpp"
 
 SmartyWifi::SmartyWifi() {
-  auto * composedHostname = (char*) malloc(21 + 1);
+  auto* composedHostname = (char*) malloc(21 + 1);
   sprintf(composedHostname, "smarty-esp8266-%06x", ESP.getChipId());
   _hostname = composedHostname;
 }
@@ -42,6 +42,15 @@ void SmartyWifi::setup() {
 
 bool SmartyWifi::loop() {
   return _connect();
+}
+
+JsonObject& SmartyWifi::toJson(JsonObject& rootJson) {
+  JsonObject& wifiJson = rootJson.createNestedObject("wifi");
+  wifiJson["ssid"] = getSSID();
+  wifiJson["rssi"] = getRSSI();
+  wifiJson["ip"] = getIpAddress();
+  wifiJson["hostname"] = getHostName();
+  return wifiJson;
 }
 
 bool SmartyWifi::_connect() {

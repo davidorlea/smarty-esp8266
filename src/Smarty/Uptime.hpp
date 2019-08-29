@@ -2,11 +2,14 @@
 
 #include <cstdint>
 #include <Arduino.h>
+#include "AbstractJsonSerializable.hpp"
 
-class SmartyUptime {
+class SmartyUptime : public SmartyAbstractJsonSerializable{
 public:
+  static const unsigned int JSON_SIZE = JSON_OBJECT_SIZE(1);
   void update();
   uint32_t getSeconds() const;
+  JsonObject& toJson(JsonObject&) override;
 private:
   uint64_t _milliseconds = 0;
   uint32_t _lastUpdate = 0;

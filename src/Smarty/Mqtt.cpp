@@ -2,11 +2,11 @@
 
 SmartyMqtt::SmartyMqtt()
 : _mqttClient(this, 384) {
-  auto * composedClientId = (char*) malloc(21 + 1);
+  auto* composedClientId = (char*) malloc(21 + 1);
   sprintf(composedClientId, "smarty-esp8266-%06x", ESP.getChipId());
   _clientId = composedClientId;
 
-  auto * composedBaseTopic = (char*) malloc(21 + 1);
+  auto* composedBaseTopic = (char*) malloc(21 + 1);
   sprintf(composedBaseTopic, "smarty/esp8266-%06x", ESP.getChipId());
   _baseTopic = composedBaseTopic;
 }
@@ -102,7 +102,7 @@ void SmartyMqtt::subscribe(const char* topic, SMARTY_MQTT_SUBSCRIPTION_CALLBACK_
   strcat(composedTopic, "/");
   strcat(composedTopic, topic);
 
-  auto * subscription = new SmartyMqttSubscription(composedTopic);
+  auto* subscription = new SmartyMqttSubscription(composedTopic);
   subscription->setCallback(callback);
   _subscriptions.push_back(subscription);
 }

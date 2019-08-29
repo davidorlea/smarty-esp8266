@@ -17,7 +17,7 @@ public:
   void addCustomRoute(const char*, HTTPMethod, std::function<void (void)>);
   void sendSuccessResponse(JsonObject&);
   void sendErrorResponse(Error = Error::INTERNAL_SERVER_ERROR);
-  int extractStateFromJson();
+  const char* getRequestBody();
 private:
   ESP8266WebServer _webServer{80};
 };

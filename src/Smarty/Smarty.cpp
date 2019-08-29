@@ -82,7 +82,7 @@ void Smarty::loop() {
 
 void Smarty::_initializeSystem() {
   if (_config.getName()[0]) {
-    _name = _config.getName();
+    _system.setName(_config.getName());
   }
 }
 
@@ -101,22 +101,19 @@ void Smarty::_initializeWifi() {
 void Smarty::_initializeHttp() {
   _http.addCustomRoute("/api/v1/system", HTTP_GET, [this]() {
     // Extending buffer space (128 bytes) for String objects. See comment below.
-    StaticJsonBuffer<JSON_OBJECT_SIZE(4) + JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(4) + 128> jsonBuffer;
-    JsonObject& json = _createSystemJson(jsonBuffer);
-    _http.sendSuccessResponse(json);
+    StaticJsonBuffer<JSON_OBJECT_SIZE(4) + SmartyUptime::JSON_SIZE + SmartyFirmware::JSON_SIZE + SmartyWifi::JSON_SIZE + 128> jsonBuffer;
+    _http.sendSuccessResponse(_createSystemJson(jsonBuffer));
   });
   for (SmartyAbstractActuator* actuator : *SmartyAbstractActuator::getList()) {
     _http.addCustomRoute("/api/v1/actuator/", actuator->getName(), HTTP_GET, [this, actuator]() {
-      StaticJsonBuffer<JSON_OBJECT_SIZE(2)> jsonBuffer;
-      JsonObject& json = _createTransducerJson(jsonBuffer, actuator);
-      _http.sendSuccessResponse(json);
+      StaticJsonBuffer<SmartyAbstractActuator::JSON_SIZE> jsonBuffer;
+      _http.sendSuccessResponse(actuator->toJson(jsonBuffer));
     });
     _http.addCustomRoute("/api/v1/actuator/", actuator->getName(), HTTP_POST, [this, actuator]() {
-      int state = _http.extractStateFromJson();
-      if (actuator->parseState(state)) {
-        StaticJsonBuffer<JSON_OBJECT_SIZE(2)> jsonBuffer;
-        JsonObject& json = _createTransducerJson(jsonBuffer, actuator);
-        _http.sendSuccessResponse(json);
+      StaticJsonBuffer<SmartyAbstractActuator::JSON_SIZE> requestJsonBuffer;
+      if (actuator->fromJson(requestJsonBuffer, _http.getRequestBody())) {
+        StaticJsonBuffer<SmartyAbstractActuator::JSON_SIZE> responseJsonBuffer;
+        _http.sendSuccessResponse(actuator->toJson(responseJsonBuffer));
       } else {
         _http.sendErrorResponse(SmartyHttp::Error::BAD_REQUEST);
       }
@@ -124,9 +121,8 @@ void Smarty::_initializeHttp() {
   }
   for (SmartyAbstractSensor* sensor : *SmartyAbstractSensor::getList()) {
     _http.addCustomRoute("/api/v1/sensor/", sensor->getName(), HTTP_GET, [this, sensor]() {
-      StaticJsonBuffer<JSON_OBJECT_SIZE(2)> jsonBuffer;
-      JsonObject& json = _createTransducerJson(jsonBuffer, sensor);
-      _http.sendSuccessResponse(json);
+      StaticJsonBuffer<SmartyAbstractSensor::JSON_SIZE> jsonBuffer;
+      _http.sendSuccessResponse(sensor->toJson(jsonBuffer));
     });
   }
 }
@@ -153,33 +149,30 @@ void Smarty::_initializeMqtt() {
 
   for (SmartyAbstractActuator* actuator : *SmartyAbstractActuator::getList()) {
     actuator->addActivateCallback([this, actuator](bool changed) {
-      _mqtt.publish(actuator->getName(), "1");
+      StaticJsonBuffer<SmartyAbstractActuator::JSON_SIZE> jsonBuffer;
+      _mqtt.publishJson(actuator->getName(), actuator->toJson(jsonBuffer));
     });
     actuator->addDeactivateCallback([this, actuator](bool changed) {
-      _mqtt.publish(actuator->getName(), "0");
+      StaticJsonBuffer<SmartyAbstractActuator::JSON_SIZE> jsonBuffer;
+      _mqtt.publishJson(actuator->getName(), actuator->toJson(jsonBuffer));
     });
-    _mqtt.subscribe(actuator->getName(), "/set", [actuator](const char* topic, const char* message) {
-      if (strcmp(message, "0") == 0) {
-        actuator->deactivate();
-      } else if (strcmp(message, "1") == 0) {
-        actuator->activate();
-      } else if (strcmp(message, "2") == 0) {
-        actuator->toggle();
-      }
+    _mqtt.subscribe(actuator->getName(), "/set", [this, actuator](const char* topic, const char* message) {
+      StaticJsonBuffer<SmartyAbstractActuator::JSON_SIZE> jsonBuffer;
+      actuator->fromJson(jsonBuffer, message);
     });
   }
   for (SmartyAbstractSensor* sensor : *SmartyAbstractSensor::getList()) {
-    sensor->addStateCallback([this, sensor](uint8_t state) {
-      _mqtt.publish(sensor->getName(), "2");
+    sensor->addStateCallback([this, sensor]() {
+      StaticJsonBuffer<SmartyAbstractSensor::JSON_SIZE> jsonBuffer;
+      _mqtt.publishJson(sensor->getName(), sensor->toJson(jsonBuffer));
     });
   }
 
-  auto * timer = new SmartyTimer(SmartyMqtt::MQTT_STATUS_INTERVAL);
+  auto* timer = new SmartyTimer(SmartyMqtt::MQTT_STATUS_INTERVAL);
   timer->setCallback([this]() {
     // Extending buffer space (128 bytes) for String objects. See comment below.
-    StaticJsonBuffer<JSON_OBJECT_SIZE(4) + JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(4) + 128> jsonBuffer;
-    JsonObject& json = _createSystemJson(jsonBuffer);
-    _mqtt.publishJson("$system", json);
+    StaticJsonBuffer<JSON_OBJECT_SIZE(4) + SmartyUptime::JSON_SIZE + SmartyFirmware::JSON_SIZE + SmartyWifi::JSON_SIZE + 128> jsonBuffer;
+    _mqtt.publishJson("$system", _createSystemJson(jsonBuffer));
   });
   timer->setCondition([this]() {
      return _mqtt.isConnected();
@@ -198,25 +191,9 @@ void Smarty::_initializeMqtt() {
 
 JsonObject& Smarty::_createSystemJson(JsonBuffer& jsonBuffer) {
   JsonObject& rootJson = jsonBuffer.createObject();
-  if (_name) {
-    rootJson["name"] = _name;
-  }
-  rootJson["uptime"] = _uptime.getSeconds();
-  JsonObject& firmwareJson = rootJson.createNestedObject("firmware");
-  firmwareJson["name"] = _firmware.name;
-  firmwareJson["version"] = _firmware.version;
-  firmwareJson["buildTime"] = _firmware.buildTime;
-  JsonObject& wifiJson = rootJson.createNestedObject("wifi");
-  wifiJson["ssid"] = _wifi.getSSID();
-  wifiJson["rssi"] = _wifi.getRSSI();
-  wifiJson["ip"] = _wifi.getIpAddress();
-  wifiJson["hostname"] = _wifi.getHostName();
-  return rootJson;
-}
-
-JsonObject& Smarty::_createTransducerJson(JsonBuffer& jsonBuffer, SmartyAbstractTransducer* transducer) {
-  JsonObject& rootJson = jsonBuffer.createObject();
-  rootJson["name"] = transducer->getName();
-  rootJson["state"] = transducer->state();
+  _system.toJson(rootJson);
+  _uptime.toJson(rootJson);
+  _firmware.toJson(rootJson);
+  _wifi.toJson(rootJson);
   return rootJson;
 }

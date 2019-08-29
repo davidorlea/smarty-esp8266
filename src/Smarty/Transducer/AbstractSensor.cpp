@@ -25,3 +25,9 @@ SmartyAbstractSensor::~SmartyAbstractSensor() {
 void SmartyAbstractSensor::addStateCallback(SMARTY_SENSOR_CALLBACK_TYPE callback) {
   _stateCallbacks.push_back(callback);
 }
+
+JsonObject& SmartyAbstractSensor::toJson(JsonBuffer& jsonBuffer) {
+  JsonObject& rootJson = SmartyAbstractTransducer::toJson(jsonBuffer);
+  rootJson["class"] = "sensor";
+  return rootJson;
+}
