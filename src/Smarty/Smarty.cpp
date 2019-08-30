@@ -5,20 +5,16 @@ Smarty::~Smarty() {
   abort();
 }
 
-void Smarty::setFirmwareName(const char* firmwareName) {
-  _firmware.name = firmwareName;
-}
-
-void Smarty::setFirmwareVersion(const char* firmwareVersion) {
-  _firmware.version = firmwareVersion;
-}
-
-void Smarty::setFirmwareBuildTime(int firmwareBuildTime) {
-  _firmware.buildTime = firmwareBuildTime;
-}
-
 void Smarty::setup() {
   Serial << "Starting Smarty setup ..." << endl;
+
+  #if defined SMARTY_BUILD_VERSION
+  _firmware.version = SMARTY_BUILD_VERSION;
+  #endif
+
+  #if defined SMARTY_BUILD_TIME
+  _firmware.buildTime = SMARTY_BUILD_TIME;
+  #endif
 
   Serial << "Initializing Configuration: ";
   _config.setup();
