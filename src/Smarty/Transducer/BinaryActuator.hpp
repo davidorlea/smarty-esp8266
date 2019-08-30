@@ -20,7 +20,7 @@ public:
   bool deactivate() override;
   bool toggle() override;
   JsonObject& toJson(JsonBuffer&) override;
-  bool fromJson(StaticJsonBufferBase&, const char*) override;
+  bool fromJson(ArduinoJson::Internals::StaticJsonBufferBase&, const char*) override;
 private:
   SmartyBinaryActuatorState _state{};
   const uint8_t _port;

@@ -55,7 +55,7 @@ JsonObject& SmartyBinaryActuator::toJson(JsonBuffer& jsonBuffer) {
   return rootJson;
 }
 
-bool SmartyBinaryActuator::fromJson(StaticJsonBufferBase& jsonBuffer, const char* message) {
+bool SmartyBinaryActuator::fromJson(ArduinoJson::Internals::StaticJsonBufferBase& jsonBuffer, const char* message) {
   JsonObject& rootObject = jsonBuffer.parseObject(message);
   if (!rootObject.success() || !rootObject.containsKey("state") || !rootObject.is<JsonObject>("state")) {
     return false;
