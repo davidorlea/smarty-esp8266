@@ -77,9 +77,20 @@ void Smarty::loop() {
 
 void Smarty::_initializeHttp() {
   _http.addCustomRoute("/api/v1/system", HTTP_GET, [this]() {
-    // Extending buffer space (128 bytes) for String objects. See comment below.
-    StaticJsonBuffer<JSON_OBJECT_SIZE(4) + SmartyUptime::JSON_SIZE + SmartyFirmware::JSON_SIZE + SmartyWifi::JSON_SIZE + 128> jsonBuffer;
-    _http.sendSuccessResponse(_createSystemJson(jsonBuffer));
+    StaticJsonBuffer<SmartySystem::JSON_SIZE> jsonBuffer;
+    _http.sendSuccessResponse(_system.toJson(jsonBuffer));
+  });
+  _http.addCustomRoute("/api/v1/system/uptime", HTTP_GET, [this]() {
+    StaticJsonBuffer<SmartyUptime::JSON_SIZE> jsonBuffer;
+    _http.sendSuccessResponse(_uptime.toJson(jsonBuffer));
+  });
+  _http.addCustomRoute("/api/v1/system/firmware", HTTP_GET, [this]() {
+    StaticJsonBuffer<SmartyFirmware::JSON_SIZE> jsonBuffer;
+    _http.sendSuccessResponse(_firmware.toJson(jsonBuffer));
+  });
+  _http.addCustomRoute("/api/v1/system/wifi", HTTP_GET, [this]() {
+    StaticJsonBuffer<SmartyWifi::JSON_SIZE> jsonBuffer;
+    _http.sendSuccessResponse(_wifi.toJson(jsonBuffer));
   });
   for (SmartyAbstractActuator* actuator : *SmartyAbstractActuator::getList()) {
     _http.addCustomRoute("/api/v1/actuator/", actuator->getName(), HTTP_GET, [this, actuator]() {
@@ -128,9 +139,17 @@ void Smarty::_initializeMqtt() {
 
   auto* timer = new SmartyTimer(SmartyMqtt::MQTT_STATUS_INTERVAL);
   timer->setCallback([this]() {
-    // Extending buffer space (128 bytes) for String objects. See comment below.
-    StaticJsonBuffer<JSON_OBJECT_SIZE(4) + SmartyUptime::JSON_SIZE + SmartyFirmware::JSON_SIZE + SmartyWifi::JSON_SIZE + 128> jsonBuffer;
-    _mqtt.publishJson("$system", _createSystemJson(jsonBuffer));
+    StaticJsonBuffer<SmartySystem::JSON_SIZE> systemJsonBuffer;
+    _mqtt.publishJson("$system", _system.toJson(systemJsonBuffer));
+
+    StaticJsonBuffer<SmartyUptime::JSON_SIZE> uptimeJsonBuffer;
+    _mqtt.publishJson("$system/uptime", _uptime.toJson(uptimeJsonBuffer));
+
+    StaticJsonBuffer<SmartyFirmware::JSON_SIZE> firmwareJsonBuffer;
+    _mqtt.publishJson("$system/firmware", _firmware.toJson(firmwareJsonBuffer));
+
+    StaticJsonBuffer<SmartyWifi::JSON_SIZE> wifiJsonBuffer;
+    _mqtt.publishJson("$system/wifi", _wifi.toJson(wifiJsonBuffer));
   });
   timer->setCondition([this]() {
      return _mqtt.isConnected();
@@ -146,12 +165,3 @@ void Smarty::_initializeMqtt() {
 //
 // WARNING 2: if you use String to create your JSON keys or values, their content will automatically be duplicated in
 // the JsonBuffer, so you need to add the total length of all strings in the size of the JsonBuffer.
-
-JsonObject& Smarty::_createSystemJson(JsonBuffer& jsonBuffer) {
-  JsonObject& rootJson = jsonBuffer.createObject();
-  _system.toJson(rootJson);
-  _uptime.toJson(rootJson);
-  _firmware.toJson(rootJson);
-  _wifi.toJson(rootJson);
-  return rootJson;
-}

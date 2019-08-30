@@ -33,5 +33,4 @@ private:
   SmartyMqtt _mqtt{};
   void _initializeHttp();
   void _initializeMqtt();
-  JsonObject& _createSystemJson(JsonBuffer&);
 };

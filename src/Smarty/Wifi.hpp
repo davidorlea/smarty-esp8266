@@ -14,7 +14,8 @@ extern "C" {
 
 class SmartyWifi : public SmartyAbstractJsonSerializable {
 public:
-  static const unsigned int JSON_SIZE = JSON_OBJECT_SIZE(4);
+  using SmartyAbstractJsonSerializable::toJson;
+  static const unsigned int JSON_SIZE = JSON_OBJECT_SIZE(4) + 128;
   SmartyWifi();
   String getSSID();
   int32_t getRSSI();

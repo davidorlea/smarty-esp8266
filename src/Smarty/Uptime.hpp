@@ -6,7 +6,8 @@
 
 class SmartyUptime : public SmartyAbstractJsonSerializable{
 public:
-  static const unsigned int JSON_SIZE = JSON_OBJECT_SIZE(1);
+  using SmartyAbstractJsonSerializable::toJson;
+  static const unsigned int JSON_SIZE = JSON_OBJECT_SIZE(1) + 64;
   void update();
   uint32_t getSeconds() const;
   JsonObject& toJson(JsonObject&) override;
