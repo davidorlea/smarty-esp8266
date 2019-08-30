@@ -15,7 +15,31 @@ JsonObject& SmartyHardware::toJson(JsonObject& rootJson) {
   flashJson["sdkSize"] = ESP.getFlashChipSize();
   flashJson["speed"] = ESP.getFlashChipSpeed();
   JsonObject& heapJson = rootJson.createNestedObject("heap");
-  heapJson["free"] = ESP.getFreeHeap();
+  heapJson["total"] = _getTotalMemory();
+  heapJson["totalUsed"] = _getTotalUsedMemory();
+  heapJson["totalFree"] = _getTotalAvailableMemory();
+  heapJson["largestFreeBlock"] = _getLargestAvailableBlock();
+  heapJson["fragmentation"] = _getFragmentation();
 
   return rootJson;
+}
+
+size_t SmartyHardware::_getTotalMemory() {
+  umm_info(nullptr, 0);
+  return ummHeapInfo.totalBlocks * _blockSize;
+}
+
+size_t SmartyHardware::_getTotalUsedMemory() {
+  umm_info(nullptr, 0);
+  return ummHeapInfo.usedBlocks * _blockSize;
+}
+
+size_t SmartyHardware::_getTotalAvailableMemory() {
+  umm_info(nullptr, 0);
+  return ummHeapInfo.freeBlocks * _blockSize;
+}
+
+size_t SmartyHardware::_getLargestAvailableBlock() {
+  umm_info(nullptr, 0);
+  return ummHeapInfo.maxFreeContiguousBlocks * _blockSize;
 }
