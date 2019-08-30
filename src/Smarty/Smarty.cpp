@@ -88,6 +88,10 @@ void Smarty::_initializeHttp() {
     StaticJsonBuffer<SmartyFirmware::JSON_SIZE> jsonBuffer;
     _http.sendSuccessResponse(_firmware.toJson(jsonBuffer));
   });
+  _http.addCustomRoute("/api/v1/system/hardware", HTTP_GET, [this]() {
+    StaticJsonBuffer<SmartyHardware::JSON_SIZE> jsonBuffer;
+    _http.sendSuccessResponse(_hardware.toJson(jsonBuffer));
+  });
   _http.addCustomRoute("/api/v1/system/wifi", HTTP_GET, [this]() {
     StaticJsonBuffer<SmartyWifi::JSON_SIZE> jsonBuffer;
     _http.sendSuccessResponse(_wifi.toJson(jsonBuffer));
@@ -147,6 +151,9 @@ void Smarty::_initializeMqtt() {
 
     StaticJsonBuffer<SmartyFirmware::JSON_SIZE> firmwareJsonBuffer;
     _mqtt.publishJson("$system/firmware", _firmware.toJson(firmwareJsonBuffer));
+
+    StaticJsonBuffer<SmartyHardware::JSON_SIZE> hardwareJsonBuffer;
+    _mqtt.publishJson("$system/hardware", _hardware.toJson(hardwareJsonBuffer));
 
     StaticJsonBuffer<SmartyWifi::JSON_SIZE> wifiJsonBuffer;
     _mqtt.publishJson("$system/wifi", _wifi.toJson(wifiJsonBuffer));

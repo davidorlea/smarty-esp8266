@@ -5,6 +5,7 @@
 #include <Streaming.h>
 #include "Config.hpp"
 #include "Firmware.hpp"
+#include "Hardware.hpp"
 #include "Http.hpp"
 #include "Mqtt.hpp"
 #include "Ota.hpp"
@@ -26,6 +27,7 @@ private:
   SmartyConfig _config{};
   SmartySystem _system{};
   SmartyFirmware _firmware{};
+  SmartyHardware _hardware{};
   SmartyUptime _uptime{};
   SmartyWifi _wifi{};
   SmartyOta _ota{};
