@@ -17,8 +17,14 @@
   "frameworks": "arduino",
   "platforms": "espressif8266",
   "dependencies": [{
+    "name": "Adafruit Unified Sensor",
+    "version": "1.0.3"
+  }, {
     "name": "ArduinoJson",
     "version": "5.13.2"
+  }, {
+    "name": "DHT sensor library",
+    "version": "1.3.4"
   }, {
     "name": "MQTT",
     "version": "2.4.3"

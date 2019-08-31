@@ -15,6 +15,7 @@
 #include "Transducer/AbstractSensor.hpp"
 #include "Transducer/BinaryActuator.hpp"
 #include "Transducer/Button.hpp"
+#include "Transducer/Dht.hpp"
 #include "Uptime.hpp"
 #include "Wifi.hpp"
 
