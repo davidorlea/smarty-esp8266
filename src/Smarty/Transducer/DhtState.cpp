@@ -8,20 +8,12 @@ void SmartyDHTState::setHumidity(float humidity, bool filter) {
   _humidity = filter ? _filter(_humidity, humidity) : humidity;
 }
 
-void SmartyDHTState::setHeatIndex(float heatIndex, bool filter) {
-  _heatIndex = filter ? _filter(_heatIndex, heatIndex) : heatIndex;
-}
-
 void SmartyDHTState::clearTemperature() {
   _temperature = NAN;
 }
 
 void SmartyDHTState::clearHumidity() {
   _humidity = NAN;
-}
-
-void SmartyDHTState::clearHeatIndex() {
-  _heatIndex = NAN;
 }
 
 JsonObject& SmartyDHTState::toJson(JsonObject& rootJson) {
@@ -35,11 +27,6 @@ JsonObject& SmartyDHTState::toJson(JsonObject& rootJson) {
     stateJson["humidity"] = _humidity;
   } else {
     stateJson["humidity"] = RawJson("null");
-  }
-  if (!isnan(_heatIndex)) {
-    stateJson["heatIndex"] = _heatIndex;
-  } else {
-    stateJson["heatIndex"] = RawJson("null");
   }
   return stateJson;
 }

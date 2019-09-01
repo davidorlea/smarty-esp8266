@@ -10,11 +10,9 @@
 
 class SmartyDHT : public SmartyAbstractSensor {
 public:
-  enum class Type : uint8_t {
-    DHT_11 = DHT11,
-    DHT_12 = DHT12,
-    DHT_21 = DHT21,
-    DHT_22 = DHT22
+  enum class Type {
+    DHT11 = DHT::DHT11,
+    DHT22 = DHT::DHT22
   };
   static const unsigned long DHT_READ_DELAY = 60000;
   SmartyDHT(const char*, uint8_t, Type);
@@ -23,7 +21,7 @@ public:
   JsonObject& toJson(JsonBuffer&) override;
 private:
   SmartyDHTState _state{};
-  DHT _dht;
+  DHT _dht{};
   const uint8_t _port;
   const Type _type;
   unsigned long _lastReadTime = 0;
