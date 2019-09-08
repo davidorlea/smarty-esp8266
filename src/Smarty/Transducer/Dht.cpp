@@ -21,8 +21,8 @@ bool SmartyDHT::loop() {
   float temperature = _dht.getTemperature();
   float humidity = _dht.getHumidity();
 
-  _readState.setTemperature(temperature);
-  _readState.setHumidity(humidity);
+  _readState.setTemperature(temperature, true);
+  _readState.setHumidity(humidity, true);
 
   if (isnan(temperature) || isnan(humidity)) {
     return false;
