@@ -25,6 +25,7 @@ bool SmartyDHT::loop() {
   _readState.setHumidity(humidity, true);
 
   if (isnan(temperature) || isnan(humidity)) {
+    _dropCounter++;
     return false;
   }
 
@@ -54,6 +55,7 @@ JsonObject& SmartyDHT::toJson(JsonBuffer& jsonBuffer) {
       rootJson["type"] = "dht22";
       break;
   }
+  rootJson["drops"] = _dropCounter;
   _publishState.toJson(rootJson);
   return rootJson;
 }

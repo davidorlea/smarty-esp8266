@@ -26,6 +26,7 @@ private:
   DHT _dht{};
   const uint8_t _port;
   const Type _type;
+  unsigned int _dropCounter = 0;
   unsigned long _lastReadTime = 0;
   unsigned long _lastPublishTime = 0;
 };
