@@ -5,10 +5,10 @@
 
 class SmartyDHTState : public SmartyAbstractState {
 public:
+  float getTemperature() const;
+  float getHumidity() const;
   void setTemperature(float, bool = false);
   void setHumidity(float, bool = false);
-  void clearTemperature();
-  void clearHumidity();
   JsonObject& toJson(JsonObject&) override;
 private:
   static float _filter(float, float);

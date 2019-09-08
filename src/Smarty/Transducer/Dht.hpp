@@ -21,7 +21,8 @@ public:
   bool loop() override;
   JsonObject& toJson(JsonBuffer&) override;
 private:
-  SmartyDHTState _state{};
+  SmartyDHTState _readState{};
+  SmartyDHTState _publishState{};
   DHT _dht{};
   const uint8_t _port;
   const Type _type;

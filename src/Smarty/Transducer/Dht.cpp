@@ -21,16 +21,17 @@ bool SmartyDHT::loop() {
   float temperature = _dht.getTemperature();
   float humidity = _dht.getHumidity();
 
+  _readState.setTemperature(temperature);
+  _readState.setHumidity(humidity);
+
   if (isnan(temperature) || isnan(humidity)) {
-    _state.clearHumidity();
-    _state.clearTemperature();
     return false;
   }
 
-  _state.setTemperature(temperature);
-  _state.setHumidity(humidity);
-
   if ((now - _lastPublishTime > DHT_PUBLISH_INTERVAL) ) {
+    _publishState.setTemperature(_readState.getTemperature());
+    _publishState.setHumidity(_readState.getHumidity());
+
     for (SMARTY_SENSOR_CALLBACK_TYPE callback: _stateCallbacks) {
       callback();
     }
@@ -50,6 +51,6 @@ JsonObject& SmartyDHT::toJson(JsonBuffer& jsonBuffer) {
       rootJson["type"] = "dht22";
       break;
   }
-  _state.toJson(rootJson);
+  _publishState.toJson(rootJson);
   return rootJson;
 }
