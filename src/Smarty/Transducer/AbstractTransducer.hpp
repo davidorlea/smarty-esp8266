@@ -6,7 +6,7 @@
 
 class SmartyAbstractTransducer {
 public:
-  static const unsigned int JSON_SIZE = JSON_OBJECT_SIZE(10);
+  static const unsigned int JSON_SIZE = JSON_OBJECT_SIZE(10) + 128;
   const char* getName();
   virtual JsonObject& toJson(JsonBuffer&);
   virtual bool setup() = 0;
