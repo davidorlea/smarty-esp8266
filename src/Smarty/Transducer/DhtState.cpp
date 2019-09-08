@@ -32,7 +32,7 @@ JsonObject& SmartyDHTState::toJson(JsonObject& rootJson) {
 }
 
 float SmartyDHTState::_filter(float oldValue, float newValue) {
-  if (isnan(oldValue)) {
+  if (isnan(oldValue) || isnan(newValue)) {
     return newValue;
   }
   return (newValue + oldValue * 3) / 4;
