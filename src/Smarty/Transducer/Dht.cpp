@@ -13,25 +13,28 @@ bool SmartyDHT::setup() {
 
 bool SmartyDHT::loop() {
   unsigned long now = millis();
-  if ((now - _lastReadTime) <= DHT_READ_INTERVAL) {
-    return false;
-  }
-  _lastReadTime = now;
 
-  float temperature = _dht.getTemperature();
-  float humidity = _dht.getHumidity();
+  if ((now - _lastReadTime) > DHT_READ_INTERVAL) {
+    float temperature = _dht.getTemperature();
+    float humidity = _dht.getHumidity();
 
-  _readState.setTemperature(temperature, true);
-  _readState.setHumidity(humidity, true);
+    _readState.setTemperature(temperature, true);
+    _readState.setHumidity(humidity, true);
 
-  if (isnan(temperature) || isnan(humidity)) {
-    _dropCounter++;
-    return false;
+    if (isnan(temperature) || isnan(humidity)) {
+      _readState.setFailedReadingsCounter(_readState.getFailedReadingsCounter() + 1);
+    } else {
+      _readState.setSuccessfulReadingsCounter(_readState.getSuccessfulReadingsCounter() + 1);
+    }
+
+    _lastReadTime = now;
   }
 
   if ((now - _lastPublishTime > DHT_PUBLISH_INTERVAL) ) {
     _publishState.setTemperature(_readState.getTemperature());
     _publishState.setHumidity(_readState.getHumidity());
+    _publishState.setFailedReadingsCounter(_readState.getFailedReadingsCounter());
+    _publishState.setSuccessfulReadingsCounter(_readState.getSuccessfulReadingsCounter());
 
     for (SMARTY_SENSOR_CALLBACK_TYPE callback: _stateCallbacks) {
       callback();
@@ -39,6 +42,8 @@ bool SmartyDHT::loop() {
 
     _readState.setTemperature(NAN);
     _readState.setHumidity(NAN);
+    _readState.setFailedReadingsCounter(0);
+    _readState.setSuccessfulReadingsCounter(0);
     _lastPublishTime = now;
   }
 
@@ -55,7 +60,6 @@ JsonObject& SmartyDHT::toJson(JsonBuffer& jsonBuffer) {
       rootJson["type"] = "dht22";
       break;
   }
-  rootJson["drops"] = _dropCounter;
   _publishState.toJson(rootJson);
   return rootJson;
 }
