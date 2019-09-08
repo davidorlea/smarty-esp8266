@@ -13,9 +13,10 @@ bool SmartyDHT::setup() {
 
 bool SmartyDHT::loop() {
   unsigned long now = millis();
-  if ((now - _lastReadTime) <= DHT_READ_DELAY) {
+  if ((now - _lastReadTime) <= DHT_READ_INTERVAL) {
     return false;
   }
+  _lastReadTime = now;
 
   float temperature = _dht.getTemperature();
   float humidity = _dht.getHumidity();
@@ -29,11 +30,13 @@ bool SmartyDHT::loop() {
   _state.setTemperature(temperature);
   _state.setHumidity(humidity);
 
-  for (SMARTY_SENSOR_CALLBACK_TYPE callback: _stateCallbacks) {
-    callback();
+  if ((now - _lastPublishTime > DHT_PUBLISH_INTERVAL) ) {
+    for (SMARTY_SENSOR_CALLBACK_TYPE callback: _stateCallbacks) {
+      callback();
+    }
+    _lastPublishTime = now;
   }
 
-  _lastReadTime = now;
   return true;
 }
 
