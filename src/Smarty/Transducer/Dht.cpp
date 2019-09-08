@@ -31,19 +31,13 @@ bool SmartyDHT::loop() {
   }
 
   if ((now - _lastPublishTime > DHT_PUBLISH_INTERVAL) ) {
-    _publishState.setTemperature(_readState.getTemperature());
-    _publishState.setHumidity(_readState.getHumidity());
-    _publishState.setFailedReadingsCounter(_readState.getFailedReadingsCounter());
-    _publishState.setSuccessfulReadingsCounter(_readState.getSuccessfulReadingsCounter());
+    _publishState.import(_readState);
 
     for (SMARTY_SENSOR_CALLBACK_TYPE callback: _stateCallbacks) {
       callback();
     }
 
-    _readState.setTemperature(NAN);
-    _readState.setHumidity(NAN);
-    _readState.setFailedReadingsCounter(0);
-    _readState.setSuccessfulReadingsCounter(0);
+    _readState.reset();
     _lastPublishTime = now;
   }
 

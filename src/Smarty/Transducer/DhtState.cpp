@@ -32,6 +32,20 @@ void SmartyDHTState::setSuccessfulReadingsCounter(int successfulReadingsCounter)
   _successfulReadingsCounter = successfulReadingsCounter;
 }
 
+void SmartyDHTState::import(SmartyDHTState& state) {
+  _temperature = state.getTemperature();
+  _humidity = state.getHumidity();
+  _failedReadingsCounter = state.getFailedReadingsCounter();
+  _successfulReadingsCounter = state.getSuccessfulReadingsCounter();
+}
+
+void SmartyDHTState::reset() {
+  _temperature = NAN;
+  _humidity = NAN;
+  _failedReadingsCounter = 0;
+  _successfulReadingsCounter = 0;
+}
+
 JsonObject& SmartyDHTState::toJson(JsonObject& rootJson) {
   JsonObject& stateJson = rootJson.createNestedObject("state");
   if (!isnan(_temperature)) {

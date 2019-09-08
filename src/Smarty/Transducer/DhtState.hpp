@@ -13,6 +13,8 @@ public:
   void setHumidity(float, bool = false);
   void setFailedReadingsCounter(int);
   void setSuccessfulReadingsCounter(int);
+  void import(SmartyDHTState&);
+  void reset();
   JsonObject& toJson(JsonObject&) override;
 private:
   static float _filter(float, float);
