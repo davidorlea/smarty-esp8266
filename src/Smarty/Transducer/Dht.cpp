@@ -35,6 +35,9 @@ bool SmartyDHT::loop() {
     for (SMARTY_SENSOR_CALLBACK_TYPE callback: _stateCallbacks) {
       callback();
     }
+
+    _readState.setTemperature(NAN);
+    _readState.setHumidity(NAN);
     _lastPublishTime = now;
   }
 
