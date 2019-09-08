@@ -20,6 +20,9 @@
     "name": "ArduinoJson",
     "version": "5.13.2"
   }, {
+    "name": "DHT",
+    "version": "1.0.0"
+  }, {
     "name": "MQTT",
     "version": "2.4.3"
   }, {
