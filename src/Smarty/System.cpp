@@ -6,7 +6,7 @@ void SmartySystem::setup(SmartySystemConfig& config) {
   }
 }
 
-JsonObject& SmartySystem::toJson(JsonObject&rootJson) {
+JsonObject& SmartySystem::toJson(JsonObject& rootJson) {
   rootJson["name"] = _name;
   return rootJson;
 }
