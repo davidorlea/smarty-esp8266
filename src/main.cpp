@@ -35,6 +35,10 @@ SmartyBinaryActuator relay1("relay1", RELAY1_PIN, SmartyBinaryActuator::Wiring::
 SmartyBinaryActuator led1("led1", LED1_PIN, SmartyBinaryActuator::Wiring::INVERSE);
 #endif
 
+#if defined SUPPORT_DHT22 && defined DHT22_PIN
+SmartyDHT dht1("dht1", DHT22_PIN, SmartyDHT::Type::DHT22);
+#endif
+
 void waitForSerialMonitoring() {
   for (int i = 0; i < 5; i++) {
     Serial << ".";
