@@ -25,6 +25,9 @@
   }, {
     "name": "MQTT",
     "version": "2.4.3"
+  }, {
+    "name": "Streaming",
+    "version": "5"
   }],
   "examples": "examples/*/*.cpp"
 }
