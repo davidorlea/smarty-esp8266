@@ -2,9 +2,8 @@
 #include "Smarty/Smarty.hpp"
 
 #if defined DEVICE_CUSTOM_V2 || defined DEVICE_CUSTOM_V3
-#define BUTTON1_PIN 14
-#define LED1_PIN 2
-#define RELAY1_PIN 16
+#define BUTTON1_PIN 5
+#define RELAY1_PIN 14
 #endif
 
 #if defined DEVICE_SONOFF_BASIC || defined DEVICE_SONOFF_S20
