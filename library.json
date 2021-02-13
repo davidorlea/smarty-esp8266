@@ -26,7 +26,7 @@
     "name": "MQTT",
     "version": "2.4.3"
   }, {
-    "name": "Streaming",
+    "name": "ArduinoStreaming",
     "version": "5"
   }],
   "examples": "examples/*/*.cpp"
