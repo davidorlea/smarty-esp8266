@@ -24,8 +24,8 @@ install:
   # https://platformio.org/lib/show/64/ArduinoJson
   # https://platformio.org/lib/show/1671/DHT
   # https://platformio.org/lib/show/617/MQTT
-  # https://platformio.org/lib/show/560/Streaming
-  - platformio lib -g install 64@5.13.2 1671@1.0.0 617@2.4.3 560@5
+  # https://platformio.org/lib/show/5485/ArduinoStreaming
+  - platformio lib -g install 64@5.13.2 1671@1.0.0 617@2.4.3 5485@5
 
 script:
   - platformio ci --lib="." --project-conf=$PROJECT_CONF
